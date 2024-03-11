@@ -26,6 +26,18 @@
     <ClCompile Include="Renderer.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
+    <ClCompile Include="AssetsManager.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Cell.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="World.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Game.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="NECROEngine.h">
@@ -35,6 +47,18 @@
       <Filter>Engine</Filter>
     </ClInclude>
     <ClInclude Include="Renderer.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="World.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Cell.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="AssetsManager.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Game.h">
       <Filter>Engine</Filter>
     </ClInclude>
   </ItemGroup>

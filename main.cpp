@@ -4,6 +4,9 @@
 // Include NECRO
 #include "NECROEngine.h"
 
+// Undefine SDL_main
+#undef main
+
 int main()
 {
     SDL_Log("Booting up NECROEngine...");

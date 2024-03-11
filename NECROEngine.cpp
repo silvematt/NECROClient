@@ -1,6 +1,7 @@
 #include <iostream>
 
 #include "NECROEngine.h"
+#include "World.h"
 
 NECROEngine engine;
 
@@ -14,22 +15,29 @@ int NECROEngine::Init()
 	// Initialize SDL
 	if (SDL_Init(SDL_INIT_EVERYTHING) == -1)
 	{
-		SDL_Log("SDL_Init Error: %s\n", SDL_GetError());
+		SDL_LogError(SDL_LOG_CATEGORY_ERROR, "SDL_Init Error: %s\n", SDL_GetError());
 		return -1;
 	}
 
 	// Initialize Input SubSystem
 	if (input.Init() != 0)
 	{
-		SDL_Log("Failed to Initialize Input SubSystem\n");
-		return -4;
+		SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Failed to Initialize Input SubSystem\n");
+		return -2;
 	}
 
 	// Initialize Renderer Subsystem
 	if (renderer.Init() != 0)
 	{
-		SDL_Log("Failed to Initialize Renderer SubSystem\n");
-		return -5;
+		SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Failed to Initialize Renderer SubSystem\n");
+		return -3;
+	}
+
+	// Initialize AssetsManager SubSystem
+	if (assetsManager.Init() != 0)
+	{
+		SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Failed to Initialize AssetsManager SubSystem\n");
+		return -4;
 	}
 
 	SDL_Log("Initializing done.\n");
@@ -70,14 +78,23 @@ void NECROEngine::Update()
 
 	isRunning = true;
 
+	// Initialize game
+	game.Init();
+
 	// Engine Loop
 	while (isRunning)
 	{
 		input.Handle();
 		
 		renderer.Clear();
+
+		game.Update();
+
+		renderer.Update();
 		renderer.Show();
 	}
 
+	// Shutdown
+	game.Shutdown();
 	Shutdown();
 }

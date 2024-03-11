@@ -1,15 +1,9 @@
 #include "Renderer.h"
 
-
-SDL_Window* const NECRORenderer::GetWindow() const
-{
-	return window;
-}
-
-SDL_Renderer* const NECRORenderer::GetInnerRenderer() const
-{
-	return innerRenderer;
-}
+// Define color shortcuts
+const SDL_Color colorBlack = { 0, 0, 0, SDL_ALPHA_OPAQUE };
+const SDL_Color colorGreen = { 0, 255, 0, SDL_ALPHA_OPAQUE };
+const SDL_Color colorRed = { 255, 0, 0, SDL_ALPHA_OPAQUE };
 
 //--------------------------------------
 // Initialize
@@ -30,6 +24,9 @@ int NECRORenderer::Init()
 
 	if (!innerRenderer)
 		return -2;
+
+	// Initialize the Draw Color to black
+	SDL_SetRenderDrawColor(innerRenderer, colorBlack.r, colorBlack.g, colorBlack.b, colorBlack.a);
 
 	return 0;
 }
@@ -54,6 +51,28 @@ int NECRORenderer::Shutdown()
 void NECRORenderer::Show()
 {
 	SDL_RenderPresent(innerRenderer);
+}
+
+//-----------------------------------------------------------------------------
+// Update the innerRenderer with the stuff that has been drawn to the targets
+// 
+// TODO: Instead of calling DrawImageDirectly we'll have different SDL_Texture 
+// targets and we'll SDL_RenderCopy them into the innerRenderer
+//-----------------------------------------------------------------------------
+void NECRORenderer::Update()
+{
+
+}
+
+//----------------------------------------------
+// Draws a Texture directly in the innerRenderer
+//----------------------------------------------
+void NECRORenderer::DrawImageDirectly(SDL_Texture* toDraw, const SDL_Rect* srcRect, const SDL_Rect* dstRect)
+{
+	//if(toDraw == nullptr)
+	//	SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Nothing to draw!\n");
+
+	SDL_RenderCopy(innerRenderer, toDraw, srcRect, dstRect);
 }
 
 //--------------------------------------

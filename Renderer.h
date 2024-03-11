@@ -20,7 +20,25 @@ public:
 	int						Init();
 	int						Shutdown();
 	void					Show();
+	void					Update();
 	void					Clear();
+
+	void					DrawImageDirectly(SDL_Texture* toDraw, const SDL_Rect* srcRect, const SDL_Rect* dstRect);
 };
+
+// Color shortcuts
+extern const SDL_Color colorBlack;
+extern const SDL_Color colorGreen;
+extern const SDL_Color colorRed;
+
+inline SDL_Window* const NECRORenderer::GetWindow() const
+{
+	return window;
+}
+
+inline SDL_Renderer* const NECRORenderer::GetInnerRenderer() const
+{
+	return innerRenderer;
+}
 
 #endif

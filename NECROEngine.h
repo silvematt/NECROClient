@@ -2,9 +2,11 @@
 #define NECROENGINE_H
 
 #include "SDL.h"
-#undef main
+
+#include "Game.h"
 
 #include "Input.h"
+#include "AssetsManager.h"
 #include "Renderer.h"
 
 class NECROEngine
@@ -13,11 +15,22 @@ private:
 	// Status
 	bool isRunning;
 
+	// Game
+	NECROGame game;
+
 	// Subsystems
-	NECROInput		input;
-	NECRORenderer	renderer;
+	NECROInput			input;
+	NECRORenderer		renderer;
+	NECROAssetsManager	assetsManager;
 	
 public:
+	NECROGame&				GetGame();
+
+	NECROInput&				GetInput();
+	NECRORenderer&			GetRenderer();
+	NECROAssetsManager&		GetAssetsManager();
+
+
 	int						Init();
 	void					Update();
 	void					Stop();
@@ -27,5 +40,26 @@ public:
 
 // Global access for the Engine 
 extern NECROEngine engine;
+
+// Inline functions
+inline NECROGame& NECROEngine::GetGame()
+{
+	return game;
+}
+
+inline NECROInput& NECROEngine::GetInput()
+{
+	return input;
+}
+
+inline NECRORenderer & NECROEngine::GetRenderer() 
+{
+	return renderer;
+}
+
+inline NECROAssetsManager& NECROEngine::GetAssetsManager()
+{
+	return assetsManager;
+}
 
 #endif
