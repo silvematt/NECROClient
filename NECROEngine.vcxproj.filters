@@ -61,5 +61,8 @@
     <ClInclude Include="Game.h">
       <Filter>Engine</Filter>
     </ClInclude>
+    <ClInclude Include="Math.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

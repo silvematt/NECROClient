@@ -146,6 +146,7 @@
     <ClInclude Include="Cell.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Input.h" />
+    <ClInclude Include="Math.h" />
     <ClInclude Include="NECROEngine.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="World.h" />

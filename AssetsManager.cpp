@@ -22,6 +22,7 @@ int NECROAssetsManager::Init()
 void NECROAssetsManager::LoadAllImages()
 {
 	LoadImage("tile.png");
+	LoadImage("tile_highlighted.png");
 }
 
 //-------------------------------------------------

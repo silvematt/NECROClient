@@ -6,6 +6,9 @@
 const int CELL_WIDTH = 64;
 const int CELL_HEIGHT = 32;
 
+const int HALF_CELL_WIDTH = 32;
+const int HALF_CELL_HEIGHT = 16;
+
 // Forward Declaration
 class World;
 
@@ -26,15 +29,19 @@ private:
 	World* world; // refers to this cell's world
 
 	int cellX, cellY;
-	SDL_Rect cellRect;
+	int isoX, isoY;
+
+	SDL_Rect dstRect;				// dstRect used to DrawImageDirectly
 	SDL_Texture* baseTexture;		// TODO this is just for quick testing, will have to structure this properly
 
 
 public:
 	Cell();
 
-	int				GetX() const;
-	int				GetY() const;
+	int				GetCellX() const;
+	int				GetCellY() const;
+
+	SDL_Rect&		GetDstRect();
 
 	void			SetWorld(World* w);
 	void			SetCellCoordinates(const int x, const int y);
@@ -44,14 +51,19 @@ public:
 };
 
 
-inline int Cell::GetX() const
+inline int Cell::GetCellX() const
 {
 	return cellX;
 }
 
-inline int Cell::GetY() const
+inline int Cell::GetCellY() const
 {
 	return cellY;
+}
+
+inline SDL_Rect& Cell::GetDstRect()
+{
+	return dstRect;
 }
 
 #endif

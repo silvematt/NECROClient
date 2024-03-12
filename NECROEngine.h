@@ -9,6 +9,8 @@
 #include "AssetsManager.h"
 #include "Renderer.h"
 
+#include "Math.h"
+
 class NECROEngine
 {
 private:

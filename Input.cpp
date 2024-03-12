@@ -6,6 +6,10 @@
 //--------------------------------------
 int NECROInput::Init()
 {
+	oldMouseX = oldMouseY = 0;
+
+	const Uint32 mouseState = SDL_GetMouseState(&mouseX, &mouseY);
+
 	return 0;
 }
 
@@ -25,4 +29,9 @@ void NECROInput::Handle()
 			engine.Stop();
 		}
 	}
+
+	oldMouseX = mouseX;
+	oldMouseY = mouseY;
+
+	const Uint32 mouseState = SDL_GetMouseState(&mouseX, &mouseY);
 }

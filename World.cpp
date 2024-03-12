@@ -7,6 +7,8 @@
 //------------------------------------------------------------
 void World::InitializeWorld()
 {
+	worldCursor = nullptr;
+
 	for(int x = 0; x < WORLD_WIDTH; x++)
 		for (int y = 0; y < WORLD_HEIGHT; y++)
 		{
@@ -18,6 +20,18 @@ void World::InitializeWorld()
 
 			currentCell.SetBaseTexture(engine.GetAssetsManager().GetImageAt(0));
 		}
+}
+
+void World::Update()
+{
+	// Compute selected cell
+	int selectedCellX = 0, selectedCellY = 0;
+	NMath::IsoToCart(engine.GetInput().GetMouseX() - WORLD_RENDER_OFFSET_X, engine.GetInput().GetMouseY() - WORLD_RENDER_OFFSET_Y, selectedCellX, selectedCellY);
+
+	if (selectedCellX >= 0 && selectedCellX < WORLD_WIDTH && selectedCellY >= 0 && selectedCellY < WORLD_HEIGHT)
+		worldCursor = &worldmap[selectedCellX][selectedCellY];
+	else
+		worldCursor = nullptr;
 }
 
 //------------------------------------------------------------
@@ -33,4 +47,8 @@ void World::Draw()
 			Cell& currentCell = worldmap[x][y];
 			currentCell.DrawCell();
 		}
+
+	// Draw the world cursor
+	if(worldCursor)
+		engine.GetRenderer().DrawImageDirectly(engine.GetAssetsManager().GetImageAt(1), NULL, &worldCursor->GetDstRect());
 }

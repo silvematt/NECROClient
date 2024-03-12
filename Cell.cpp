@@ -2,6 +2,8 @@
 
 #include "NECROEngine.h"
 
+#include "Math.h"
+
 //--------------------------------------
 // Constructor
 //--------------------------------------
@@ -9,7 +11,8 @@ Cell::Cell()
 {
 	world = nullptr;
 	cellX = cellY = 0;
-	cellRect = { 0,0,0,0 };
+	isoX = isoY = 0,
+	dstRect = { 0,0,0,0 };
 	baseTexture = nullptr;
 }
 
@@ -22,7 +25,16 @@ void Cell::SetCellCoordinates(const int x, const int y)
 	cellX = x;
 	cellY = y;
 
-	cellRect = { x*CELL_WIDTH, y*CELL_HEIGHT, CELL_WIDTH, CELL_HEIGHT };
+	NMath::CartToIso(cellX, cellY, isoX, isoY);
+
+	// Adjust isoX so that the top of the image becomes the origin
+	isoX -= HALF_CELL_WIDTH;
+
+	// Adjust isoX and isoY to the world offset
+	isoX += WORLD_RENDER_OFFSET_X;
+	isoY += WORLD_RENDER_OFFSET_Y;
+
+	dstRect = { isoX, isoY, CELL_WIDTH, CELL_HEIGHT };
 }
 
 //--------------------------------------
@@ -32,6 +44,7 @@ void Cell::SetWorld(World* w)
 {
 	world = w;
 }
+
 //--------------------------------------
 // Sets the baseTexture 
 //--------------------------------------
@@ -46,5 +59,5 @@ void Cell::SetBaseTexture(SDL_Texture* texture)
 //--------------------------------------
 void Cell::DrawCell()
 {
-	engine.GetRenderer().DrawImageDirectly(baseTexture, NULL, &cellRect);
+	engine.GetRenderer().DrawImageDirectly(baseTexture, NULL, &dstRect);
 }
