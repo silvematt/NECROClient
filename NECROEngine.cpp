@@ -19,25 +19,39 @@ int NECROEngine::Init()
 		return -1;
 	}
 
+	int imgFlags = IMG_INIT_PNG;
+	// Img init returns 0 on failure
+	if (IMG_Init(imgFlags) == 0)
+	{
+		SDL_LogError(SDL_LOG_CATEGORY_ERROR, "SDL IMG_Init Error\n");
+		return -2;
+	}
+
+	if (TTF_Init() != 0)
+	{
+		SDL_LogError(SDL_LOG_CATEGORY_ERROR, "SDL TTF_Init Error\n");
+		return -3;
+	}
+
 	// Initialize Input SubSystem
 	if (input.Init() != 0)
 	{
 		SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Failed to Initialize Input SubSystem\n");
-		return -2;
+		return -4;
 	}
 
 	// Initialize Renderer Subsystem
 	if (renderer.Init() != 0)
 	{
 		SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Failed to Initialize Renderer SubSystem\n");
-		return -3;
+		return -5;
 	}
 
 	// Initialize AssetsManager SubSystem
 	if (assetsManager.Init() != 0)
 	{
 		SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Failed to Initialize AssetsManager SubSystem\n");
-		return -4;
+		return -6;
 	}
 
 	SDL_Log("Initializing done.\n");
@@ -54,7 +68,10 @@ int NECROEngine::Shutdown()
 	// Shutdown subsystem
 	renderer.Shutdown();
 
+	// Shutdown SDL
 	SDL_Quit();
+	IMG_Quit();
+	TTF_Quit();
 
 	return 0;
 }

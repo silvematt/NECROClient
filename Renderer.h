@@ -2,6 +2,7 @@
 #define NECRORENDERER_H
 
 #include "SDL.h"
+#include "SDL_ttf.h"
 
 const int SCREEN_WIDTH = 1920;
 const int SCREEN_HEIGHT = 1080;
@@ -24,6 +25,7 @@ public:
 	void					Clear();
 
 	void					DrawImageDirectly(SDL_Texture* toDraw, const SDL_Rect* srcRect, const SDL_Rect* dstRect);
+	void					DrawTextDirectly(TTF_Font* font, const char* str, int screenX, int screenY, const SDL_Color& color);
 };
 
 // Color shortcuts

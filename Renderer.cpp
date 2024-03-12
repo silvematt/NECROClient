@@ -75,6 +75,27 @@ void NECRORenderer::DrawImageDirectly(SDL_Texture* toDraw, const SDL_Rect* srcRe
 	SDL_RenderCopy(innerRenderer, toDraw, srcRect, dstRect);
 }
 
+//-------------------------------------------------------------------
+// Draws a Text directly to the innerRenderer
+// 
+// TODO: For actual text rendering we can have a list of text to draw
+// with their own SDL_Texture and Surface, so that we do not create
+// them each frame. 
+//-------------------------------------------------------------------
+void NECRORenderer::DrawTextDirectly(TTF_Font* font, const char* str, int screenX, int screenY, const SDL_Color& color)
+{
+	SDL_Texture* renderedText = nullptr;
+
+	SDL_Surface* textSurf = TTF_RenderText_Solid(font, str, color);
+	renderedText = SDL_CreateTextureFromSurface(innerRenderer, textSurf);
+	SDL_Rect dest = { screenX, screenY, textSurf->w, textSurf->h };
+	
+	SDL_RenderCopy(innerRenderer, renderedText, NULL, &dest);
+
+	SDL_DestroyTexture(renderedText);
+	SDL_FreeSurface(textSurf);
+}
+
 //--------------------------------------
 // Clear renderer
 //--------------------------------------

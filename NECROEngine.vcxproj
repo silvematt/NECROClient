@@ -71,8 +71,8 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>C:\Lib\SDL2_image-2.8.2\include;C:\Lib\SDL2-2.30.1\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Lib\SDL2_image-2.8.2\lib\x64;C:\Lib\SDL2-2.30.1\lib\x64;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Lib\SDL2_ttf-2.22.0\include;C:\Lib\SDL2_image-2.8.2\include;C:\Lib\SDL2-2.30.1\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Lib\SDL2_ttf-2.22.0\lib\x64;C:\Lib\SDL2_image-2.8.2\lib\x64;C:\Lib\SDL2-2.30.1\lib\x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -112,7 +112,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_ttf.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

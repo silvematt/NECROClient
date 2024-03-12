@@ -1,5 +1,7 @@
 #include "World.h"
 
+#include <string>
+
 #include "NECROEngine.h"
 
 //------------------------------------------------------------
@@ -51,4 +53,11 @@ void World::Draw()
 	// Draw the world cursor
 	if(worldCursor)
 		engine.GetRenderer().DrawImageDirectly(engine.GetAssetsManager().GetImageAt(1), NULL, &worldCursor->GetDstRect());
+
+	// Draw some text
+	std::string textSelCell = "Selected Cell: ";
+	if (worldCursor)
+		textSelCell = textSelCell + "(" + std::to_string(worldCursor->GetCellX()) + ", " + std::to_string(worldCursor->GetCellY()) + ")";
+
+	engine.GetRenderer().DrawTextDirectly(engine.GetAssetsManager().GetFontAt(0), textSelCell.c_str(), 10, 10, colorRed);
 }
