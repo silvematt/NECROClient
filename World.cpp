@@ -3,6 +3,11 @@
 #include <string>
 
 #include "NECROEngine.h"
+#include "Entity.h"
+
+
+// TODO This is just for testing, entities will exists in Cells
+Entity myEntity;
 
 //------------------------------------------------------------
 // Initializes the World, TODO: will be loading the world file
@@ -22,6 +27,12 @@ void World::InitializeWorld()
 
 			currentCell.SetBaseTexture(engine.GetAssetsManager().GetImageAt(0)->GetSrc());
 		}
+
+	myEntity.SetImg(engine.GetAssetsManager().GetImageAt(2));
+
+	// pos is orthographic
+	myEntity.pos.x = 448;
+	myEntity.pos.y = 224;
 }
 
 void World::Update()
@@ -34,6 +45,9 @@ void World::Update()
 		worldCursor = &worldmap[selectedCellX][selectedCellY];
 	else
 		worldCursor = nullptr;
+
+	// again, just for testing
+	myEntity.Update();
 }
 
 //------------------------------------------------------------
@@ -49,6 +63,9 @@ void World::Draw()
 			Cell& currentCell = worldmap[x][y];
 			currentCell.DrawCell();
 		}
+
+	// again x2, for testing
+	myEntity.Draw();
 
 	// Draw the world cursor
 	if(worldCursor)
