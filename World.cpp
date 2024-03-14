@@ -20,7 +20,7 @@ void World::InitializeWorld()
 			currentCell.SetWorld(this);
 			currentCell.SetCellCoordinates(x, y);
 
-			currentCell.SetBaseTexture(engine.GetAssetsManager().GetImageAt(0));
+			currentCell.SetBaseTexture(engine.GetAssetsManager().GetImageAt(0)->GetSrc());
 		}
 }
 
@@ -52,7 +52,7 @@ void World::Draw()
 
 	// Draw the world cursor
 	if(worldCursor)
-		engine.GetRenderer().DrawImageDirectly(engine.GetAssetsManager().GetImageAt(1), NULL, &worldCursor->GetDstRect());
+		engine.GetRenderer().DrawImageDirectly(engine.GetAssetsManager().GetImageAt(1)->GetSrc(), NULL, &worldCursor->GetDstRect());
 
 	// Draw some text
 	std::string textSelCell = "Selected Cell: ";

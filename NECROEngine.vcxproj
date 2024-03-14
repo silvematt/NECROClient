@@ -145,6 +145,7 @@
     <ClInclude Include="AssetsManager.h" />
     <ClInclude Include="Cell.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="Image.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="Math.h" />
     <ClInclude Include="NECROEngine.h" />

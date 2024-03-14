@@ -22,12 +22,51 @@ int NECROAssetsManager::Init()
 //-------------------------------------------------
 void NECROAssetsManager::LoadAllImages()
 {
-	LoadImage("Data/imgs/tile.png");
-	LoadImage("Data/imgs/tile_highlighted.png");
+	LoadImage("Data/imgs/tile.png", 0);
+	LoadImage("Data/imgs/tile_highlighted.png", 0);
+	LoadImage("Data/imgs/tree.png", -32);
+}
+
+void NECROAssetsManager::LoadImage(const char* filename, int yOffset)
+{
+	Image img(LoadSDLTexture(filename), yOffset);
+	if(img.GetSrc() != NULL)
+		images.push_back(img);
 }
 
 //-------------------------------------------------
-// Load all the images 
+// Loads and returns an SDL_Texture
+//-------------------------------------------------
+SDL_Texture* NECROAssetsManager::LoadSDLTexture(const char* filename)
+{
+	SDL_Texture* texture;
+
+	texture = IMG_LoadTexture(engine.GetRenderer().GetInnerRenderer(), filename);
+
+	if (texture != NULL) // IMG_LoadTexture returns NULL on failure
+	{
+		return texture;
+	}
+	else
+	{
+		SDL_LogError(SDL_LOG_CATEGORY_ERROR,"NECROAssetsManager: Failed to LoadImage(%s)\n", filename);
+		return NULL;
+	}
+}
+
+//-------------------------------------------------
+// Returns an SDL_Texture*
+//-------------------------------------------------
+Image* NECROAssetsManager::GetImageAt(size_t indx)
+{
+	if (images.size() > indx)
+		return &images[indx];
+	else
+		return nullptr;
+}
+
+//-------------------------------------------------
+// Load all the fonts 
 // 
 // TODO: This is for quick testing, actual loading
 // will be done through a proper file and by managing
@@ -36,36 +75,6 @@ void NECROAssetsManager::LoadAllImages()
 void NECROAssetsManager::LoadAllFonts()
 {
 	LoadFont("Data/fonts/montserrat.regular.ttf", FONT_DEFAULT_PTSIZE);
-}
-
-//-------------------------------------------------
-// Loads a single image into the images vector
-//-------------------------------------------------
-void NECROAssetsManager::LoadImage(const char* filename)
-{
-	SDL_Texture* texture = nullptr;
-
-	texture = IMG_LoadTexture(engine.GetRenderer().GetInnerRenderer(), filename);
-
-	if (texture != nullptr)
-	{
-		images.push_back(texture);
-	}
-	else
-	{
-		SDL_LogError(SDL_LOG_CATEGORY_ERROR,"NECROAssetsManager: Failed to LoadImage(%s)\n", filename);
-	}
-}
-
-//-------------------------------------------------
-// Returns an SDL_Texture*
-//-------------------------------------------------
-SDL_Texture* NECROAssetsManager::GetImageAt(size_t indx)
-{
-	if (images.size() > indx)
-		return images[indx];
-	else
-		return nullptr;
 }
 
 //-------------------------------------------------

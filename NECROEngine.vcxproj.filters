@@ -12,6 +12,24 @@
     <Filter Include="Engine">
       <UniqueIdentifier>{8b9b76cd-161d-40e1-b118-a924ecfb1fba}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\Data">
+      <UniqueIdentifier>{04c22072-1a76-4c8c-a9e1-96d6362f3d86}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Renderer">
+      <UniqueIdentifier>{7e0fa9be-ecc1-4988-8d10-a46bdd735428}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\World">
+      <UniqueIdentifier>{10fc516e-e3d8-4ada-adea-44ab7c33229f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Utility">
+      <UniqueIdentifier>{5919e783-69d5-4c97-85fa-ed12ec07c2b1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Input">
+      <UniqueIdentifier>{d72c6992-6f45-42da-90ac-2aa292f7a2f1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Entity">
+      <UniqueIdentifier>{aeaef4b3-860c-4847-b587-d38cdab2198d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -20,49 +38,52 @@
     <ClCompile Include="NECROEngine.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
-    <ClCompile Include="Input.cpp">
-      <Filter>Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="Renderer.cpp">
+    <ClCompile Include="Game.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
     <ClCompile Include="AssetsManager.cpp">
-      <Filter>Engine</Filter>
+      <Filter>Engine\Data</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer.cpp">
+      <Filter>Engine\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="Cell.cpp">
-      <Filter>Engine</Filter>
+      <Filter>Engine\World</Filter>
     </ClCompile>
     <ClCompile Include="World.cpp">
-      <Filter>Engine</Filter>
+      <Filter>Engine\World</Filter>
     </ClCompile>
-    <ClCompile Include="Game.cpp">
-      <Filter>Engine</Filter>
+    <ClCompile Include="Input.cpp">
+      <Filter>Engine\Input</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="NECROEngine.h">
       <Filter>Engine</Filter>
     </ClInclude>
-    <ClInclude Include="Input.h">
-      <Filter>Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="Renderer.h">
-      <Filter>Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="World.h">
-      <Filter>Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="Cell.h">
-      <Filter>Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="AssetsManager.h">
-      <Filter>Engine</Filter>
-    </ClInclude>
     <ClInclude Include="Game.h">
       <Filter>Engine</Filter>
     </ClInclude>
+    <ClInclude Include="AssetsManager.h">
+      <Filter>Engine\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Image.h">
+      <Filter>Engine\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer.h">
+      <Filter>Engine\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="Cell.h">
+      <Filter>Engine\World</Filter>
+    </ClInclude>
+    <ClInclude Include="World.h">
+      <Filter>Engine\World</Filter>
+    </ClInclude>
     <ClInclude Include="Math.h">
-      <Filter>Engine</Filter>
+      <Filter>Engine\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Input.h">
+      <Filter>Engine\Input</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
