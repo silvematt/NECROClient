@@ -12,6 +12,7 @@
 void World::InitializeWorld()
 {
 	worldCursor = nullptr;
+	worldCursorTexture = engine.GetAssetsManager().GetImage("tile_highlighted.png")->GetSrc();
 
 	for(int x = 0; x < WORLD_WIDTH; x++)
 		for (int y = 0; y < WORLD_HEIGHT; y++)
@@ -22,15 +23,14 @@ void World::InitializeWorld()
 			currentCell.SetWorld(this);
 			currentCell.SetCellCoordinates(x, y);
 
-			currentCell.SetBaseTexture(engine.GetAssetsManager().GetImageAt(0)->GetSrc());
+			currentCell.SetBaseTexture(engine.GetAssetsManager().GetImage("tile.png")->GetSrc());
 
 			// For testing, have a 10% probability for a cell to spawn an entity
 			int r = rand() % 100;
 			if (r < 10)
 			{
 				// Add an entity random
-				Entity e;
-				e.Init(Vector2(x * CELL_WIDTH, y * CELL_HEIGHT), engine.GetAssetsManager().GetImageAt(2));
+				Entity e(Vector2(static_cast<float>(x * CELL_WIDTH), static_cast<float>(y * CELL_HEIGHT)), engine.GetAssetsManager().GetImage("tree.png"));
 				currentCell.AddEntity(e);
 			}
 		}
@@ -54,8 +54,7 @@ void World::Update()
 			if (worldCursor->GetEntitiesSize() == 0)
 			{
 				// Add an entity
-				Entity e;
-				e.Init(Vector2(worldCursor->GetCellX() * CELL_WIDTH, worldCursor->GetCellY() *CELL_HEIGHT), engine.GetAssetsManager().GetImageAt(2));
+				Entity e(Vector2(static_cast<float>(worldCursor->GetCellX() * CELL_WIDTH), static_cast<float>(worldCursor->GetCellY() * CELL_HEIGHT)), engine.GetAssetsManager().GetImage("tree.png"));
 				worldCursor->AddEntity(e);
 			}
 			else
@@ -107,12 +106,12 @@ void World::Draw()
 
 	// Draw the world cursor
 	if(worldCursor)
-		engine.GetRenderer().DrawImageDirectly(engine.GetAssetsManager().GetImageAt(1)->GetSrc(), NULL, &worldCursor->GetDstRect());
+		engine.GetRenderer().DrawImageDirectly(worldCursorTexture, NULL, &worldCursor->GetDstRect());
 
 	// Draw some text
 	std::string textSelCell = "Selected Cell: ";
 	if (worldCursor)
 		textSelCell = textSelCell + "(" + std::to_string(worldCursor->GetCellX()) + ", " + std::to_string(worldCursor->GetCellY()) + ")";
 
-	engine.GetRenderer().DrawTextDirectly(engine.GetAssetsManager().GetFontAt(0), textSelCell.c_str(), 10, 10, colorRed);
+	engine.GetRenderer().DrawTextDirectly(engine.GetAssetsManager().GetFont("defaultFont"), textSelCell.c_str(), 10, 10, colorRed);
 }

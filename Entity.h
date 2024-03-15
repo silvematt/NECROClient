@@ -16,6 +16,9 @@ private:
 	Cell* owner;				// Owner of this entity
 	
 public:
+	Entity() = default;
+	Entity(Vector2 pInitialPos, Image* pImg);
+
 	Vector2 pos;				// orthographic pos
 	Vector2 isoPos;				// isometric pos (used only for rendering)
 
@@ -26,7 +29,6 @@ public:
 	void			SetOwner(Cell* c);
 	void			ClearOwner();
 
-	void			Init(Vector2 pInitialPos, Image* pImg);
 	void			Update();
 	void			Draw();
 };

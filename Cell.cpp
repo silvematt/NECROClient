@@ -58,8 +58,8 @@ void Cell::SetBaseTexture(SDL_Texture* texture)
 //--------------------------------------
 void Cell::Update()
 {
-	for (auto& ref : entities)
-		ref.Update();
+	for (auto& ent : entities)
+		ent.Update();
 }
 
 //--------------------------------------
@@ -102,6 +102,6 @@ void Cell::DrawCell()
 //--------------------------------------
 void Cell::DrawEntities()
 {
-	for (auto& ref : entities)
-		ref.Draw();
+	for (auto& ent : entities)
+		ent.Draw();
 }

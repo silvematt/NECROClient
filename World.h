@@ -20,6 +20,7 @@ class World
 private:
 	Cell worldmap[WORLD_WIDTH][WORLD_HEIGHT];
 	Cell* worldCursor = nullptr;					// The cell the mouse is currently hovering on (if any)
+	SDL_Texture* worldCursorTexture;
 
 public:
 	void			InitializeWorld();

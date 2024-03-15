@@ -2,6 +2,7 @@
 #define NECROASSETS_MANAGER_H
 
 #include <iostream>
+#include <unordered_map>
 #include <vector>
 
 #include "SDL.h"
@@ -15,22 +16,23 @@ const int FONT_DEFAULT_PTSIZE = 24;
 class NECROAssetsManager
 {
 private:
-	std::vector<Image> images;
-	std::vector<TTF_Font*> fonts;
+	std::unordered_map<std::string, Image> images;
+	std::unordered_map<std::string, TTF_Font*> fonts;
 
 private:
-	void				LoadImage(const char* file, int yOffset);
-	SDL_Texture*		LoadSDLTexture(const char* file);
 	void				LoadAllImages();
-
-	void				LoadFont(const char* file, size_t ptsize);
 	void				LoadAllFonts();
+
+	void				LoadImage(const std::string& file, int yOffset, const std::string& shortname = std::string());	// Shortname will be the key of the ump if NOT empty
+	SDL_Texture*		LoadSDLTexture(const char* file);
+
+	void				LoadFont(const std::string& file, int ptsize, const std::string& shortname = std::string());
 
 public:
 	int					Init();			// Load everything
 
-	Image*				GetImageAt(size_t indx);
-	TTF_Font*			GetFontAt(size_t indx);
+	Image*				GetImage(const std::string& filename);
+	TTF_Font*			GetFont(const std::string& filename);
 };
 
 #endif

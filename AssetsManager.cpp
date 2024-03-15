@@ -1,6 +1,8 @@
 #include "AssetsManager.h"
 #include "NECROEngine.h"
 
+const char* IMGS_FOLDER		= "Data/imgs/";
+const char* FONTS_FOLDER	= "Data/fonts/";
 
 //-------------------------------------------------
 // Initializing the AssetsManager loads everything
@@ -17,21 +19,34 @@ int NECROAssetsManager::Init()
 // Load all the images 
 // 
 // TODO: This is for quick testing, actual loading
-// will be done through a proper file and by managing
-// the images vector properly
+// will be done through a proper file
 //-------------------------------------------------
 void NECROAssetsManager::LoadAllImages()
 {
-	LoadImage("Data/imgs/tile.png", 0);
-	LoadImage("Data/imgs/tile_highlighted.png", 0);
-	LoadImage("Data/imgs/tree.png", -32);
+	LoadImage("tile.png", 0);
+	LoadImage("tile_highlighted.png", 0);
+	LoadImage("tree.png", -32);
 }
 
-void NECROAssetsManager::LoadImage(const char* filename, int yOffset)
+//-------------------------------------------------
+// Load all the fonts 
+// 
+// TODO: This is for quick testing, actual loading
+// will be done through a proper file.
+//-------------------------------------------------
+void NECROAssetsManager::LoadAllFonts()
 {
-	Image img(LoadSDLTexture(filename), yOffset);
+	LoadFont("montserrat.regular.ttf", FONT_DEFAULT_PTSIZE, "defaultFont");
+}
+
+void NECROAssetsManager::LoadImage(const std::string& filename, int yOffset, const std::string& shortname)
+{
+	std::string fullPath = IMGS_FOLDER;
+	fullPath += filename;
+	
+	Image img(LoadSDLTexture(fullPath.c_str()), yOffset);
 	if(img.GetSrc() != NULL)
-		images.push_back(img);
+		images.insert({ shortname.empty() ? filename : shortname, img });
 }
 
 //-------------------------------------------------
@@ -57,52 +72,37 @@ SDL_Texture* NECROAssetsManager::LoadSDLTexture(const char* filename)
 //-------------------------------------------------
 // Returns an SDL_Texture*
 //-------------------------------------------------
-Image* NECROAssetsManager::GetImageAt(size_t indx)
+Image* NECROAssetsManager::GetImage(const std::string& filename)
 {
-	if (images.size() > indx)
-		return &images[indx];
-	else
-		return nullptr;
-}
-
-//-------------------------------------------------
-// Load all the fonts 
-// 
-// TODO: This is for quick testing, actual loading
-// will be done through a proper file and by managing
-// the fonts vector properly
-//-------------------------------------------------
-void NECROAssetsManager::LoadAllFonts()
-{
-	LoadFont("Data/fonts/montserrat.regular.ttf", FONT_DEFAULT_PTSIZE);
+	return &images.at(filename);
 }
 
 //-------------------------------------------------
 // Loads a single font into the fonts vector
 //-------------------------------------------------
-void NECROAssetsManager::LoadFont(const char* filename, size_t ptsize)
+void NECROAssetsManager::LoadFont(const std::string& filename, int ptsize, const std::string& shortname)
 {
+	std::string fullPath = FONTS_FOLDER;
+	fullPath += filename;
+
 	TTF_Font* font = nullptr;
 
-	font = TTF_OpenFont(filename, ptsize);
+	font = TTF_OpenFont(fullPath.c_str(), ptsize);
 
 	if (font != nullptr)
 	{
-		fonts.push_back(font);
+		fonts.insert({ shortname.empty() ? filename : shortname, font });
 	}
 	else
 	{
-		SDL_LogError(SDL_LOG_CATEGORY_ERROR, "NECROAssetsManager: Failed to LoadFont(%s)\n", filename);
+		SDL_LogError(SDL_LOG_CATEGORY_ERROR, "NECROAssetsManager: Failed to LoadFont(%s)\n", filename.c_str());
 	}
 }
 
 //-------------------------------------------------
 // Returns an TTF_Font*
 //-------------------------------------------------
-TTF_Font* NECROAssetsManager::GetFontAt(size_t indx)
+TTF_Font* NECROAssetsManager::GetFont(const std::string& filename)
 {
-	if (fonts.size() > indx)
-		return fonts[indx];
-	else
-		return nullptr;
+	return fonts.at(filename);
 }

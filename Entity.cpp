@@ -2,6 +2,12 @@
 
 #include "Entity.h"
 
+Entity::Entity(Vector2 pInitialPos, Image* pImg)
+{
+	pos = pInitialPos;
+	SetImg(pImg);
+}
+
 //------------------------------------------------------------
 // Sets the Image of this Entity
 //------------------------------------------------------------
@@ -26,15 +32,6 @@ void Entity::ClearOwner()
 	owner = nullptr;
 }
 
-//------------------------------------------------------------
-// Initializes the Entity
-//------------------------------------------------------------
-void Entity::Init(Vector2 pInitialPos, Image* pImg)
-{
-	pos = pInitialPos;
-	SetImg(pImg);
-	
-}
 
 //------------------------------------------------------------
 // Updates the Entity
