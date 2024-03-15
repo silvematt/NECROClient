@@ -3,7 +3,7 @@
 #include "Entity.h"
 
 //------------------------------------------------------------
-// Sets the Image of this entity
+// Sets the Image of this Entity
 //------------------------------------------------------------
 void Entity::SetImg(Image* pImg)
 {
@@ -11,11 +11,29 @@ void Entity::SetImg(Image* pImg)
 }
 
 //------------------------------------------------------------
+// Sets the owner of this Entity
+//------------------------------------------------------------
+void Entity::SetOwner(Cell* c)
+{
+	owner = c;
+}
+
+//------------------------------------------------------------
+// Clears the owner of this entity
+//------------------------------------------------------------
+void Entity::ClearOwner()
+{
+	owner = nullptr;
+}
+
+//------------------------------------------------------------
 // Initializes the Entity
 //------------------------------------------------------------
-void Entity::Init(Vector2 initialPos)
+void Entity::Init(Vector2 pInitialPos, Image* pImg)
 {
-	pos = initialPos;
+	pos = pInitialPos;
+	SetImg(pImg);
+	
 }
 
 //------------------------------------------------------------

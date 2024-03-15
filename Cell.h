@@ -1,7 +1,10 @@
 #ifndef NECROCELL_H
 #define NECROCELL_H
 
+#include <vector>
 #include "SDL.h"
+
+#include "Entity.h"
 
 const int CELL_WIDTH = 64;
 const int CELL_HEIGHT = 32;
@@ -34,6 +37,8 @@ private:
 	SDL_Rect dstRect;				// dstRect used to DrawImageDirectly
 	SDL_Texture* baseTexture;		// TODO this is just for quick testing, will have to structure this properly
 
+	// Entities set in this cell
+	std::vector<Entity> entities;
 
 public:
 	Cell();
@@ -47,7 +52,14 @@ public:
 	void			SetCellCoordinates(const int x, const int y);
 	void			SetBaseTexture(SDL_Texture* texture);
 
+	void			Update();
+	size_t			GetEntitiesSize() const;
+	void			AddEntity(Entity e);
+	void			RemoveEntity(size_t indx);
+	Entity*			GetEntityAt(size_t indx);
+
 	void			DrawCell();
+	void			DrawEntities();
 };
 
 
@@ -64,6 +76,11 @@ inline int Cell::GetCellY() const
 inline SDL_Rect& Cell::GetDstRect()
 {
 	return dstRect;
+}
+
+inline size_t Cell::GetEntitiesSize() const
+{
+	return entities.size();
 }
 
 #endif

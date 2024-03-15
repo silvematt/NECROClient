@@ -54,6 +54,8 @@ int NECROEngine::Init()
 		return -6;
 	}
 
+	srand(time(NULL));
+
 	SDL_Log("Initializing done.\n");
 	return 0;
 }

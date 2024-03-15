@@ -10,6 +10,13 @@ int NECROInput::Init()
 
 	const Uint32 mouseState = SDL_GetMouseState(&mouseX, &mouseY);
 
+	// Set mouse buttons
+	for (int i = 1; i <= 3; i++) 
+	{
+		prevMouseButtons[i - 1] = 0;
+		mouseButtons[i - 1] = mouseState & SDL_BUTTON(i);
+	}
+
 	return 0;
 }
 
@@ -23,10 +30,12 @@ void NECROInput::Handle()
 	//Handle events
 	while (SDL_PollEvent(&e) != 0)
 	{
-		// Quit
-		if (e.type == SDL_QUIT)
+		switch (e.type)
 		{
-			engine.Stop();
+			case SDL_QUIT:
+				engine.Stop();
+				break;
+
 		}
 	}
 
@@ -34,4 +43,19 @@ void NECROInput::Handle()
 	oldMouseY = mouseY;
 
 	const Uint32 mouseState = SDL_GetMouseState(&mouseX, &mouseY);
+
+	// Set mouse buttons
+	for (int i = 1; i <= 3; i++) 
+	{
+		prevMouseButtons[i - 1] = mouseButtons[i - 1];
+		mouseButtons[i - 1] = mouseState & SDL_BUTTON(i);
+	}
+}
+
+int NECROInput::GetMouseDown(SDL_Scancode button) const
+{
+	if (button < SDL_BUTTON_LEFT || button > SDL_BUTTON_RIGHT)
+		return -1;
+
+	return (mouseButtons[button - 1] & ~prevMouseButtons[button - 1]);
 }

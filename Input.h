@@ -10,10 +10,13 @@ private:
 	int				mouseY;
 	int				oldMouseX;
 	int				oldMouseY;
+	int				mouseButtons[3];
+	int				prevMouseButtons[3];
 
 public:
 	int				GetMouseX() const;
 	int				GetMouseY() const;
+	int				GetMouseDown(SDL_Scancode button) const;
 
 	int				Init();
 	void			Handle();

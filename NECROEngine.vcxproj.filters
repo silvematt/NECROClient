@@ -94,5 +94,8 @@
     <ClInclude Include="Entity.h">
       <Filter>Engine\Entity</Filter>
     </ClInclude>
+    <ClInclude Include="Utility.h">
+      <Filter>Engine\Utility</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
