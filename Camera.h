@@ -3,7 +3,7 @@
 
 #include "Vector2.h"
 
-const float DEFAULT_ZOOM = 1.0f;
+const float CAMERA_DEFAULT_ZOOM = 1.0f;
 
 class Camera
 {

@@ -36,7 +36,11 @@ void World::InitializeWorld()
 			}
 		}
 
+	// Set camera
 	curCamera = engine.GetGame().GetMainCamera();
+	curCamera->pos.x = SCREEN_WIDTH  / 2;
+	curCamera->pos.y = SCREEN_HEIGHT / 2;
+	curCamera->SetZoom(CAMERA_DEFAULT_ZOOM);
 }
 
 //------------------------------------------------------------
