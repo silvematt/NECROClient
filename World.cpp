@@ -5,6 +5,7 @@
 #include "NECROEngine.h"
 #include "Entity.h"
 
+Camera* curCamera;
 
 //------------------------------------------------------------
 // Initializes the World, TODO: will be loading the world file
@@ -34,6 +35,8 @@ void World::InitializeWorld()
 				currentCell.AddEntity(e);
 			}
 		}
+
+	curCamera = engine.GetGame().GetMainCamera();
 }
 
 //------------------------------------------------------------
@@ -43,7 +46,12 @@ void World::Update()
 {
 	// Compute selected cell
 	int selectedCellX = 0, selectedCellY = 0;
-	NMath::IsoToCart(engine.GetInput().GetMouseX() - WORLD_RENDER_OFFSET_X, engine.GetInput().GetMouseY() - WORLD_RENDER_OFFSET_Y, selectedCellX, selectedCellY);
+
+	Vector2 mousePos(static_cast<float>(engine.GetInput().GetMouseX()), static_cast<float>(engine.GetInput().GetMouseY()));
+	Vector2 mouseInWorld = curCamera->ScreenToWorld(mousePos);
+
+	selectedCellX = mouseInWorld.x;
+	selectedCellY = mouseInWorld.y;
 
 	if (selectedCellX >= 0 && selectedCellX < WORLD_WIDTH && selectedCellY >= 0 && selectedCellY < WORLD_HEIGHT)
 	{

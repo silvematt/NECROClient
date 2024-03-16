@@ -13,6 +13,7 @@ void NECROGame::Init()
 //--------------------------------------
 void NECROGame::Update()
 {
+	mainCamera.Update();
 	currentWorld.Update();
 	currentWorld.Draw();
 }

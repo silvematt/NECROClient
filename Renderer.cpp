@@ -65,6 +65,14 @@ void NECRORenderer::Update()
 }
 
 //----------------------------------------------
+// Calls SDL_RenderSetScale on the innerRenderer
+//----------------------------------------------
+void NECRORenderer::SetScale(float scaleX, float scaleY)
+{
+	SDL_RenderSetScale(innerRenderer, scaleX, scaleY);
+}
+
+//----------------------------------------------
 // Draws a Texture directly in the innerRenderer
 //----------------------------------------------
 void NECRORenderer::DrawImageDirectly(SDL_Texture* toDraw, const SDL_Rect* srcRect, const SDL_Rect* dstRect)

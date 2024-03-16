@@ -44,8 +44,8 @@ void Entity::Update()
 	isoPos.x -= HALF_CELL_WIDTH;
 
 	// Adjust isoX and isoY to the world offset
-	isoPos.x += WORLD_RENDER_OFFSET_X;
-	isoPos.y += WORLD_RENDER_OFFSET_Y;
+	isoPos.x += engine.GetGame().GetMainCamera()->pos.x;
+	isoPos.y += engine.GetGame().GetMainCamera()->pos.y;
 
 	// Account for the Y offset of the image
 	isoPos.y += img->GetYOffset();

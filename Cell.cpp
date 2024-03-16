@@ -31,8 +31,8 @@ void Cell::SetCellCoordinates(const int x, const int y)
 	isoX -= HALF_CELL_WIDTH;
 
 	// Adjust isoX and isoY to the world offset
-	isoX += WORLD_RENDER_OFFSET_X;
-	isoY += WORLD_RENDER_OFFSET_Y;
+	isoX += engine.GetGame().GetMainCamera()->pos.x;
+	isoY += engine.GetGame().GetMainCamera()->pos.y;
 
 	dstRect = { isoX, isoY, CELL_WIDTH, CELL_HEIGHT };
 }
@@ -58,6 +58,16 @@ void Cell::SetBaseTexture(SDL_Texture* texture)
 //--------------------------------------
 void Cell::Update()
 {
+	NMath::CartToIso(cellX, cellY, isoX, isoY);
+
+	// Adjust isoX so that the top of the image becomes the origin
+	isoX -= HALF_CELL_WIDTH;
+
+	// Adjust isoX and isoY to the world offset
+	isoX += engine.GetGame().GetMainCamera()->pos.x;
+	isoY += engine.GetGame().GetMainCamera()->pos.y;
+
+	dstRect = { isoX, isoY, CELL_WIDTH, CELL_HEIGHT };
 	for (auto& ent : entities)
 		ent.Update();
 }

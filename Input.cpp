@@ -1,6 +1,12 @@
 #include "Input.h"
 #include "NECROEngine.h"
 
+NECROInput::~NECROInput() 
+{
+	delete[] keys;
+	delete[] prevKeys;
+}
+
 //--------------------------------------
 // Initialize
 //--------------------------------------
@@ -9,6 +15,10 @@ int NECROInput::Init()
 	oldMouseX = oldMouseY = 0;
 
 	const Uint32 mouseState = SDL_GetMouseState(&mouseX, &mouseY);
+	const Uint8* keyboard = SDL_GetKeyboardState(&numKeys);
+
+	keys = new Uint8[numKeys];
+	prevKeys = new Uint8[numKeys];
 
 	// Set mouse buttons
 	for (int i = 1; i <= 3; i++) 
@@ -25,6 +35,8 @@ int NECROInput::Init()
 //--------------------------------------
 void NECROInput::Handle()
 {
+	mouseScroll = 0; // Mouse scroll must be reset
+
 	SDL_Event e;
 
 	//Handle events
@@ -36,6 +48,9 @@ void NECROInput::Handle()
 				engine.Stop();
 				break;
 
+			case SDL_MOUSEWHEEL:
+				mouseScroll = e.wheel.y;
+				break;
 		}
 	}
 
@@ -43,6 +58,10 @@ void NECROInput::Handle()
 	oldMouseY = mouseY;
 
 	const Uint32 mouseState = SDL_GetMouseState(&mouseX, &mouseY);
+	const Uint8* keyboard = SDL_GetKeyboardState(&numKeys);
+
+	memcpy(prevKeys, keys, sizeof(prevKeys[0]) * numKeys);
+	memcpy(keys, keyboard, sizeof(keys[0]) * numKeys);
 
 	// Set mouse buttons
 	for (int i = 1; i <= 3; i++) 
@@ -58,4 +77,12 @@ int NECROInput::GetMouseDown(SDL_Scancode button) const
 		return -1;
 
 	return (mouseButtons[button - 1] & ~prevMouseButtons[button - 1]);
+}
+
+int NECROInput::KeyHeld(SDL_Scancode key) const 
+{
+	if (key < 0 || key > numKeys)
+		return -1;
+
+	return keys[key];
 }

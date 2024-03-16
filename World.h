@@ -3,11 +3,8 @@
 
 #include "Cell.h"
 
-const int WORLD_WIDTH  = 16;
-const int WORLD_HEIGHT = 16;
-
-const int WORLD_RENDER_OFFSET_X = 960;
-const int WORLD_RENDER_OFFSET_Y = 340;
+const int WORLD_WIDTH  = 32;
+const int WORLD_HEIGHT = 32;
 
 //-------------------------------------------------
 // A World represents a level or a map with its
