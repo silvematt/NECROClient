@@ -51,6 +51,13 @@ void NECROInput::Handle()
 			case SDL_MOUSEWHEEL:
 				mouseScroll = e.wheel.y;
 				break;
+
+			case SDL_MOUSEMOTION:
+				SDL_SetRelativeMouseMode(SDL_TRUE);
+				mouseMotionX = e.motion.xrel;
+				mouseMotionY = e.motion.yrel;
+				SDL_SetRelativeMouseMode(SDL_FALSE);
+				break;
 		}
 	}
 
@@ -79,10 +86,25 @@ int NECROInput::GetMouseDown(SDL_Scancode button) const
 	return (mouseButtons[button - 1] & ~prevMouseButtons[button - 1]);
 }
 
-int NECROInput::KeyHeld(SDL_Scancode key) const 
+int NECROInput::GetKeyHeld(SDL_Scancode key) const 
 {
 	if (key < 0 || key > numKeys)
 		return -1;
 
 	return keys[key];
+}
+
+int NECROInput::GetMouseHeld(SDL_Scancode button) const
+{
+	if (button < SDL_BUTTON_LEFT || button > SDL_BUTTON_RIGHT)
+		return -1;
+
+	return mouseButtons[button - 1];
+}
+
+Vector2 NECROInput::GetMouseMotionThisFrame()
+{
+	Vector2 mm(mouseMotionX, mouseMotionY);
+	mouseMotionX = mouseMotionY = 0;
+	return mm;
 }

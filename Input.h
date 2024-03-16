@@ -2,6 +2,7 @@
 #define NECROINPUT_H
 
 #include "SDL.h"
+#include "Vector2.h"
 
 class NECROInput
 {
@@ -14,6 +15,9 @@ private:
 	int				prevMouseButtons[3];
 	int				mouseScroll;
 
+	int				mouseMotionX;
+	int				mouseMotionY;
+
 	Uint8*			keys;
 	Uint8*			prevKeys;
 	int				numKeys;
@@ -24,9 +28,10 @@ public:
 	int				GetMouseX() const;
 	int				GetMouseY() const;
 	int				GetMouseScroll() const;
+	int				GetMouseHeld(SDL_Scancode button) const;
 	int				GetMouseDown(SDL_Scancode button) const;
-
-	int				KeyHeld(SDL_Scancode key) const;
+	Vector2			GetMouseMotionThisFrame();
+	int				GetKeyHeld(SDL_Scancode key) const;
 
 	int				Init();
 	void			Handle();
@@ -47,5 +52,6 @@ inline int NECROInput::GetMouseScroll() const
 {
 	return mouseScroll;
 }
+
 
 #endif

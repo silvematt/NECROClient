@@ -8,8 +8,26 @@ const float CAMERA_DEFAULT_ZOOM = 1.0f;
 class Camera
 {
 private:
+	// ------------------------------------------------------------------------------------------
+	// zoomSizeX and zoomSizeY are used to keep the camera centered while zooming in/out.
+	// 
+	// They represent the size of the viewport on the X and Y axes after applying the zoom level
+	// and are calculated as SCREEN_WIDTH / zoomLevel, SCREEN_HEIGHT / zoomLevel 
+	// 
+	// For example, if the zoom level is 2.0, zoomSizeX and zoomSizeY will represent half of the 
+	// original screen width and height, showing half of the world.
+	// 
+	// When the zoom level changes, oldZoomSizeX and oldZoomSizeY (defined in the Update()) 
+	// hold the previous viewport size, which is used to adjust the camera position to 
+	// keep it centered correctly after the zoom.
+	// ------------------------------------------------------------------------------------------
+	float zoomSizeX;
+	float zoomSizeY;
+
 	float zoomLevel = 1.0f;
 	float zoomSpeed = 0.1f;
+
+	float panSpeed = 1.0f;
 
 public:
 	Vector2 pos;
