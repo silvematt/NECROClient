@@ -17,16 +17,18 @@ private:
 
 	SDL_Rect rect;
 
+	int offsetX;
 	int offsetY;					// Offset Y is used to draw images that are, for example 64x64 on map of 64x32
 									// If the 'tree.png' is 64x64, it should be drawn with a y offset of -32 (to draw the bottom of the tree correctly)
 
 public:
-	Image(SDL_Texture* tex, int yOff);
+	Image(SDL_Texture* tex, int xOff, int yOff);
 
 	SDL_Texture*				GetSrc() const;
 	SDL_Rect&					GetRect();
 	int							GetWidth() const;
 	int							GetHeight() const;
+	int							GetXOffset() const;
 	int							GetYOffset() const;
 };
 
@@ -36,8 +38,9 @@ public:
 //-------------------------------------------------------
 // Constructor
 //-------------------------------------------------------
-inline Image::Image(SDL_Texture* tex, int yOff) :
+inline Image::Image(SDL_Texture* tex, int xOff, int yOff) :
 	imgTexture(tex),
+	offsetX(xOff),
 	offsetY(yOff)
 {
 	SDL_QueryTexture(imgTexture, NULL, NULL, &width, &height);
@@ -68,6 +71,11 @@ inline int Image::GetHeight() const
 inline int Image::GetYOffset() const
 {
 	return offsetY;
+}
+
+inline int Image::GetXOffset() const
+{
+	return offsetX;
 }
 
 #endif

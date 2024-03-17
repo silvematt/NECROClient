@@ -48,6 +48,7 @@ void Entity::Update()
 	isoPos.y += engine.GetGame().GetMainCamera()->pos.y;
 
 	// Account for the Y offset of the image
+	isoPos.x += img->GetXOffset();
 	isoPos.y += img->GetYOffset();
 }
 

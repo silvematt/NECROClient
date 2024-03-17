@@ -30,6 +30,9 @@
     <Filter Include="Engine\Entity">
       <UniqueIdentifier>{aeaef4b3-860c-4847-b587-d38cdab2198d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\Player">
+      <UniqueIdentifier>{5e4d2851-13b6-45a6-adbc-180b44f6a34d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">

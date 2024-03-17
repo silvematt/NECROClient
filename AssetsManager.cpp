@@ -23,9 +23,10 @@ int NECROAssetsManager::Init()
 //-------------------------------------------------
 void NECROAssetsManager::LoadAllImages()
 {
-	LoadImage("tile.png", 0);
-	LoadImage("tile_highlighted.png", 0);
-	LoadImage("tree.png", -32);
+	LoadImage("tile.png", 0, 0);
+	LoadImage("tile_highlighted.png", 0, 0);
+	LoadImage("tree.png", -15, -155);
+	LoadImage("player_war.png", -35, -75);
 }
 
 //-------------------------------------------------
@@ -39,12 +40,12 @@ void NECROAssetsManager::LoadAllFonts()
 	LoadFont("montserrat.regular.ttf", FONT_DEFAULT_PTSIZE, "defaultFont");
 }
 
-void NECROAssetsManager::LoadImage(const std::string& filename, int yOffset, const std::string& shortname)
+void NECROAssetsManager::LoadImage(const std::string& filename, int xOffset, int yOffset, const std::string& shortname)
 {
 	std::string fullPath = IMGS_FOLDER;
 	fullPath += filename;
 	
-	Image img(LoadSDLTexture(fullPath.c_str()), yOffset);
+	Image img(LoadSDLTexture(fullPath.c_str()), xOffset, yOffset);
 	if(img.GetSrc() != NULL)
 		images.insert({ shortname.empty() ? filename : shortname, img });
 }

@@ -23,7 +23,7 @@ private:
 	void				LoadAllImages();
 	void				LoadAllFonts();
 
-	void				LoadImage(const std::string& file, int yOffset, const std::string& shortname = std::string());	// Shortname will be the key of the ump if NOT empty
+	void				LoadImage(const std::string& file, int xOffset, int yOffset, const std::string& shortname = std::string());	// Shortname will be the key of the ump if NOT empty
 	SDL_Texture*		LoadSDLTexture(const char* file);
 
 	void				LoadFont(const std::string& file, int ptsize, const std::string& shortname = std::string());
