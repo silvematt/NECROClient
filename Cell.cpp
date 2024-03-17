@@ -33,6 +33,7 @@ void Cell::SetCellCoordinates(const int x, const int y)
 	// Adjust isoX and isoY to the world offset
 	isoX += engine.GetGame().GetMainCamera()->pos.x;
 	isoY += engine.GetGame().GetMainCamera()->pos.y;
+	isoY -= dstRect.h; // bottom-left origin
 
 	dstRect = { isoX, isoY, CELL_WIDTH, CELL_HEIGHT };
 }
@@ -66,6 +67,7 @@ void Cell::Update()
 	// Adjust isoX and isoY to the world offset
 	isoX += engine.GetGame().GetMainCamera()->pos.x;
 	isoY += engine.GetGame().GetMainCamera()->pos.y;
+	isoY -= dstRect.h; // bottom-left origin
 
 	dstRect = { isoX, isoY, CELL_WIDTH, CELL_HEIGHT };
 	for (auto& ent : entities)

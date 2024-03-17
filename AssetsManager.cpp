@@ -25,8 +25,8 @@ void NECROAssetsManager::LoadAllImages()
 {
 	LoadImage("tile.png", 0, 0);
 	LoadImage("tile_highlighted.png", 0, 0);
-	LoadImage("tree.png", -15, -155);
-	LoadImage("player_war.png", -35, -75);
+	LoadImage("tree.png", -15, -5);
+	LoadImage("player_war.png", 0, 0);
 }
 
 //-------------------------------------------------

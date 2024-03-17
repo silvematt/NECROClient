@@ -46,6 +46,7 @@ void Entity::Update()
 	// Adjust isoX and isoY to the world offset
 	isoPos.x += engine.GetGame().GetMainCamera()->pos.x;
 	isoPos.y += engine.GetGame().GetMainCamera()->pos.y;
+	isoPos.y -= img->GetHeight();
 
 	// Account for the Y offset of the image
 	isoPos.x += img->GetXOffset();

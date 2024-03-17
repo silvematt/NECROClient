@@ -34,6 +34,7 @@ Vector2 Camera::ScreenToWorld(const Vector2& point)
 	// Adjust for offset and zoom level
 	worldPoint.x = (point.x - pos.x * zoomLevel) / zoomLevel;
 	worldPoint.y = (point.y - pos.y * zoomLevel) / zoomLevel;
+	worldPoint.y += CELL_HEIGHT; // account for bottom-left origin
 
 	// Convert to world coordinates
 	NMath::IsoToCart(worldPoint.x, worldPoint.y, worldPoint.x, worldPoint.y);

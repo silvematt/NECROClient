@@ -36,6 +36,10 @@ void World::InitializeWorld()
 			}
 		}
 
+	// Just for testing, add a player
+	Entity e(Vector2(static_cast<float>(0 * CELL_WIDTH), static_cast<float>(0 * CELL_HEIGHT)), engine.GetAssetsManager().GetImage("player_war.png"));
+	worldmap[0][0].AddEntity(e);
+
 	// Set camera
 	curCamera = engine.GetGame().GetMainCamera();
 	curCamera->pos.x = SCREEN_WIDTH  / 2;
