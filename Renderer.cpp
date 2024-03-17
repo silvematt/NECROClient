@@ -28,6 +28,12 @@ int NECRORenderer::Init()
 	// Initialize the Draw Color to black
 	SDL_SetRenderDrawColor(innerRenderer, colorBlack.r, colorBlack.g, colorBlack.b, colorBlack.a);
 
+	// Create the RenderTargets
+	mainTarget.CreateMain(innerRenderer, SCREEN_WIDTH, SCREEN_HEIGHT);
+	overlayTarget.Create(innerRenderer, SCREEN_WIDTH, SCREEN_HEIGHT);
+
+	SetRenderTarget(ERenderTargets::MAIN_TARGET);
+
 	return 0;
 }
 
@@ -55,13 +61,13 @@ void NECRORenderer::Show()
 
 //-----------------------------------------------------------------------------
 // Update the innerRenderer with the stuff that has been drawn to the targets
-// 
-// TODO: Instead of calling DrawImageDirectly we'll have different SDL_Texture 
-// targets and we'll SDL_RenderCopy them into the innerRenderer
 //-----------------------------------------------------------------------------
 void NECRORenderer::Update()
 {
+	SetRenderTarget(MAIN_TARGET);
 
+	// Copy the other targets on the (default) mainTarget
+	SDL_RenderCopy(innerRenderer, overlayTarget.GetTargetTexture(), NULL, NULL);
 }
 
 //----------------------------------------------
@@ -79,7 +85,6 @@ void NECRORenderer::DrawImageDirectly(SDL_Texture* toDraw, const SDL_Rect* srcRe
 {
 	//if(toDraw == nullptr)
 	//	SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Nothing to draw!\n");
-
 	SDL_RenderCopy(innerRenderer, toDraw, srcRect, dstRect);
 }
 
@@ -105,9 +110,29 @@ void NECRORenderer::DrawTextDirectly(TTF_Font* font, const char* str, int screen
 }
 
 //--------------------------------------
-// Clear renderer
+// Clear the renderer targets
 //--------------------------------------
 void NECRORenderer::Clear()
 {
-	SDL_RenderClear(innerRenderer);
+	mainTarget.Clear();
+	overlayTarget.Clear();
+}
+
+//------------------------------------------------
+// Sets the Render target of the innerRenderer
+//------------------------------------------------
+void NECRORenderer::SetRenderTarget(ERenderTargets trg)
+{
+	switch (trg)
+	{
+		case ERenderTargets::MAIN_TARGET:
+			curTarget = &mainTarget;
+			SDL_SetRenderTarget(innerRenderer, mainTarget.GetTargetTexture());
+			break;
+
+		case ERenderTargets::OVERLAY_TARGET:
+			curTarget = &overlayTarget;
+			SDL_SetRenderTarget(innerRenderer, overlayTarget.GetTargetTexture());
+			break;
+	}
 }

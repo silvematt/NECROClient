@@ -2,6 +2,9 @@
 
 #include "NECROEngine.h"
 
+// ----------------------------------------------------------------------------------------------------
+// Sets the camera zoom level
+// ----------------------------------------------------------------------------------------------------
 void Camera::SetZoom(float newZoom)
 {
 	zoomLevel = newZoom;
@@ -10,6 +13,9 @@ void Camera::SetZoom(float newZoom)
 	engine.GetRenderer().SetScale(zoomLevel, zoomLevel);
 }
 
+// ----------------------------------------------------------------------------------------------------
+// Resets the camera zoom level to the default vlaue
+// ----------------------------------------------------------------------------------------------------
 void Camera::ResetZoom()
 {
 	zoomLevel = CAMERA_DEFAULT_ZOOM;
@@ -18,6 +24,9 @@ void Camera::ResetZoom()
 	engine.GetRenderer().SetScale(zoomLevel, zoomLevel);
 }
 
+// ----------------------------------------------------------------------------------------------------
+// From a point on the screen returns the point in the world
+// ----------------------------------------------------------------------------------------------------
 Vector2 Camera::ScreenToWorld(const Vector2& point)
 {
 	Vector2 worldPoint;
@@ -32,6 +41,9 @@ Vector2 Camera::ScreenToWorld(const Vector2& point)
 	return worldPoint;
 }
 
+// ----------------------------------------------------------------------------------------------------
+// Update camera
+// ----------------------------------------------------------------------------------------------------
 void Camera::Update()
 {
 	float oldX = pos.x;

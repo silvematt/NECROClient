@@ -141,6 +141,7 @@
     <ClCompile Include="NECROEngine.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Renderer.cpp" />
+    <ClCompile Include="RenderTarget.cpp" />
     <ClCompile Include="World.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -154,6 +155,7 @@
     <ClInclude Include="Math.h" />
     <ClInclude Include="NECROEngine.h" />
     <ClInclude Include="Renderer.h" />
+    <ClInclude Include="RenderTarget.h" />
     <ClInclude Include="Utility.h" />
     <ClInclude Include="Vector2.h" />
     <ClInclude Include="World.h" />

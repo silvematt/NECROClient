@@ -62,6 +62,9 @@
     <ClCompile Include="Camera.cpp">
       <Filter>Engine\Renderer</Filter>
     </ClCompile>
+    <ClCompile Include="RenderTarget.cpp">
+      <Filter>Engine\Renderer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="NECROEngine.h">
@@ -101,6 +104,9 @@
       <Filter>Engine\Utility</Filter>
     </ClInclude>
     <ClInclude Include="Camera.h">
+      <Filter>Engine\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderTarget.h">
       <Filter>Engine\Renderer</Filter>
     </ClInclude>
   </ItemGroup>

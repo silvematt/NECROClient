@@ -4,15 +4,29 @@
 #include "SDL.h"
 #include "SDL_ttf.h"
 
+#include "RenderTarget.h"
+
 const int SCREEN_WIDTH = 1920;
 const int SCREEN_HEIGHT = 1080;
 
 class NECRORenderer
 {
+public:
+	enum ERenderTargets
+	{
+		MAIN_TARGET,
+		OVERLAY_TARGET
+	};
+
 private:
 	// Main elements
 	SDL_Window*		window;
 	SDL_Renderer*	innerRenderer;
+
+	// Targets
+	RenderTarget	mainTarget;
+	RenderTarget	overlayTarget;
+	RenderTarget*	curTarget;
 
 public:
 	SDL_Window*		const	GetWindow() const;
@@ -25,6 +39,8 @@ public:
 	void					Show();
 	void					Update();
 	void					Clear();
+
+	void					SetRenderTarget(ERenderTargets trg);
 
 	void					DrawImageDirectly(SDL_Texture* toDraw, const SDL_Rect* srcRect, const SDL_Rect* dstRect);
 	void					DrawTextDirectly(TTF_Font* font, const char* str, int screenX, int screenY, const SDL_Color& color);
@@ -56,6 +72,5 @@ inline int NECRORenderer::GetHeight()
 {
 	return SCREEN_HEIGHT;
 }
-
 
 #endif

@@ -98,6 +98,8 @@ void World::Update()
 //------------------------------------------------------------
 void World::Draw()
 {
+	// Draw the world on the main ntarget
+	engine.GetRenderer().SetRenderTarget(NECRORenderer::ERenderTargets::MAIN_TARGET);
 	// Draw the world base 
 	for (int x = 0; x < WORLD_WIDTH; x++)
 		for (int y = 0; y < WORLD_HEIGHT; y++)
@@ -120,6 +122,8 @@ void World::Draw()
 	if(worldCursor)
 		engine.GetRenderer().DrawImageDirectly(worldCursorTexture, NULL, &worldCursor->GetDstRect());
 
+	// Draw the UI on the overlay target
+	engine.GetRenderer().SetRenderTarget(NECRORenderer::ERenderTargets::OVERLAY_TARGET);
 	// Draw some text
 	std::string textSelCell = "Selected Cell: ";
 	if (worldCursor)
