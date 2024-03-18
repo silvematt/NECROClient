@@ -2,6 +2,8 @@
 #define NECROCELL_H
 
 #include <vector>
+#include <memory>
+
 #include "SDL.h"
 
 #include "Entity.h"
@@ -38,7 +40,7 @@ private:
 	SDL_Texture* baseTexture;		// TODO this is just for quick testing, will have to structure this properly
 
 	// Entities set in this cell
-	std::vector<Entity> entities;
+	std::vector<std::unique_ptr<Entity>> entities;
 
 public:
 	Cell();
@@ -54,7 +56,7 @@ public:
 
 	void			Update();
 	size_t			GetEntitiesSize() const;
-	void			AddEntity(Entity e);
+	void			AddEntity(std::unique_ptr<Entity>&& e); // transfer ownership
 	void			RemoveEntity(size_t indx);
 	Entity*			GetEntityAt(size_t indx);
 

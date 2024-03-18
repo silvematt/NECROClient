@@ -11,7 +11,7 @@ class Cell;
 //-----------------------------------------------------------------------------
 class Entity
 {
-private:
+protected:
 	Image* img;
 	Cell* owner;				// Owner of this entity
 	
@@ -22,14 +22,12 @@ public:
 	Vector2 pos;				// orthographic pos
 	Vector2 isoPos;				// isometric pos (used only for rendering)
 
-private:
-
 public:
 	void			SetImg(Image* pImg);
 	void			SetOwner(Cell* c);
 	void			ClearOwner();
 
-	void			Update();
+	virtual void	Update();
 	void			Draw();
 };
 

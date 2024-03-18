@@ -4,6 +4,7 @@
 
 #include "NECROEngine.h"
 #include "Entity.h"
+#include "Player.h"
 
 Camera* curCamera;
 
@@ -31,14 +32,16 @@ void World::InitializeWorld()
 			if (r < 10)
 			{
 				// Add an entity random
-				Entity e(Vector2(static_cast<float>(x * CELL_WIDTH), static_cast<float>(y * CELL_HEIGHT)), engine.GetAssetsManager().GetImage("tree.png"));
-				currentCell.AddEntity(e);
+				std::unique_ptr<Entity> p(new Entity(Vector2(static_cast<float>(x * CELL_WIDTH), static_cast<float>(y * CELL_HEIGHT)), engine.GetAssetsManager().GetImage("tree.png")));
+				currentCell.AddEntity(std::move(p));
 			}
 		}
 
-	// Just for testing, add a player
-	Entity e(Vector2(static_cast<float>(0 * CELL_WIDTH), static_cast<float>(0 * CELL_HEIGHT)), engine.GetAssetsManager().GetImage("player_war.png"));
-	worldmap[0][0].AddEntity(e);
+	// Add a player, just for testing
+	std::unique_ptr<Player> p(new Player());
+	p->SetImg(engine.GetAssetsManager().GetImage("player_war.png"));
+	p->pos = Vector2(static_cast<float>(0 * CELL_WIDTH), static_cast<float>(0 * CELL_HEIGHT));
+	worldmap[0][0].AddEntity(std::move(p));
 
 	// Set camera
 	curCamera = engine.GetGame().GetMainCamera();
@@ -70,8 +73,8 @@ void World::Update()
 			if (worldCursor->GetEntitiesSize() == 0)
 			{
 				// Add an entity
-				Entity e(Vector2(static_cast<float>(worldCursor->GetCellX() * CELL_WIDTH), static_cast<float>(worldCursor->GetCellY() * CELL_HEIGHT)), engine.GetAssetsManager().GetImage("tree.png"));
-				worldCursor->AddEntity(e);
+				std::unique_ptr<Entity> p(new Entity(Vector2(static_cast<float>(worldCursor->GetCellX() * CELL_WIDTH), static_cast<float>(worldCursor->GetCellY() * CELL_HEIGHT)), engine.GetAssetsManager().GetImage("tree.png")));
+				worldCursor->AddEntity(std::move(p));
 			}
 			else
 			{

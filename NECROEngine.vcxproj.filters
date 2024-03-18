@@ -68,6 +68,9 @@
     <ClCompile Include="RenderTarget.cpp">
       <Filter>Engine\Renderer</Filter>
     </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>Engine\Player</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="NECROEngine.h">
@@ -111,6 +114,9 @@
     </ClInclude>
     <ClInclude Include="RenderTarget.h">
       <Filter>Engine\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>Engine\Player</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

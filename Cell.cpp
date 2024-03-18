@@ -71,16 +71,16 @@ void Cell::Update()
 
 	dstRect = { isoX, isoY, CELL_WIDTH, CELL_HEIGHT };
 	for (auto& ent : entities)
-		ent.Update();
+		ent->Update();
 }
 
-//--------------------------------------
-// Adds an Entity to the entities vector 
-//--------------------------------------
-void Cell::AddEntity(Entity e)
+//-----------------------------------------------------------------------
+// Adds an Entity to the entities vector, transferring ownership
+//-----------------------------------------------------------------------
+void Cell::AddEntity(std::unique_ptr<Entity>&& e)
 {
-	e.SetOwner(this);
-	entities.push_back(e);
+	e->SetOwner(this);
+	entities.emplace_back(std::move(e));
 }
 
 //--------------------------------------
@@ -88,14 +88,14 @@ void Cell::AddEntity(Entity e)
 //--------------------------------------
 void Cell::RemoveEntity(size_t idx)
 {
-	entities.at(idx).ClearOwner();
+	entities.at(idx)->ClearOwner();
 	Utility::RemoveFromVector(entities, idx);
 }
 
 Entity* Cell::GetEntityAt(size_t indx)
 {
 	if (entities.size() > indx)
-		return &entities[indx];
+		return entities[indx].get();
 	else
 		return nullptr;
 }
@@ -115,5 +115,5 @@ void Cell::DrawCell()
 void Cell::DrawEntities()
 {
 	for (auto& ent : entities)
-		ent.Draw();
+		ent->Draw();
 }
