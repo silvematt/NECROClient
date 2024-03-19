@@ -14,6 +14,9 @@ class Entity
 protected:
 	Image* img;
 	Cell* owner;				// Owner of this entity
+
+	// Used for entities that uses tilesets, index of X and Y, they will be multiplied by img->GetTileset().tileWidth and img->GetTileset().tileHeight
+	int tilesetXOff, tilesetYOff;
 	
 public:
 	Entity() = default;

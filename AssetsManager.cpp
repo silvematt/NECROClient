@@ -26,7 +26,7 @@ void NECROAssetsManager::LoadAllImages()
 	LoadImage("tile.png", 0, 0);
 	LoadImage("tile_highlighted.png", 0, 0);
 	LoadImage("tree.png", -15, -5);
-	LoadImage("player_war.png", -30, 12);
+	LoadTilesetImage("player_war.png", -30, 12, 128, 128, 1, 8);
 }
 
 //-------------------------------------------------
@@ -47,6 +47,16 @@ void NECROAssetsManager::LoadImage(const std::string& filename, int xOffset, int
 	
 	Image img(LoadSDLTexture(fullPath.c_str()), xOffset, yOffset);
 	if(img.GetSrc() != NULL)
+		images.insert({ shortname.empty() ? filename : shortname, img });
+}
+
+void NECROAssetsManager::LoadTilesetImage(const std::string& filename, int xOffset, int yOffset, int tWidth, int tHeight, int tNumX, int tNumY, const std::string& shortname)
+{
+	std::string fullPath = IMGS_FOLDER;
+	fullPath += filename;
+
+	Image img(LoadSDLTexture(fullPath.c_str()), xOffset, yOffset, tWidth, tHeight, tNumX, tNumY);
+	if (img.GetSrc() != NULL)
 		images.insert({ shortname.empty() ? filename : shortname, img });
 }
 

@@ -1,7 +1,7 @@
 #ifndef NECROASSETS_MANAGER_H
 #define NECROASSETS_MANAGER_H
 
-#include <iostream>
+#include <string>
 #include <unordered_map>
 #include <vector>
 
@@ -24,6 +24,8 @@ private:
 	void				LoadAllFonts();
 
 	void				LoadImage(const std::string& file, int xOffset, int yOffset, const std::string& shortname = std::string());	// Shortname will be the key of the ump if NOT empty
+	void				LoadTilesetImage(const std::string& filename, int xOffset, int yOffset, int tWidth, int tHeight, int tNumX, int tNumY, const std::string& shortname = std::string());
+
 	SDL_Texture*		LoadSDLTexture(const char* file);
 
 	void				LoadFont(const std::string& file, int ptsize, const std::string& shortname = std::string());
