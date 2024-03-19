@@ -10,16 +10,22 @@ void Player::Update()
 	NECROInput& input = engine.GetInput();
 
 	if (input.GetKeyHeld(SDL_SCANCODE_W))
-		deltaY -= 1;
-	if (input.GetKeyHeld(SDL_SCANCODE_S))
-		deltaY += 1;
-	if (input.GetKeyHeld(SDL_SCANCODE_D))
-		deltaX += 1;
-	if (input.GetKeyHeld(SDL_SCANCODE_A))
 		deltaX -= 1;
+	if (input.GetKeyHeld(SDL_SCANCODE_S))
+		deltaX += 1;
+	if (input.GetKeyHeld(SDL_SCANCODE_D))
+		deltaY -= 1;
+	if (input.GetKeyHeld(SDL_SCANCODE_A))
+		deltaY += 1;
 
-	pos.x += deltaX;
-	pos.y += deltaY;
+	Vector2 moveInput(deltaX, deltaY);
+	moveInput.Normalize();
+
+	// divison CELL_ components are inverted to equalize the movement
+	NMath::CartToIso(moveInput.x / CELL_HEIGHT, moveInput.y / CELL_WIDTH, moveInput.x, moveInput.y);
+
+	pos.x += moveInput.x * curMoveSpeed;
+	pos.y += moveInput.y * curMoveSpeed;
 
 	Entity::Update();
 }

@@ -26,6 +26,7 @@ void RenderTarget::Create(SDL_Renderer* cntx, int w, int h)
 	if (!texture)
 		SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Failed to Create RenderTarget!\n");
 
+	// Allow Alpha Blending
 	SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
 }
 

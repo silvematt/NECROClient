@@ -44,6 +44,7 @@ inline Image::Image(SDL_Texture* tex, int xOff, int yOff) :
 	offsetY(yOff)
 {
 	SDL_QueryTexture(imgTexture, NULL, NULL, &width, &height);
+	SDL_SetTextureBlendMode(imgTexture, SDL_BLENDMODE_BLEND);
 
 	rect = { 0, 0, width, height };
 }
