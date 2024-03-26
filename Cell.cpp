@@ -101,8 +101,7 @@ Entity* Cell::GetEntityAt(size_t indx)
 }
 
 //--------------------------------------
-// Draws this cells TODO: will not have 
-// to draw directly to the innerRenderer
+// Draws this cell
 //--------------------------------------
 void Cell::DrawCell()
 {

@@ -8,7 +8,7 @@
 // 
 // It is a to use SDL_RenderTarget to allow writing on Textures and then blitting these
 // textures on the innerRenderer. We can have one texture to render the game (that can scale
-// when zooming in and out) another that will render overlay, another that will render the map, etc.
+// when zooming in and out) another that will render overlay, another that will render the minimap, etc.
 // 
 // It allows to essentialy compose the final image by overlapping different textures.
 // 

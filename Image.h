@@ -46,6 +46,8 @@ public:
 
 	bool						IsTileset() const;
 	Tileset						GetTileset() const;
+
+	int							GetTilesetWidth() const; // shortcut
 	int							GetTilesetHeight() const; // shortcut
 };
 
@@ -73,6 +75,9 @@ inline Image::Image(SDL_Texture* tex, int xOff, int yOff) :
 	tileset.tileYNum = 0;
 }
 
+//-------------------------------------------------------
+// Constructor for Tileset
+//-------------------------------------------------------
 inline Image::Image(SDL_Texture* tex, int xOff, int yOff, int tWidth, int tHeight, int tNumX, int tNumY) :
 	imgTexture(tex),
 	offsetX(xOff),
@@ -136,5 +141,9 @@ inline int Image::GetTilesetHeight() const
 	return tileset.tileHeight;
 }
 
+inline int Image::GetTilesetWidth() const
+{
+	return tileset.tileWidth;
+}
 
 #endif
