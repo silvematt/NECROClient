@@ -32,6 +32,8 @@ void NECROAssetsManager::LoadAllImages()
 	LoadTilesetImage("player_war_idle.png", -30, 12, 128, 128, 1, 8);
 	LoadTilesetImage("player_war_run.png", -30, 12, 128, 128, 12, 8);
 	LoadTilesetImage("player_war_aim_stand.png", -30, 12, 128, 128, 1, 8);
+	LoadTilesetImage("player_war_aim_walk.png", -30, 12, 128, 128, 11, 8);
+	LoadTilesetImage("player_war_aim_strafe.png", -30, 12, 128, 128, 11, 8);
 }
 
 //-------------------------------------------------

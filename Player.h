@@ -20,6 +20,9 @@ private:
 	float curMoveSpeed = 2.5f;
 	IsoDirection isoDirection = IsoDirection::WEST;			// The isometric direction the player is facing
 
+	float deltaX = 0.0f, deltaY = 0.0f;
+
+
 	bool wasAiming = false;
 	bool isAiming = false;									// Is the player in aim mode?
 

@@ -12,6 +12,8 @@ void Player::Init()
 	anim.AddState("idle", engine.GetAssetsManager().GetImage("player_war_idle.png"), 75);
 	anim.AddState("run", engine.GetAssetsManager().GetImage("player_war_run.png"), 75);
 	anim.AddState("aim_stand", engine.GetAssetsManager().GetImage("player_war_aim_stand.png"), 75);
+	anim.AddState("aim_walk", engine.GetAssetsManager().GetImage("player_war_aim_walk.png"), 100);
+	anim.AddState("aim_strafe", engine.GetAssetsManager().GetImage("player_war_aim_strafe.png"), 100);
 
 	// Set default
 	anim.Play("idle");
@@ -39,7 +41,8 @@ void Player::HandleMovements()
 
 	NECROInput& input = engine.GetInput();
 
-	float deltaX = 0.0f, deltaY = 0.0f;
+	deltaX = 0.0f; 
+	deltaY = 0.0f;
 
 	// Get input
 	if (input.GetKeyHeld(SDL_SCANCODE_W))
@@ -79,19 +82,70 @@ void Player::HandleMovements()
 	pos.y += moveInput.y * curMoveSpeed;
 }
 
+//---------------------------------------------------------------------------------------
+// Handles the selection of animations for player's movements (free/aim mode)
+//---------------------------------------------------------------------------------------
 void Player::HandleAnim()
 {
+	// If is in aim mode
 	if (isAiming)
 	{
 		if (!isMoving)
 		{
+			// If the player is not moving, just play the standing anim
 			if (anim.GetCurStateNamePlaying() != "aim_stand")
 				anim.Play("aim_stand");
 		}
 		else
 		{
-			if (anim.GetCurStateNamePlaying() != "aim_stand") // should be aim_walk/aim_strafe in base of input
-				anim.Play("aim_stand");
+			 // Strafe or walk check, in base of the direction and input, compute if the player should walk or strafe
+			if (isoDirection == IsoDirection::NORTH || isoDirection == IsoDirection::SOUTH)
+			{
+				// Check strafe
+				if (deltaY != 0.0f)
+				{
+					if (anim.GetCurStateNamePlaying() != "aim_strafe")
+						anim.Play("aim_strafe");
+				}
+				else
+					if (anim.GetCurStateNamePlaying() != "aim_walk")
+						anim.Play("aim_walk");
+			}
+			else if (isoDirection == IsoDirection::NORTH_EAST || isoDirection == IsoDirection::SOUTH_WEST)
+			{
+				// Check strafe
+				if (fabs(deltaY - deltaX) != 0.0f)
+				{
+					if (anim.GetCurStateNamePlaying() != "aim_strafe")
+						anim.Play("aim_strafe");
+				}
+				else
+					if (anim.GetCurStateNamePlaying() != "aim_walk")
+						anim.Play("aim_walk");
+			}
+			else if (isoDirection == IsoDirection::EAST || isoDirection == IsoDirection::WEST)
+			{
+				// Check strafe
+				if (deltaX != 0.0f)
+				{
+					if (anim.GetCurStateNamePlaying() != "aim_strafe")
+						anim.Play("aim_strafe");
+				}
+				else
+					if (anim.GetCurStateNamePlaying() != "aim_walk")
+						anim.Play("aim_walk");
+			}
+			else if (isoDirection == IsoDirection::NORTH_WEST || isoDirection == IsoDirection::SOUTH_EAST)
+			{
+				if (fabs(deltaY - deltaX) < 2.0f)
+				{
+					if (anim.GetCurStateNamePlaying() != "aim_strafe")
+						anim.Play("aim_strafe");
+				}
+				else
+					if (anim.GetCurStateNamePlaying() != "aim_walk")
+						anim.Play("aim_walk");
+			}
 		}
 	}
 	else
