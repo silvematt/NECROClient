@@ -23,12 +23,15 @@ int NECROAssetsManager::Init()
 //-------------------------------------------------
 void NECROAssetsManager::LoadAllImages()
 {
+	// General
 	LoadImage("tile.png", 0, 0);
 	LoadImage("tile_highlighted.png", 0, 0);
 	LoadImage("tree.png", -15, -5);
+
+	// Player tilesets
 	LoadTilesetImage("player_war_idle.png", -30, 12, 128, 128, 1, 8);
 	LoadTilesetImage("player_war_run.png", -30, 12, 128, 128, 12, 8);
-
+	LoadTilesetImage("player_war_aim_stand.png", -30, 12, 128, 128, 1, 8);
 }
 
 //-------------------------------------------------

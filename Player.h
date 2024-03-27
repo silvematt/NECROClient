@@ -20,6 +20,7 @@ private:
 	float curMoveSpeed = 2.5f;
 	IsoDirection isoDirection = IsoDirection::WEST;			// The isometric direction the player is facing
 
+	bool wasAiming = false;
 	bool isAiming = false;									// Is the player in aim mode?
 
 	bool wasMoving = false;
@@ -34,6 +35,8 @@ private:
 
 public:
 	void			Init();
+
+	void			HandleAnim();
 	virtual void	Update() override;
 
 	float			GetCurMoveSpeed() const;

@@ -11,6 +11,7 @@ void Player::Init()
 	anim.Init(this);
 	anim.AddState("idle", engine.GetAssetsManager().GetImage("player_war_idle.png"), 75);
 	anim.AddState("run", engine.GetAssetsManager().GetImage("player_war_run.png"), 75);
+	anim.AddState("aim_stand", engine.GetAssetsManager().GetImage("player_war_aim_stand.png"), 75);
 
 	// Set default
 	anim.Play("idle");
@@ -21,11 +22,8 @@ void Player::Init()
 //-------------------------------------------------
 void Player::Update()
 {
-	NECROInput& input = engine.GetInput();
-
-	isAiming = input.GetMouseHeld(static_cast<SDL_Scancode>(SDL_BUTTON_RIGHT));
-
 	HandleMovements();
+	HandleAnim();
 
 	anim.Update();
 
@@ -37,6 +35,7 @@ void Player::Update()
 void Player::HandleMovements()
 {
 	wasMoving = isMoving;
+	wasAiming = isAiming;
 
 	NECROInput& input = engine.GetInput();
 
@@ -53,11 +52,7 @@ void Player::HandleMovements()
 		deltaY += 1;
 
 	isMoving = (deltaX != 0.0f || deltaY != 0.0f) ? true : false;
-
-	if (isMoving && !wasMoving)
-		anim.Play("run");
-	else if (!isMoving && wasMoving)
-		anim.Play("idle");
+	isAiming = input.GetMouseHeld(static_cast<SDL_Scancode>(SDL_BUTTON_RIGHT));
 
 	// Calculate direction
 	if (!isAiming)
@@ -82,6 +77,36 @@ void Player::HandleMovements()
 	// Update orthogonal position
 	pos.x += moveInput.x * curMoveSpeed;
 	pos.y += moveInput.y * curMoveSpeed;
+}
+
+void Player::HandleAnim()
+{
+	if (isAiming)
+	{
+		if (!isMoving)
+		{
+			if (anim.GetCurStateNamePlaying() != "aim_stand")
+				anim.Play("aim_stand");
+		}
+		else
+		{
+			if (anim.GetCurStateNamePlaying() != "aim_stand") // should be aim_walk/aim_strafe in base of input
+				anim.Play("aim_stand");
+		}
+	}
+	else
+	{
+		if (isMoving)
+		{
+			if (anim.GetCurStateNamePlaying() != "run")
+				anim.Play("run");
+		}
+		else
+		{
+			if (anim.GetCurStateNamePlaying() != "idle")
+				anim.Play("idle");
+		}
+	}
 }
 
 //-------------------------------------------------
