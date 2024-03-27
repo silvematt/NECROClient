@@ -3,6 +3,7 @@
 
 #include "Entity.h"
 #include "Game.h"
+#include "Animator.h"
 
 
 const float PLAYER_MOVE_SPEED_FREE = 2.5f;
@@ -14,6 +15,8 @@ const float PLAYER_MOVE_SPEED_AIM = 1.0f;
 class Player : public Entity
 {
 private:
+	Animator anim;
+
 	float curMoveSpeed = 2.5f;
 	IsoDirection isoDirection = IsoDirection::WEST;			// The isometric direction the player is facing
 
@@ -28,9 +31,10 @@ private:
 	void			HandleMovements();
 
 public:
-	float			GetCurMoveSpeed() const;
-
+	void			Init();
 	virtual void	Update() override;
+
+	float			GetCurMoveSpeed() const;
 };
 
 inline float Player::GetCurMoveSpeed() const

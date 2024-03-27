@@ -39,6 +39,7 @@ void World::InitializeWorld()
 	std::unique_ptr<Player> p(new Player());
 	p->SetImg(engine.GetAssetsManager().GetImage("player_war_idle.png"));
 	p->pos = Vector2(static_cast<float>(0 * CELL_WIDTH), static_cast<float>(0 * CELL_HEIGHT));
+	p->Init();
 	worldmap[0][0].AddEntity(std::move(p));
 
 	// Set camera

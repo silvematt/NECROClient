@@ -33,6 +33,9 @@
     <Filter Include="Engine\Player">
       <UniqueIdentifier>{5e4d2851-13b6-45a6-adbc-180b44f6a34d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\Animation">
+      <UniqueIdentifier>{c9b4b944-92b5-4dc4-a21e-0a53540d59eb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -70,6 +73,12 @@
     </ClCompile>
     <ClCompile Include="Player.cpp">
       <Filter>Engine\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Animator.cpp">
+      <Filter>Engine\Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimState.cpp">
+      <Filter>Engine\Animation</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -117,6 +126,12 @@
     </ClInclude>
     <ClInclude Include="Player.h">
       <Filter>Engine\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Animator.h">
+      <Filter>Engine\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimState.h">
+      <Filter>Engine\Animation</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -3,6 +3,17 @@
 #include "NECROEngine.h"
 
 //-------------------------------------------------
+// Initialize the player
+//-------------------------------------------------
+void Player::Init()
+{
+	// Construct Animator
+	anim.SetOwner(this);
+	anim.AddState("idle", engine.GetAssetsManager().GetImage("player_war_idle.png"), 75);
+	anim.AddState("run", engine.GetAssetsManager().GetImage("player_war_run.png"), 75);
+}
+
+//-------------------------------------------------
 // Updates the Player
 //-------------------------------------------------
 void Player::Update()
@@ -13,14 +24,13 @@ void Player::Update()
 
 	HandleMovements();
 
-	// Set anim TODO: do it properly
+	// Set anim
 	if (isMoving)
-		SetImg(engine.GetAssetsManager().GetImage("player_war_run.png"));
+		anim.Play("run");
 	else
-		SetImg(engine.GetAssetsManager().GetImage("player_war_idle.png"));
+		anim.Play("idle");
 
-	// TODO: manage game time and anim speed properly
-	tilesetXOff = ((int)floor(SDL_GetTicks() / 75) % img->GetTileset().tileXNum);
+	anim.Update();
 
 	// Update the entity base
 	Entity::Update();
