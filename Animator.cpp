@@ -1,11 +1,12 @@
 #include "Animator.h"
 
 //------------------------------------------------------------------
-// Sets the owner of this Animator
+// Initializes the Animator and set the owner of this Animator
 //------------------------------------------------------------------
-void Animator::SetOwner(Entity* ow)
+void Animator::Init(Entity* pOwner)
 {
-    owner = ow;
+    owner = pOwner;
+    animTime = SDL_GetTicks();
 }
 
 //------------------------------------------------------------------
@@ -19,21 +20,15 @@ void Animator::AddState(const std::string& sName, Image* sImg, float sSpeed)
 
 //------------------------------------------------------------------
 // Updates the animator
-// 
-// TODO: Along with Play(), properly handle frame selection 
-// (dont use SDL_GetTicks but a timer for the animation)
 //------------------------------------------------------------------
 void Animator::Update()
 {
-    owner->tilesetXOff = ((int)floor(SDL_GetTicks() / curStatePlaying->GetSpeed()) % curStatePlaying->GetImg()->GetTileset().tileXNum);
+    if (owner && curStatePlaying)
+        owner->tilesetXOff = ((int)floor((SDL_GetTicks() - animTime) / curStatePlaying->GetSpeed()) % curStatePlaying->GetImg()->GetTileset().tileXNum);
 }
 
 //------------------------------------------------------------------
 // Plays the state passed as parameter (if exists)
-// 
-// TODO: Along with Update(), properly handle frame selection and
-// allow to reset the animation if Play() is called two times on the
-// same state.
 //------------------------------------------------------------------
 void Animator::Play(const std::string& sName)
 {
@@ -43,8 +38,13 @@ void Animator::Play(const std::string& sName)
         // Check if the img pointer is not null
         if (states.at(sName).GetImg() != nullptr)
         {
+            // Set state
             curStatePlaying = &states.at(sName);
+            curStateNamePlaying = sName;
+
+            // Set anim
             owner->SetImg(curStatePlaying->GetImg()); // Set IMG of the entity
+            animTime = SDL_GetTicks();
         }
         else
             SDL_LogError(SDL_LOG_CATEGORY_ERROR, "ANIMATOR Error: Img PTR is null for state: %s ", sName.c_str());

@@ -8,9 +8,12 @@
 void Player::Init()
 {
 	// Construct Animator
-	anim.SetOwner(this);
+	anim.Init(this);
 	anim.AddState("idle", engine.GetAssetsManager().GetImage("player_war_idle.png"), 75);
 	anim.AddState("run", engine.GetAssetsManager().GetImage("player_war_run.png"), 75);
+
+	// Set default
+	anim.Play("idle");
 }
 
 //-------------------------------------------------
@@ -24,20 +27,17 @@ void Player::Update()
 
 	HandleMovements();
 
-	// Set anim
-	if (isMoving)
-		anim.Play("run");
-	else
-		anim.Play("idle");
-
 	anim.Update();
 
 	// Update the entity base
 	Entity::Update();
+
 }
 
 void Player::HandleMovements()
 {
+	wasMoving = isMoving;
+
 	NECROInput& input = engine.GetInput();
 
 	float deltaX = 0.0f, deltaY = 0.0f;
@@ -54,6 +54,11 @@ void Player::HandleMovements()
 
 	isMoving = (deltaX != 0.0f || deltaY != 0.0f) ? true : false;
 
+	if (isMoving && !wasMoving)
+		anim.Play("run");
+	else if (!isMoving && wasMoving)
+		anim.Play("idle");
+
 	// Calculate direction
 	if (!isAiming)
 		CalculateIsoDirection(deltaX, deltaY);
@@ -61,7 +66,6 @@ void Player::HandleMovements()
 		CalculateIsoDirectionWhileAiming();
 
 	// Select tile from tileset (used for rendering)
-	tilesetXOff = 0;				// no animations yet
 	tilesetYOff = isoDirection;		// pick y offset in base of direction
 
 	// Normalizet the input

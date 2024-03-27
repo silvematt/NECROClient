@@ -11,6 +11,8 @@
 class Animator
 {
 private:
+	float animTime = 0;
+
 	Entity* owner;
 
 	std::map<std::string, AnimState> states;
@@ -19,7 +21,7 @@ private:
 	std::string curStateNamePlaying = "NULL";		
 
 public:
-	void SetOwner(Entity* ent);
+	void Init(Entity* pOwner);
 
 	void AddState(const std::string& sName, Image* sImg, float sSpeed);
 	void Play(const std::string& sName);

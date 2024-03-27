@@ -21,6 +21,8 @@ private:
 	IsoDirection isoDirection = IsoDirection::WEST;			// The isometric direction the player is facing
 
 	bool isAiming = false;									// Is the player in aim mode?
+
+	bool wasMoving = false;
 	bool isMoving = false;
 
 	float relativeMouseX, relativeMouseY;
