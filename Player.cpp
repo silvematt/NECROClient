@@ -13,6 +13,15 @@ void Player::Update()
 
 	HandleMovements();
 
+	// Set anim TODO: do it properly
+	if (isMoving)
+		SetImg(engine.GetAssetsManager().GetImage("player_war_run.png"));
+	else
+		SetImg(engine.GetAssetsManager().GetImage("player_war_idle.png"));
+
+	// TODO: manage game time and anim speed properly
+	tilesetXOff = ((int)floor(SDL_GetTicks() / 75) % img->GetTileset().tileXNum);
+
 	// Update the entity base
 	Entity::Update();
 }
@@ -32,6 +41,8 @@ void Player::HandleMovements()
 		deltaY -= 1;
 	if (input.GetKeyHeld(SDL_SCANCODE_A))
 		deltaY += 1;
+
+	isMoving = (deltaX != 0.0f || deltaY != 0.0f) ? true : false;
 
 	// Calculate direction
 	if (!isAiming)
