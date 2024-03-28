@@ -1,6 +1,7 @@
 #include "Player.h"
 
 #include "NECROEngine.h"
+#include "Game.h"
 
 //-------------------------------------------------
 // Initialize the player
@@ -24,14 +25,19 @@ void Player::Init()
 //-------------------------------------------------
 void Player::Update()
 {
+	int oldGridPosX = gridPosX;
+	int oldGridPosY = gridPosY;
+
 	HandleMovements();
 	HandleAnim();
 
 	anim.Update();
 
-	// Update the entity base
+	// Update the entity base, pos, gridPos, isoPos etc.
 	Entity::Update();
 
+	if (oldGridPosX != gridPosX || oldGridPosY != gridPosY)
+		TransferToCell(owner->GetWorld()->GetCellAt(gridPosX, gridPosY));
 }
 
 void Player::HandleMovements()

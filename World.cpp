@@ -27,7 +27,7 @@ void World::InitializeWorld()
 
 			// For testing, have a 10% probability for a cell to spawn an entity
 			int r = rand() % 100;
-			if (r < 10)
+			if (r < 1)
 			{
 				// Add an entity random
 				std::unique_ptr<Entity> p(new Entity(Vector2(static_cast<float>(x * CELL_WIDTH), static_cast<float>(y * CELL_HEIGHT)), engine.GetAssetsManager().GetImage("tree.png")));
@@ -136,4 +136,15 @@ void World::Draw()
 		textSelCell = textSelCell + "(" + std::to_string(worldCursor->GetCellX()) + ", " + std::to_string(worldCursor->GetCellY()) + ")";
 
 	engine.GetRenderer().DrawTextDirectly(engine.GetAssetsManager().GetFont("defaultFont"), textSelCell.c_str(), 10, 10, colorRed);
+}
+
+//------------------------------------------------------------------------
+// Returns a Cell* at the coordinates specified as arguments of this call
+//------------------------------------------------------------------------
+Cell* World::GetCellAt(int x, int y)
+{
+	if (x >= 0 && x < WORLD_WIDTH && y >= 0 && y < WORLD_HEIGHT)
+		return &worldmap[x][y];
+	else
+		return nullptr;
 }

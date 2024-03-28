@@ -49,6 +49,7 @@ public:
 	int				GetCellY() const;
 
 	SDL_Rect&		GetDstRect();
+	World*			GetWorld();
 
 	void			SetWorld(World* w);
 	void			SetCellCoordinates(const int x, const int y);
@@ -58,7 +59,9 @@ public:
 	size_t			GetEntitiesSize() const;
 	void			AddEntity(std::unique_ptr<Entity>&& e); // transfer ownership
 	void			RemoveEntity(size_t indx);
-	Entity*			GetEntityAt(size_t indx);
+
+	std::vector<std::unique_ptr<Entity>>&		GetEntities();
+	size_t										GetEntityPos(uint32_t entID);
 
 	void			DrawCell();
 	void			DrawEntities();
@@ -85,4 +88,13 @@ inline size_t Cell::GetEntitiesSize() const
 	return entities.size();
 }
 
+inline std::vector<std::unique_ptr<Entity>>& Cell::GetEntities()
+{
+	return entities;
+}
+
+inline World* Cell::GetWorld()
+{
+	return world;
+}
 #endif

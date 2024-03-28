@@ -71,7 +71,8 @@ void Cell::Update()
 
 	dstRect = { isoX, isoY, CELL_WIDTH, CELL_HEIGHT };
 	for (auto& ent : entities)
-		ent->Update();
+		if(ent)
+			ent->Update();
 }
 
 //-----------------------------------------------------------------------
@@ -92,12 +93,20 @@ void Cell::RemoveEntity(size_t idx)
 	Utility::RemoveFromVector(entities, idx);
 }
 
-Entity* Cell::GetEntityAt(size_t indx)
+//------------------------------------------------------------------------------------------------------------
+// Returns the position of the entity with id = entID inside the entities vector, or size_t::max if not found
+//------------------------------------------------------------------------------------------------------------
+size_t Cell::GetEntityPos(uint32_t entID)
 {
-	if (entities.size() > indx)
-		return entities[indx].get();
-	else
-		return nullptr;
+	for (int i = 0; i < entities.size(); i++)
+	{
+		auto& e = entities.at(i);
+		if (e && e->GetID() == entID)
+			return i;
+	}
+
+	SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Trying to get entity pos of ID: %d, but it is not present in the cell the call was made in.\n", entID);
+	return std::numeric_limits<size_t>::max();
 }
 
 //--------------------------------------
@@ -114,5 +123,6 @@ void Cell::DrawCell()
 void Cell::DrawEntities()
 {
 	for (auto& ent : entities)
-		ent->Draw();
+		if(ent)
+			ent->Draw();
 }

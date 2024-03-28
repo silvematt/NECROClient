@@ -20,6 +20,8 @@ private:
 	SDL_Texture* worldCursorTexture;
 
 public:
+	Cell* GetCellAt(int x, int y);
+
 	void			InitializeWorld();
 	void			Update();
 	void			Draw();

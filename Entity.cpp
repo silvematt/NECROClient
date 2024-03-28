@@ -1,10 +1,30 @@
 #include "NECROEngine.h"
 
 #include "Entity.h"
+#include "Utility.h"
+
+uint32_t Entity::ENT_NEXT_ID = 0;
+
+Entity::Entity()
+{
+	ID = ENT_NEXT_ID;
+	ENT_NEXT_ID++;
+
+	img = nullptr;
+	owner = nullptr;
+	tilesetXOff = tilesetYOff = 0;
+	gridPosX = gridPosY = 0;
+}
 
 Entity::Entity(Vector2 pInitialPos, Image* pImg)
 {
+	ID = ENT_NEXT_ID;
+	ENT_NEXT_ID++;
+
 	pos = pInitialPos;
+	gridPosX = pos.x / CELL_WIDTH;
+	gridPosY = pos.y / CELL_HEIGHT;
+
 	SetImg(pImg);
 }
 
@@ -32,12 +52,26 @@ void Entity::ClearOwner()
 	owner = nullptr;
 }
 
+void Entity::TransferToCell(Cell* c)
+{
+	Cell* previous = owner;
+	int previousPos = owner->GetEntityPos(this->ID);
+	c->AddEntity(std::move(owner->GetEntities().at(previousPos)));
+	SetOwner(c);
+	
+	Utility::RemoveFromVector(previous->GetEntities(), previousPos);
+}
+
 //------------------------------------------------------------
 // Updates the Entity
 //------------------------------------------------------------
 void Entity::Update()
 {
-	// Update coordinates
+	// Update grid position
+	gridPosX = pos.x / CELL_WIDTH;
+	gridPosY = pos.y / CELL_HEIGHT;
+
+	// Update ISO coordinates
 	NMath::CartToIso(pos.x/CELL_WIDTH, pos.y/CELL_HEIGHT, isoPos.x, isoPos.y);
 
 	isoPos.x -= HALF_CELL_WIDTH;

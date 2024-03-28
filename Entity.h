@@ -13,7 +13,12 @@ class Entity
 {
 	friend class Animator; // Animator is a friend class of Entity
 
+private:
+	static uint32_t ENT_NEXT_ID; // EntityID static track
+
 protected:
+	uint32_t ID;				// EntityID
+
 	Image* img;
 	Cell* owner;				// Owner of this entity
 
@@ -21,19 +26,29 @@ protected:
 	int tilesetXOff, tilesetYOff;
 
 public:
-	Entity() = default;
+	Entity();
 	Entity(Vector2 pInitialPos, Image* pImg);
 
 	Vector2 pos;				// orthographic pos
+	int gridPosX, gridPosY;		// Position in the gridmap
+
 	Vector2 isoPos;				// isometric pos (used only for rendering)
 
 public:
+	const uint32_t	GetID() const;
+
 	void			SetImg(Image* pImg);
 	void			SetOwner(Cell* c);
 	void			ClearOwner();
+	void			TransferToCell(Cell* c);		// Transfer this entity to exist in another cell 
 
 	virtual void	Update();
 	void			Draw();
 };
+
+inline const uint32_t Entity::GetID() const
+{
+	return ID;
+}
 
 #endif
