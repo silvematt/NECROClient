@@ -3,6 +3,7 @@
 
 #include "Vector2.h"
 #include "Image.h"
+#include "Collider.h"
 
 class Cell;
 
@@ -18,9 +19,10 @@ private:
 
 protected:
 	uint32_t ID;				// EntityID
-
 	Image* img;
 	Cell* owner;				// Owner of this entity
+
+	Collider coll;
 
 	// Used for entities that uses tilesets, index of X and Y, they will be multiplied by img->GetTileset().tileWidth and img->GetTileset().tileHeight
 	int tilesetXOff, tilesetYOff;
@@ -36,6 +38,7 @@ public:
 
 public:
 	const uint32_t	GetID() const;
+	Collider&		GetCollider();
 
 	void			SetImg(Image* pImg);
 	void			SetOwner(Cell* c);
@@ -43,12 +46,17 @@ public:
 	void			TransferToCell(Cell* c);		// Transfer this entity to exist in another cell 
 
 	virtual void	Update();
-	void			Draw();
+	virtual void	Draw();
 };
 
 inline const uint32_t Entity::GetID() const
 {
 	return ID;
+}
+
+inline Collider& Entity::GetCollider()
+{
+	return coll;
 }
 
 #endif

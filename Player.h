@@ -4,7 +4,7 @@
 #include "Entity.h"
 #include "Game.h"
 #include "Animator.h"
-
+#include "Collider.h"
 
 const float PLAYER_MOVE_SPEED_FREE = 2.5f;
 const float PLAYER_MOVE_SPEED_AIM = 1.0f;
@@ -37,6 +37,8 @@ private:
 	void			HandleMovements();
 
 public:
+	bool			controlsEnabled = true; // TEST: 
+
 	void			Init();
 
 	void			HandleAnim();

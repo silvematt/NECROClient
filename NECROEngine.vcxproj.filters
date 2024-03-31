@@ -36,6 +36,9 @@
     <Filter Include="Engine\Animation">
       <UniqueIdentifier>{c9b4b944-92b5-4dc4-a21e-0a53540d59eb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\Physics">
+      <UniqueIdentifier>{db15015e-f963-4c36-b1e2-5347a9d6704b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -71,14 +74,17 @@
     <ClCompile Include="RenderTarget.cpp">
       <Filter>Engine\Renderer</Filter>
     </ClCompile>
-    <ClCompile Include="Player.cpp">
-      <Filter>Engine\Player</Filter>
-    </ClCompile>
     <ClCompile Include="Animator.cpp">
       <Filter>Engine\Animation</Filter>
     </ClCompile>
     <ClCompile Include="AnimState.cpp">
       <Filter>Engine\Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>Engine\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="Collider.cpp">
+      <Filter>Engine\Physics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -124,14 +130,17 @@
     <ClInclude Include="RenderTarget.h">
       <Filter>Engine\Renderer</Filter>
     </ClInclude>
-    <ClInclude Include="Player.h">
-      <Filter>Engine\Player</Filter>
-    </ClInclude>
     <ClInclude Include="Animator.h">
       <Filter>Engine\Animation</Filter>
     </ClInclude>
     <ClInclude Include="AnimState.h">
       <Filter>Engine\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>Engine\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Collider.h">
+      <Filter>Engine\Physics</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

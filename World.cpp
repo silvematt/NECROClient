@@ -14,6 +14,13 @@ void World::InitializeWorld()
 	worldCursor = nullptr;
 	worldCursorTexture = engine.GetAssetsManager().GetImage("tile_highlighted.png")->GetSrc();
 
+	// Add a player, just for testing (ID = 0)
+	std::unique_ptr<Player> p(new Player());
+	p->SetImg(engine.GetAssetsManager().GetImage("player_war_idle.png"));
+	p->pos = Vector2(static_cast<float>(0 * CELL_WIDTH), static_cast<float>(0 * CELL_HEIGHT));
+	p->Init();
+	worldmap[0][0].AddEntity(std::move(p));
+
 	for(int x = 0; x < WORLD_WIDTH; x++)
 		for (int y = 0; y < WORLD_HEIGHT; y++)
 		{
@@ -30,17 +37,12 @@ void World::InitializeWorld()
 			if (r < 1)
 			{
 				// Add an entity random
+				// TODO: prefab entities
 				std::unique_ptr<Entity> p(new Entity(Vector2(static_cast<float>(x * CELL_WIDTH), static_cast<float>(y * CELL_HEIGHT)), engine.GetAssetsManager().GetImage("tree.png")));
+				p->GetCollider().Init(true, p.get(), 0, 0, 64, 32); // set collision
 				currentCell.AddEntity(std::move(p));
 			}
 		}
-
-	// Add a player, just for testing
-	std::unique_ptr<Player> p(new Player());
-	p->SetImg(engine.GetAssetsManager().GetImage("player_war_idle.png"));
-	p->pos = Vector2(static_cast<float>(0 * CELL_WIDTH), static_cast<float>(0 * CELL_HEIGHT));
-	p->Init();
-	worldmap[0][0].AddEntity(std::move(p));
 
 	// Set camera
 	curCamera = engine.GetGame().GetMainCamera();
@@ -73,6 +75,7 @@ void World::Update()
 			{
 				// Add an entity
 				std::unique_ptr<Entity> p(new Entity(Vector2(static_cast<float>(worldCursor->GetCellX() * CELL_WIDTH), static_cast<float>(worldCursor->GetCellY() * CELL_HEIGHT)), engine.GetAssetsManager().GetImage("tree.png")));
+				p->GetCollider().Init(true, p.get(), 0, 0, 64, 32); // set collision
 				worldCursor->AddEntity(std::move(p));
 			}
 			else

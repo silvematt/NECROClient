@@ -27,6 +27,7 @@ void NECROAssetsManager::LoadAllImages()
 	LoadImage("tile.png", 0, 0);
 	LoadImage("tile_highlighted.png", 0, 0);
 	LoadImage("tree.png", -15, -5);
+	LoadImage("tile_debug_coll.png", 0, 0);
 
 	// Player tilesets
 	LoadTilesetImage("player_war_idle.png", -30, 12, 128, 128, 1, 8);

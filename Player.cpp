@@ -18,6 +18,10 @@ void Player::Init()
 
 	// Set default
 	anim.Play("idle");
+
+	// Construct Collider
+	coll.Init(true, this, 0, 0, 32, 16);
+	coll.SetOffset(0, -16);
 }
 
 //-------------------------------------------------
@@ -30,8 +34,6 @@ void Player::Update()
 
 	HandleMovements();
 	HandleAnim();
-
-	anim.Update();
 
 	// Update the entity base, pos, gridPos, isoPos etc.
 	Entity::Update();
@@ -50,18 +52,21 @@ void Player::HandleMovements()
 	deltaX = 0.0f; 
 	deltaY = 0.0f;
 
-	// Get input
-	if (input.GetKeyHeld(SDL_SCANCODE_W))
-		deltaX -= 1;
-	if (input.GetKeyHeld(SDL_SCANCODE_S))
-		deltaX += 1;
-	if (input.GetKeyHeld(SDL_SCANCODE_D))
-		deltaY -= 1;
-	if (input.GetKeyHeld(SDL_SCANCODE_A))
-		deltaY += 1;
+	if (controlsEnabled)
+	{
+		// Get input
+		if (input.GetKeyHeld(SDL_SCANCODE_W))
+			deltaX -= 1;
+		if (input.GetKeyHeld(SDL_SCANCODE_S))
+			deltaX += 1;
+		if (input.GetKeyHeld(SDL_SCANCODE_D))
+			deltaY -= 1;
+		if (input.GetKeyHeld(SDL_SCANCODE_A))
+			deltaY += 1;
 
-	isMoving = (deltaX != 0.0f || deltaY != 0.0f) ? true : false;
-	isAiming = input.GetMouseHeld(static_cast<SDL_Scancode>(SDL_BUTTON_RIGHT));
+		isMoving = (deltaX != 0.0f || deltaY != 0.0f) ? true : false;
+		isAiming = input.GetMouseHeld(static_cast<SDL_Scancode>(SDL_BUTTON_RIGHT));
+	}
 
 	// Calculate direction
 	if (!isAiming)
@@ -72,7 +77,7 @@ void Player::HandleMovements()
 	// Select tile from tileset (used for rendering)
 	tilesetYOff = isoDirection;		// pick y offset in base of direction
 
-	// Normalizet the input
+	// Normalize the input
 	Vector2 moveInput(deltaX, deltaY);
 	moveInput.Normalize();
 
@@ -83,9 +88,34 @@ void Player::HandleMovements()
 	// Set speed
 	curMoveSpeed = isAiming ? PLAYER_MOVE_SPEED_AIM : PLAYER_MOVE_SPEED_FREE;
 
-	// Update orthogonal position
-	pos.x += moveInput.x * curMoveSpeed;
-	pos.y += moveInput.y * curMoveSpeed;
+	// TEST: Collision checking and Update of orthogonal position 
+	// TEST: just for testing, we only test against a single tree that needs to be in the cell (10,10)
+	// will have to test against all entities that are close enough
+	float moveAmountX = moveInput.x * curMoveSpeed;
+	float moveAmountY = moveInput.y * curMoveSpeed;
+
+	// Checking is performed on each axis to allow the player to slide on the colliders
+	pos.x += moveAmountX;
+	coll.Update();
+
+	if (owner->GetWorld()->GetCellAt(10, 10)->GetEntitiesSize() > 0) 
+	{
+		Entity* tree = ((Entity*)owner->GetWorld()->GetCellAt(10, 10)->GetEntities().at(0).get());
+		if (coll.TestIntersection(&tree->GetCollider()))
+			pos.x -= moveAmountX;
+	}
+
+	pos.y += moveAmountY;
+	coll.Update();
+
+	if (owner->GetWorld()->GetCellAt(10, 10)->GetEntitiesSize() > 0)
+	{
+		Entity* tree = ((Entity*)owner->GetWorld()->GetCellAt(10, 10)->GetEntities().at(0).get());
+		if (coll.TestIntersection(&tree->GetCollider()))
+			pos.y -= moveAmountY;
+	}
+
+	coll.Update();
 }
 
 //---------------------------------------------------------------------------------------
@@ -167,6 +197,8 @@ void Player::HandleAnim()
 				anim.Play("idle");
 		}
 	}
+
+	anim.Update();
 }
 
 //-------------------------------------------------

@@ -88,6 +88,10 @@ void Entity::Update()
 	// Account for the Y offset of the image
 	isoPos.x += img->GetXOffset();
 	isoPos.y += img->GetYOffset();
+
+	// TODO: may not have to update collider here for static entities, but need to properly set them
+	if (coll.enabled)
+		coll.Update();
 }
 
 //------------------------------------------------------------
@@ -107,4 +111,7 @@ void Entity::Draw()
 		SDL_Rect dstRect = { static_cast<int>(isoPos.x), static_cast<int>(isoPos.y), tset.tileWidth, tset.tileHeight };
 		engine.GetRenderer().DrawImageDirectly(img->GetSrc(), &srcRect, &dstRect);
 	}
+
+	if (coll.enabled) // && debug collider
+		coll.DebugDraw();
 }

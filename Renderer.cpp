@@ -109,6 +109,15 @@ void NECRORenderer::DrawTextDirectly(TTF_Font* font, const char* str, int screen
 	SDL_FreeSurface(textSurf);
 }
 
+//------------------------------------------------
+// Calls SDL_RenderFillRect on the inner renderer
+//------------------------------------------------
+void NECRORenderer::DrawRect(SDL_Rect* r)
+{
+	SDL_SetRenderDrawColor(innerRenderer, 0xFF, 0x00, 0x00, 0xFF);
+	SDL_RenderFillRect(innerRenderer, r);
+}
+
 //--------------------------------------
 // Clear the renderer targets
 //--------------------------------------
