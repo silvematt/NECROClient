@@ -31,6 +31,7 @@ int NECRORenderer::Init()
 	// Create the RenderTargets
 	mainTarget.CreateMain(innerRenderer, SCREEN_WIDTH, SCREEN_HEIGHT);
 	overlayTarget.Create(innerRenderer, SCREEN_WIDTH, SCREEN_HEIGHT);
+	debugTarget.Create(innerRenderer, SCREEN_WIDTH, SCREEN_HEIGHT);
 
 	SetRenderTarget(ERenderTargets::MAIN_TARGET);
 
@@ -68,6 +69,7 @@ void NECRORenderer::Update()
 
 	// Copy the other targets on the (default) mainTarget
 	SDL_RenderCopy(innerRenderer, overlayTarget.GetTargetTexture(), NULL, NULL);
+	SDL_RenderCopy(innerRenderer, debugTarget.GetTargetTexture(), NULL, NULL);
 }
 
 //----------------------------------------------
@@ -125,6 +127,7 @@ void NECRORenderer::Clear()
 {
 	mainTarget.Clear();
 	overlayTarget.Clear();
+	debugTarget.Clear();
 }
 
 //------------------------------------------------
@@ -143,5 +146,12 @@ void NECRORenderer::SetRenderTarget(ERenderTargets trg)
 			curTarget = &overlayTarget;
 			SDL_SetRenderTarget(innerRenderer, overlayTarget.GetTargetTexture());
 			break;
+
+		case ERenderTargets::DEBUG_TARGET:
+			curTarget = &debugTarget;
+			SDL_SetRenderTarget(innerRenderer, debugTarget.GetTargetTexture());
+			break;
 	}
+
+	curERenTarget = trg;
 }

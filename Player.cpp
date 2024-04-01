@@ -41,7 +41,6 @@ void Player::Update()
 
 	if (oldGridPosX != gridPosX || oldGridPosY != gridPosY)
 		TransferToCell(owner->GetWorld()->GetCellAt(gridPosX, gridPosY));
-
 }
 
 void Player::HandleMovements()
@@ -100,10 +99,6 @@ void Player::HandleMovements()
 
 	for (auto const& e : closeEntities)
 	{
-		// Skip self
-		if (e->GetID() == ID)
-			continue;
-
 		if (coll.TestIntersection(&e->GetCollider()))
 			pos.x -= moveAmountX;
 	}
@@ -113,10 +108,6 @@ void Player::HandleMovements()
 
 	for (auto const& e : closeEntities)
 	{
-		// Skip self
-		if (e->GetID() == ID)
-			continue;
-
 		if (coll.TestIntersection(&e->GetCollider()))
 			pos.y -= moveAmountY;
 	}
@@ -140,7 +131,8 @@ void Player::UpdateCloseEntities()
 			if (c)
 			{
 				for (int i = 0; i < c->GetEntitiesPtrSize(); i++)
-					closeEntities.push_back(c->GetEntityPtrAt(i));
+					if(c->GetEntityPtrAt(i)->GetID() != this->ID)
+						closeEntities.push_back(c->GetEntityPtrAt(i));
 			}
 		}
 }

@@ -59,9 +59,19 @@ void Collider::Update()
 
 void Collider::DebugDraw()
 {
+	auto previousTarget = engine.GetRenderer().GetCurrentERenderTargetVal();
+
+	// Set debug target, update scale in base of the main camera zoom
+	engine.GetRenderer().SetRenderTarget(NECRORenderer::ERenderTargets::DEBUG_TARGET);
+	float zoomLevel = engine.GetGame().GetMainCamera()->GetZoom();
+	engine.GetRenderer().SetScale(zoomLevel, zoomLevel);
+
 	SDL_Rect dstRect;
 	dstRect = { (int)isoPosX, (int)isoPosY, r.w, r.h };
 	engine.GetRenderer().DrawImageDirectly(debugImg->GetSrc(), NULL, &dstRect);
+
+	// Restore previous target
+	engine.GetRenderer().SetRenderTarget(previousTarget);
 }
 
 // TODO: Implement intersection check instead of using SDL's.

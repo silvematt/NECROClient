@@ -15,7 +15,8 @@ public:
 	enum ERenderTargets
 	{
 		MAIN_TARGET,
-		OVERLAY_TARGET
+		OVERLAY_TARGET,
+		DEBUG_TARGET
 	};
 
 private:
@@ -26,13 +27,18 @@ private:
 	// Targets
 	RenderTarget	mainTarget;
 	RenderTarget	overlayTarget;
+	RenderTarget	debugTarget;
+
 	RenderTarget*	curTarget;
+	ERenderTargets	curERenTarget; // current enum value
 
 public:
+
 	SDL_Window*		const	GetWindow() const;
 	SDL_Renderer*	const	GetInnerRenderer() const;
 	int						GetWidth();
 	int						GetHeight();
+	ERenderTargets			GetCurrentERenderTargetVal();
 
 	int						Init();
 	int						Shutdown();
@@ -73,6 +79,11 @@ inline int NECRORenderer::GetWidth()
 inline int NECRORenderer::GetHeight()
 {
 	return SCREEN_HEIGHT;
+}
+
+inline NECRORenderer::ERenderTargets NECRORenderer::GetCurrentERenderTargetVal()
+{
+	return curERenTarget;
 }
 
 #endif

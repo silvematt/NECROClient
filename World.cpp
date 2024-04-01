@@ -105,8 +105,9 @@ void World::Update()
 //------------------------------------------------------------
 void World::Draw()
 {
-	// Draw the world on the main ntarget
+	// Draw the world on the main target
 	engine.GetRenderer().SetRenderTarget(NECRORenderer::ERenderTargets::MAIN_TARGET);
+
 	// Draw the world base 
 	for (int x = 0; x < WORLD_WIDTH; x++)
 		for (int y = 0; y < WORLD_HEIGHT; y++)
