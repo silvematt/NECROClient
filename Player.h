@@ -6,8 +6,8 @@
 #include "Animator.h"
 #include "Collider.h"
 
-const float PLAYER_MOVE_SPEED_FREE = 2.5f;
-const float PLAYER_MOVE_SPEED_AIM = 1.0f;
+const float PLAYER_MOVE_SPEED_FREE = 180.0f;
+const float PLAYER_MOVE_SPEED_AIM = 100.0f;
 
 //-------------------------------------------------
 // Player class, derived by Entity

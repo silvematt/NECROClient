@@ -56,6 +56,9 @@ int NECROEngine::Init()
 
 	srand(time(NULL));
 
+	lastUpdate = 0;
+	deltaTime = 0;
+
 	SDL_Log("Initializing done.\n");
 	return 0;
 }
@@ -100,11 +103,15 @@ void NECROEngine::Update()
 	// Initialize game
 	game.Init();
 
+	lastUpdate = SDL_GetTicks();
 	// Engine Loop
 	while (isRunning)
 	{
+		uint32_t current = SDL_GetTicks();
+		deltaTime = (current - lastUpdate) / 1000.0f;
+		lastUpdate = current;
+
 		input.Handle();
-		
 		renderer.Clear();
 
 		game.Update();

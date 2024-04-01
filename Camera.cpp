@@ -65,9 +65,10 @@ void Camera::Update()
 
 	if (engine.GetInput().GetMouseHeld(static_cast<SDL_Scancode>(SDL_BUTTON_MIDDLE)))
 	{
+		// TODO: fix mouseMotion at different framerates
 		Vector2 mouseMotion = engine.GetInput().GetMouseMotionThisFrame();
-		deltaX += mouseMotion.x * panSpeed;
-		deltaY += mouseMotion.y * panSpeed;
+		deltaX += mouseMotion.x * panSpeed * engine.GetDeltaTime();
+		deltaY += mouseMotion.y * panSpeed * engine.GetDeltaTime();
 	}
 
 	// Update position, subtracting ((oldZoomSizeX / 2) - (zoomSizeX / 2)) allows us to keep the camera centered after zooming

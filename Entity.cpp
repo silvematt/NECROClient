@@ -52,12 +52,24 @@ void Entity::ClearOwner()
 	owner = nullptr;
 }
 
-//------------------------------------------------------------
+//----------------------------------------------------------------------------------------------
 // Moves the entity to the cell specified in the argument,
 // removing the Ptr present in the previous owner's vector
-//------------------------------------------------------------
-void Entity::TransferToCell(Cell* c)
+// 
+// Immediately: does the transfer right away, (as for now, as soon as Entity::Update is called)
+// If the entities are updated from looping over the worldmap, THIS MUST NOT BE USED, 
+// if an entity moves fast enough downwards (or framerate is low), the entity can be updated 
+// multiple times (from cell [0][0] to [4][4], and re-updated from [4][4] to [8][8], and so on)
+// 
+// Use TransferToCellQueue to let the world perform the transfer AFTER a world update completes.
+// This function will be called by the World with nullptr as argument
+//----------------------------------------------------------------------------------------------
+void Entity::TransferToCellImmediately(Cell* c)
 {
+	// If this is called with nullptr as argument, the transfer is supposed to be in nextOwner
+	if (c == nullptr && nextOwner)
+		c = nextOwner;
+
 	// Remove Ptr from previous owner
 	owner->RemoveEntityPtr(ID);
 
@@ -66,6 +78,14 @@ void Entity::TransferToCell(Cell* c)
 
 	// Add Ptr to current owner
 	c->AddEntityPtr(this);
+
+	nextOwner = nullptr;
+}
+
+void Entity::TransferToCellQueue(Cell* c)
+{
+	nextOwner = c;
+	owner->GetWorld()->AddPendingEntityToTransfer(this);
 }
 
 //------------------------------------------------------------
@@ -78,7 +98,7 @@ void Entity::Update()
 	gridPosY = pos.y / CELL_HEIGHT;
 
 	// Update ISO coordinates
-	NMath::CartToIso(pos.x/CELL_WIDTH, pos.y/CELL_HEIGHT, isoPos.x, isoPos.y);
+	NMath::CartToIso(pos.x / CELL_WIDTH, pos.y / CELL_HEIGHT, isoPos.x, isoPos.y);
 
 	isoPos.x -= HALF_CELL_WIDTH;
 

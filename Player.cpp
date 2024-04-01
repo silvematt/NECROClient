@@ -40,7 +40,10 @@ void Player::Update()
 	Entity::Update();
 
 	if (oldGridPosX != gridPosX || oldGridPosY != gridPosY)
-		TransferToCell(owner->GetWorld()->GetCellAt(gridPosX, gridPosY));
+	{
+		nextOwner = owner->GetWorld()->GetCellAt(gridPosX, gridPosY);
+		TransferToCellQueue(nextOwner); // will be done as soon as the world update is finished
+	}
 }
 
 void Player::HandleMovements()
@@ -90,8 +93,8 @@ void Player::HandleMovements()
 	curMoveSpeed = isAiming ? PLAYER_MOVE_SPEED_AIM : PLAYER_MOVE_SPEED_FREE;
 
 	// TODO: Instead of checking against all the entities in the world, only check against the one close to the player
-	float moveAmountX = moveInput.x * curMoveSpeed;
-	float moveAmountY = moveInput.y * curMoveSpeed;
+	float moveAmountX = moveInput.x * curMoveSpeed * engine.GetDeltaTime();
+	float moveAmountY = moveInput.y * curMoveSpeed * engine.GetDeltaTime();
 
 	// Checking is performed on each axis to allow the player to slide on the colliders
 	pos.x += moveAmountX;

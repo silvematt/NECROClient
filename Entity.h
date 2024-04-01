@@ -21,6 +21,7 @@ protected:
 	uint32_t ID;				// EntityID
 	Image* img;
 	Cell* owner;				// Owner of this entity
+	Cell* nextOwner;			// Used to TransferToCellQueue()
 
 	Collider coll;
 
@@ -44,7 +45,8 @@ public:
 	void			SetImg(Image* pImg);
 	void			SetOwner(Cell* c);
 	void			ClearOwner();
-	void			TransferToCell(Cell* c);		// Transfer this entity to exist in another cell 
+	void			TransferToCellImmediately(Cell* c);		// Transfer this entity to exist in another cell 
+	void			TransferToCellQueue(Cell* c);			// Transfer this entity to exist in another cell AFTER a world update completes
 
 	virtual void	Update();
 	virtual void	Draw();

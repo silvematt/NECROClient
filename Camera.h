@@ -27,7 +27,7 @@ private:
 	float zoomLevel = 1.0f;
 	float zoomSpeed = 0.1f;
 
-	float panSpeed = 1.0f;
+	float panSpeed = 50.0f;
 
 public:
 	Vector2 pos;

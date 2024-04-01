@@ -16,6 +16,8 @@ class NECROEngine
 private:
 	// Status
 	bool isRunning;
+	double deltaTime;
+	uint32_t lastUpdate;
 
 	// Game
 	NECROGame game;
@@ -32,6 +34,7 @@ public:
 	NECRORenderer&			GetRenderer();
 	NECROAssetsManager&		GetAssetsManager();
 
+	const double			GetDeltaTime() const;
 
 	int						Init();
 	void					Update();
@@ -62,6 +65,11 @@ inline NECRORenderer & NECROEngine::GetRenderer()
 inline NECROAssetsManager& NECROEngine::GetAssetsManager()
 {
 	return assetsManager;
+}
+
+inline const double NECROEngine::GetDeltaTime() const
+{
+	return deltaTime;
 }
 
 #endif

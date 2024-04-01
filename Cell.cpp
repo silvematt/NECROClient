@@ -95,6 +95,7 @@ void Cell::RemoveEntityPtr(uint32_t remID)
 		if (entities[i]->GetID() == remID)
 		{
 			RemoveEntityPtr(i);
+			return;
 		}
 	}
 }

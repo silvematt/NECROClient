@@ -32,7 +32,7 @@ void World::InitializeWorld()
 
 			currentCell.SetBaseTexture(engine.GetAssetsManager().GetImage("tile.png")->GetSrc());
 
-			// For testing, have a 10% probability for a cell to spawn an entity
+			// For testing, randomly spawn an entity
 			int r = rand() % 100;
 			if (r < 1)
 			{
@@ -88,6 +88,7 @@ void World::Update()
 
 	// Update all the cells, TODO we can let the World have a vector of pointers to all the cell's entities to avoid having to look inside the worldmap
 	//						 In that way, we can also mark entities as 'static' and avoid to update them each world update.
+	entitiesWaitingForTransfer.clear();
 	for (int x = 0; x < WORLD_WIDTH; x++)
 		for (int y = 0; y < WORLD_HEIGHT; y++)
 		{
@@ -95,6 +96,8 @@ void World::Update()
 			Cell& currentCell = worldmap[x][y];
 			currentCell.Update();
 		}
+
+	TransferPendingEntities();
 }
 
 //------------------------------------------------------------
@@ -177,4 +180,18 @@ void World::RemoveEntity(uint32_t atID)
 {
 	allEntities.at(atID)->GetOwner()->RemoveEntityPtr(atID);
 	allEntities.erase(atID);
+}
+
+void World::TransferPendingEntities()
+{
+	for (int i = 0; i < entitiesWaitingForTransfer.size(); i++)
+	{
+		// nullptr as argument means Entity->nextOwner
+		entitiesWaitingForTransfer[i]->TransferToCellImmediately(nullptr);
+	}
+}
+
+void World::AddPendingEntityToTransfer(Entity* e)
+{
+	entitiesWaitingForTransfer.push_back(e);
 }

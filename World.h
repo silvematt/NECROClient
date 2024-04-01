@@ -32,6 +32,9 @@ private:
 	//--------------------------------------------------------------------------------------
 	std::unordered_map<uint32_t, std::unique_ptr<Entity>> allEntities;
 
+	// See Entity::TransferToCellImmediately
+	std::vector<Entity*> entitiesWaitingForTransfer;
+
 public:
 	Cell* GetCellAt(int x, int y);
 
@@ -42,6 +45,10 @@ public:
 
 	void			InitializeWorld();
 	void			Update();
+
+	void			AddPendingEntityToTransfer(Entity* e);
+	void			TransferPendingEntities();		// Transferring the entity is done AFTER a world update, otherwise if an entity is fast enough (or framerate is low enough) 
+													// the entity can be udated multiple times if the update is done through iterating over the worldmap[][] instead of the allEntities map
 	void			Draw();
 };
 
