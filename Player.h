@@ -31,10 +31,15 @@ private:
 
 	float relativeMouseX, relativeMouseY;
 
+	// List of close (8-neighbours close) entities, filled every frame
+	std::vector<Entity*> closeEntities;
+
 private:
 	void			CalculateIsoDirection(float deltaX, float deltaY);
 	void			CalculateIsoDirectionWhileAiming();
 	void			HandleMovements();
+
+	void			UpdateCloseEntities();
 
 public:
 	bool			controlsEnabled = true; // TEST: 

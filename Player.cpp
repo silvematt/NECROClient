@@ -32,6 +32,7 @@ void Player::Update()
 	int oldGridPosX = gridPosX;
 	int oldGridPosY = gridPosY;
 
+	UpdateCloseEntities();
 	HandleMovements();
 	HandleAnim();
 
@@ -40,6 +41,7 @@ void Player::Update()
 
 	if (oldGridPosX != gridPosX || oldGridPosY != gridPosY)
 		TransferToCell(owner->GetWorld()->GetCellAt(gridPosX, gridPosY));
+
 }
 
 void Player::HandleMovements()
@@ -96,33 +98,51 @@ void Player::HandleMovements()
 	pos.x += moveAmountX;
 	coll.Update();
 
-	// Get a reference to the map
-	auto& entities = owner->GetWorld()->GetEntities(); 
-
-	for (auto const& e : entities)
+	for (auto const& e : closeEntities)
 	{
 		// Skip self
-		if (e.second->GetID() == ID)
+		if (e->GetID() == ID)
 			continue;
 
-		if (coll.TestIntersection(&e.second->GetCollider()))
+		if (coll.TestIntersection(&e->GetCollider()))
 			pos.x -= moveAmountX;
 	}
 
 	pos.y += moveAmountY;
 	coll.Update();
 
-	for (auto const& e : entities)
+	for (auto const& e : closeEntities)
 	{
 		// Skip self
-		if (e.second->GetID() == ID)
+		if (e->GetID() == ID)
 			continue;
 
-		if (coll.TestIntersection(&e.second->GetCollider()))
+		if (coll.TestIntersection(&e->GetCollider()))
 			pos.y -= moveAmountY;
 	}
 
 	coll.Update();
+}
+
+
+//---------------------------------------------------------------------------------------
+// Updates the closeEntities vector
+//---------------------------------------------------------------------------------------
+void Player::UpdateCloseEntities()
+{
+	closeEntities.clear();
+
+	for (int x = -1; x <= 1; x++)
+		for (int y = -1; y <= 1; y++)
+		{
+			Cell* c = owner->GetWorld()->GetCellAt(gridPosX + x, gridPosY + y);
+
+			if (c)
+			{
+				for (int i = 0; i < c->GetEntitiesPtrSize(); i++)
+					closeEntities.push_back(c->GetEntityPtrAt(i));
+			}
+		}
 }
 
 //---------------------------------------------------------------------------------------
