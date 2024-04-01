@@ -39,8 +39,8 @@ private:
 	SDL_Rect dstRect;				// dstRect used to DrawImageDirectly
 	SDL_Texture* baseTexture;		// TODO this is just for quick testing, will have to structure this properly
 
-	// Entities set in this cell
-	std::vector<std::unique_ptr<Entity>> entities;
+	// Entity ptrs logically owned by this cell
+	std::vector<Entity*> entities;
 
 public:
 	Cell();
@@ -56,12 +56,15 @@ public:
 	void			SetBaseTexture(SDL_Texture* texture);
 
 	void			Update();
-	size_t			GetEntitiesSize() const;
-	void			AddEntity(std::unique_ptr<Entity>&& e); // transfer ownership
-	void			RemoveEntity(size_t indx);
 
-	std::vector<std::unique_ptr<Entity>>&		GetEntities();
-	size_t										GetEntityPos(uint32_t entID);
+	void			AddEntityPtr(Entity* e);
+	void			RemoveEntityPtr(uint32_t remID);
+	void			RemoveEntityPtr(size_t indx);
+	size_t			GetEntitiesPtrSize() const;
+
+	Entity*			GetEntityPtr(uint32_t atID);
+	Entity*			GetEntityPtrAt(size_t indx);
+
 
 	void			DrawCell();
 	void			DrawEntities();
@@ -83,18 +86,13 @@ inline SDL_Rect& Cell::GetDstRect()
 	return dstRect;
 }
 
-inline size_t Cell::GetEntitiesSize() const
-{
-	return entities.size();
-}
-
-inline std::vector<std::unique_ptr<Entity>>& Cell::GetEntities()
-{
-	return entities;
-}
-
 inline World* Cell::GetWorld()
 {
 	return world;
+}
+
+inline size_t Cell::GetEntitiesPtrSize() const
+{
+	return entities.size();
 }
 #endif

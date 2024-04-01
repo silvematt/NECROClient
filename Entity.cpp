@@ -52,14 +52,20 @@ void Entity::ClearOwner()
 	owner = nullptr;
 }
 
+//------------------------------------------------------------
+// Moves the entity to the cell specified in the argument,
+// removing the Ptr present in the previous owner's vector
+//------------------------------------------------------------
 void Entity::TransferToCell(Cell* c)
 {
-	Cell* previous = owner;
-	int previousPos = owner->GetEntityPos(this->ID);
-	c->AddEntity(std::move(owner->GetEntities().at(previousPos)));
+	// Remove Ptr from previous owner
+	owner->RemoveEntityPtr(ID);
+
+	// Update owner
 	SetOwner(c);
-	
-	Utility::RemoveFromVector(previous->GetEntities(), previousPos);
+
+	// Add Ptr to current owner
+	c->AddEntityPtr(this);
 }
 
 //------------------------------------------------------------

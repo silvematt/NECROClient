@@ -88,9 +88,7 @@ void Player::HandleMovements()
 	// Set speed
 	curMoveSpeed = isAiming ? PLAYER_MOVE_SPEED_AIM : PLAYER_MOVE_SPEED_FREE;
 
-	// TEST: Collision checking and Update of orthogonal position 
-	// TEST: just for testing, we only test against a single tree that needs to be in the cell (10,10)
-	// will have to test against all entities that are close enough
+	// TODO: Instead of checking against all the entities in the world, only check against the one close to the player
 	float moveAmountX = moveInput.x * curMoveSpeed;
 	float moveAmountY = moveInput.y * curMoveSpeed;
 
@@ -98,20 +96,29 @@ void Player::HandleMovements()
 	pos.x += moveAmountX;
 	coll.Update();
 
-	if (owner->GetWorld()->GetCellAt(10, 10)->GetEntitiesSize() > 0) 
+	// Get a reference to the map
+	auto& entities = owner->GetWorld()->GetEntities(); 
+
+	for (auto const& e : entities)
 	{
-		Entity* tree = ((Entity*)owner->GetWorld()->GetCellAt(10, 10)->GetEntities().at(0).get());
-		if (coll.TestIntersection(&tree->GetCollider()))
+		// Skip self
+		if (e.second->GetID() == ID)
+			continue;
+
+		if (coll.TestIntersection(&e.second->GetCollider()))
 			pos.x -= moveAmountX;
 	}
 
 	pos.y += moveAmountY;
 	coll.Update();
 
-	if (owner->GetWorld()->GetCellAt(10, 10)->GetEntitiesSize() > 0)
+	for (auto const& e : entities)
 	{
-		Entity* tree = ((Entity*)owner->GetWorld()->GetCellAt(10, 10)->GetEntities().at(0).get());
-		if (coll.TestIntersection(&tree->GetCollider()))
+		// Skip self
+		if (e.second->GetID() == ID)
+			continue;
+
+		if (coll.TestIntersection(&e.second->GetCollider()))
 			pos.y -= moveAmountY;
 	}
 

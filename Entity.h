@@ -39,6 +39,7 @@ public:
 public:
 	const uint32_t	GetID() const;
 	Collider&		GetCollider();
+	Cell*			GetOwner();
 
 	void			SetImg(Image* pImg);
 	void			SetOwner(Cell* c);
@@ -52,6 +53,11 @@ public:
 inline const uint32_t Entity::GetID() const
 {
 	return ID;
+}
+
+inline Cell* Entity::GetOwner()
+{
+	return owner;
 }
 
 inline Collider& Entity::GetCollider()

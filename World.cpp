@@ -19,7 +19,7 @@ void World::InitializeWorld()
 	p->SetImg(engine.GetAssetsManager().GetImage("player_war_idle.png"));
 	p->pos = Vector2(static_cast<float>(0 * CELL_WIDTH), static_cast<float>(0 * CELL_HEIGHT));
 	p->Init();
-	worldmap[0][0].AddEntity(std::move(p));
+	AddEntity(std::move(p));
 
 	for(int x = 0; x < WORLD_WIDTH; x++)
 		for (int y = 0; y < WORLD_HEIGHT; y++)
@@ -36,11 +36,11 @@ void World::InitializeWorld()
 			int r = rand() % 100;
 			if (r < 1)
 			{
-				// Add an entity random
-				// TODO: prefab entities
+				// Add an entity randomly
+				// TODO: prefab entities ex. AddEntity(Prefabs::Get("Tree01"))
 				std::unique_ptr<Entity> p(new Entity(Vector2(static_cast<float>(x * CELL_WIDTH), static_cast<float>(y * CELL_HEIGHT)), engine.GetAssetsManager().GetImage("tree.png")));
 				p->GetCollider().Init(true, p.get(), 0, 0, 64, 32); // set collision
-				currentCell.AddEntity(std::move(p));
+				AddEntity(std::move(p));
 			}
 		}
 
@@ -71,17 +71,15 @@ void World::Update()
 
 		if (engine.GetInput().GetMouseDown(static_cast<SDL_Scancode>(SDL_BUTTON_LEFT)))
 		{
-			if (worldCursor->GetEntitiesSize() == 0)
+			if (worldCursor->GetEntitiesPtrSize() != 0)
 			{
-				// Add an entity
-				std::unique_ptr<Entity> p(new Entity(Vector2(static_cast<float>(worldCursor->GetCellX() * CELL_WIDTH), static_cast<float>(worldCursor->GetCellY() * CELL_HEIGHT)), engine.GetAssetsManager().GetImage("tree.png")));
-				p->GetCollider().Init(true, p.get(), 0, 0, 64, 32); // set collision
-				worldCursor->AddEntity(std::move(p));
+				RemoveEntity(worldCursor->GetEntityPtrAt(0)->GetID());
 			}
 			else
 			{
-				// Remove the entity
-				worldCursor->RemoveEntity(0);
+				std::unique_ptr<Entity> p(new Entity(Vector2(static_cast<float>(worldCursor->GetCellX() * CELL_WIDTH), static_cast<float>(worldCursor->GetCellY() * CELL_HEIGHT)), engine.GetAssetsManager().GetImage("tree.png")));
+				p->GetCollider().Init(true, p.get(), 0, 0, 64, 32); // set collision
+				AddEntity(std::move(p));
 			}
 		}
 	}
@@ -150,4 +148,32 @@ Cell* World::GetCellAt(int x, int y)
 		return &worldmap[x][y];
 	else
 		return nullptr;
+}
+
+//-----------------------------------------------------------------------
+// Adds the Entity to the entities map, transferring ownership
+//-----------------------------------------------------------------------
+void World::AddEntity(std::unique_ptr<Entity>&& e)
+{
+	// Add a ptr into the Cell
+	e->gridPosX = e->pos.x / CELL_WIDTH;
+	e->gridPosY = e->pos.y / CELL_HEIGHT;
+
+	if (e->gridPosX >= 0 && e->gridPosX < WORLD_WIDTH && e->gridPosY >= 0 && e->gridPosY < WORLD_HEIGHT)
+	{
+		worldmap[e->gridPosX][e->gridPosY].AddEntityPtr(e.get());
+
+		// Add entity in the world map
+		allEntities.insert({ e->GetID(), std::move(e) });
+	}
+	else
+	{
+		SDL_LogError(SDL_LOG_CATEGORY_ERROR, "World::AddEntity(): gridPos is out of bounds. Entity will not be added to map.\n");
+	}
+}
+
+void World::RemoveEntity(uint32_t atID)
+{
+	allEntities.at(atID)->GetOwner()->RemoveEntityPtr(atID);
+	allEntities.erase(atID);
 }

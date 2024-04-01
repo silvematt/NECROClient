@@ -1,6 +1,9 @@
 #ifndef NECROWORLD_H
 #define NECROWORLD_H
 
+#include <unordered_map>
+#include <memory>
+
 #include "Cell.h"
 
 const int WORLD_WIDTH  = 32;
@@ -19,12 +22,32 @@ private:
 	Cell* worldCursor = nullptr;					// The cell the mouse is currently hovering on (if any)
 	SDL_Texture* worldCursorTexture;
 
+	//--------------------------------------------------------------------------------------
+	// Entities physically exist and are phyiscally owned by the World they're spawned in.
+	// Every entity exists inside the allEntities unordered_map, indexed by EntityID.
+	// 
+	// Entities are logically owned by Cells, where each Cell stores a vector of raw pointers
+	// to the allEntities they logically own. That means we can quickly get any entity by ID
+	// and given the Cell, we can quickly get all the entities contained in that cell.
+	//--------------------------------------------------------------------------------------
+	std::unordered_map<uint32_t, std::unique_ptr<Entity>> allEntities;
+
 public:
 	Cell* GetCellAt(int x, int y);
+
+	const std::unordered_map<uint32_t, std::unique_ptr<Entity>>& GetEntities();
+
+	void			AddEntity(std::unique_ptr<Entity>&& e);
+	void			RemoveEntity(uint32_t atID);
 
 	void			InitializeWorld();
 	void			Update();
 	void			Draw();
 };
+
+inline const std::unordered_map<uint32_t, std::unique_ptr<Entity>>& World::GetEntities()
+{
+	return allEntities;
+}
 
 #endif
