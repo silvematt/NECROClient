@@ -9,6 +9,9 @@
 const int SCREEN_WIDTH = 1920;
 const int SCREEN_HEIGHT = 1080;
 
+const int HALF_SCREEN_WIDTH = 960;
+const int HALF_SCREEN_HEIGHT = 540;
+
 class NECRORenderer
 {
 public:

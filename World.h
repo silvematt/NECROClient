@@ -6,8 +6,8 @@
 
 #include "Cell.h"
 
-const int WORLD_WIDTH  = 32;
-const int WORLD_HEIGHT = 32;
+const int WORLD_WIDTH  = 64;
+const int WORLD_HEIGHT = 64;
 
 //-------------------------------------------------
 // A World represents a level or a map with its
@@ -22,6 +22,16 @@ private:
 	Cell* worldCursor = nullptr;					// The cell the mouse is currently hovering on (if any)
 	SDL_Texture* worldCursorTexture;
 
+	// Constant added to visible min/max
+	const int VISIBLE_X_PLUS_OFFSET = 4;
+	const int VISIBLE_Y_PLUS_OFFSET = 4;
+
+	int visibleMinX = 0;
+	int visibleMaxX = 0;
+	int visibleMinY = 0;
+	int visibleMaxY = 0;
+
+
 	//--------------------------------------------------------------------------------------
 	// Entities physically exist and are phyiscally owned by the World they're spawned in.
 	// Every entity exists inside the allEntities unordered_map, indexed by EntityID.
@@ -34,6 +44,9 @@ private:
 
 	// See Entity::TransferToCellImmediately
 	std::vector<Entity*> entitiesWaitingForTransfer;
+
+private:
+	void			UpdateVisibleCoords(); // updates visibleMinMax variables based on curCamera position and zoom
 
 public:
 	Cell* GetCellAt(int x, int y);

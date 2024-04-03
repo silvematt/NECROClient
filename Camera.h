@@ -8,6 +8,9 @@ const float CAMERA_DEFAULT_ZOOM = 1.0f;
 class Camera
 {
 private:
+	const float MIN_ZOOM = 0.5f;
+	const float MAX_ZOOM = 2.0f;
+
 	// ------------------------------------------------------------------------------------------
 	// zoomSizeX and zoomSizeY are used to keep the camera centered while zooming in/out.
 	// 
@@ -25,7 +28,7 @@ private:
 	float zoomSizeY;
 
 	float zoomLevel = 1.0f;
-	float zoomSpeed = 0.1f;
+	float zoomSpeed = 0.05f;
 
 	float panSpeed = 50.0f;
 

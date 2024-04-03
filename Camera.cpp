@@ -8,6 +8,8 @@
 void Camera::SetZoom(float newZoom)
 {
 	zoomLevel = newZoom;
+	zoomLevel = SDL_clamp(zoomLevel, MIN_ZOOM, MAX_ZOOM);
+
 	zoomSizeX = SCREEN_WIDTH / zoomLevel;
 	zoomSizeY = SCREEN_HEIGHT / zoomLevel;
 	engine.GetRenderer().SetScale(zoomLevel, zoomLevel);
@@ -19,6 +21,8 @@ void Camera::SetZoom(float newZoom)
 void Camera::ResetZoom()
 {
 	zoomLevel = CAMERA_DEFAULT_ZOOM;
+	zoomLevel = SDL_clamp(zoomLevel, MIN_ZOOM, MAX_ZOOM);
+
 	zoomSizeX = SCREEN_WIDTH / zoomLevel;
 	zoomSizeY = SCREEN_HEIGHT / zoomLevel;
 	engine.GetRenderer().SetScale(zoomLevel, zoomLevel);

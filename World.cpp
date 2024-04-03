@@ -50,11 +50,37 @@ void World::InitializeWorld()
 	curCamera->SetZoom(CAMERA_DEFAULT_ZOOM);
 }
 
+//------------------------------------------------------------------------------
+// updates visibleMinMax variables based on curCamera position and zoom
+//------------------------------------------------------------------------------
+void World::UpdateVisibleCoords()
+{
+	// Get tile at the center of the screen
+	Vector2 midTilePos = engine.GetGame().GetMainCamera()->ScreenToWorld(Vector2(HALF_SCREEN_WIDTH, HALF_SCREEN_HEIGHT));
+	midTilePos.Clamp(0, WORLD_WIDTH - 1, 0, WORLD_HEIGHT - 1);
+	Cell* midTile = &worldmap[(int)midTilePos.x][(int)midTilePos.y];
+
+	// Compute visible min/max 
+	float curCameraZoom = curCamera->GetZoom();
+	visibleMinX = (int)(midTile->GetCellX() - roundf(((HALF_SCREEN_WIDTH / HALF_CELL_WIDTH) / curCameraZoom))) - VISIBLE_X_PLUS_OFFSET;
+	visibleMaxX = (int)(midTile->GetCellX() + roundf(((HALF_SCREEN_WIDTH / HALF_CELL_WIDTH) / curCameraZoom))) + VISIBLE_X_PLUS_OFFSET;
+	visibleMinY = (int)(midTile->GetCellY() - roundf(((HALF_SCREEN_HEIGHT / HALF_CELL_HEIGHT) / curCameraZoom))) - VISIBLE_X_PLUS_OFFSET;
+	visibleMaxY = (int)(midTile->GetCellY() + roundf(((HALF_SCREEN_HEIGHT / HALF_CELL_HEIGHT) / curCameraZoom))) + VISIBLE_X_PLUS_OFFSET;
+
+	// Clamp
+	visibleMinX = SDL_clamp(visibleMinX, 0, WORLD_WIDTH - 1);
+	visibleMinY = SDL_clamp(visibleMinY, 0, WORLD_HEIGHT - 1);
+	visibleMaxX = SDL_clamp(visibleMaxX, 0, WORLD_WIDTH - 1);
+	visibleMaxY = SDL_clamp(visibleMaxY, 0, WORLD_HEIGHT - 1);
+}
+
 //------------------------------------------------------------
 // Updates the world
 //------------------------------------------------------------
 void World::Update()
 {
+	UpdateVisibleCoords();
+
 	// Compute selected cell
 	int selectedCellX = 0, selectedCellY = 0;
 
@@ -85,11 +111,11 @@ void World::Update()
 	else
 		worldCursor = nullptr;
 
-	// Update all the cells, TODO we can let the World have a vector of pointers to all the cell's entities to avoid having to look inside the worldmap
-	//						 In that way, we can also mark entities as 'static' and avoid to update them each world update.
+
+	// Update cells only in the visible rect
 	entitiesWaitingForTransfer.clear();
-	for (int x = 0; x < WORLD_WIDTH; x++)
-		for (int y = 0; y < WORLD_HEIGHT; y++)
+	for (int x = visibleMinX; x < visibleMaxX; x++)
+		for (int y = visibleMinY; y < visibleMaxY; y++)
 		{
 			// Draw the cells
 			Cell& currentCell = worldmap[x][y];
@@ -109,19 +135,19 @@ void World::Draw()
 {
 	// Draw the world on the main target
 	engine.GetRenderer().SetRenderTarget(NECRORenderer::ERenderTargets::MAIN_TARGET);
-
+	
 	// Draw the world base 
-	for (int x = 0; x < WORLD_WIDTH; x++)
-		for (int y = 0; y < WORLD_HEIGHT; y++)
+	for (int x = visibleMinX; x < visibleMaxX; x++)
+		for (int y = visibleMinY; y < visibleMaxY; y++)
 		{
 			// Draw the cells
 			Cell& currentCell = worldmap[x][y];
 			currentCell.DrawCell();
 		}
 
-	// Draw the entities, TODO: same thing as said above for the Cell update
-	for (int x = 0; x < WORLD_WIDTH; x++)
-		for (int y = 0; y < WORLD_HEIGHT; y++)
+	// Draw the entities
+	for (int x = visibleMinX; x < visibleMaxX; x++)
+		for (int y = visibleMinY; y < visibleMaxY; y++)
 		{
 			// Draw the cells
 			Cell& currentCell = worldmap[x][y];

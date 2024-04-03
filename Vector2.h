@@ -14,6 +14,7 @@ public:
 
 	void Set(float pX, float pY);
 	void Zero();
+	void Clamp(float minX, float maxX, float minY, float maxY);
 
 	void Normalize();
 };
@@ -53,6 +54,19 @@ inline void Vector2::Normalize()
 		x /= length;
 		y /= length;
 	}
+}
+
+inline void Vector2::Clamp(float minX, float maxX, float minY, float maxY)
+{
+	if (x < minX)
+		x = minX;
+	else if (x > maxX)
+		x = maxX;
+
+	if (y < minY)
+		y = minY;
+	else if (y > maxY)
+		y = maxY;
 }
 
 #endif
