@@ -83,6 +83,9 @@
     <ClCompile Include="Collider.cpp">
       <Filter>Engine\Physics</Filter>
     </ClCompile>
+    <ClCompile Include="Prefab.cpp">
+      <Filter>Engine\Data</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="NECROEngine.h">
@@ -138,6 +141,9 @@
     </ClInclude>
     <ClInclude Include="Collider.h">
       <Filter>Engine\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Prefab.h">
+      <Filter>Engine\Data</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

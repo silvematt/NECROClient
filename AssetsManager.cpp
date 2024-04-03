@@ -3,6 +3,7 @@
 
 const char* IMGS_FOLDER		= "Data/imgs/";
 const char* FONTS_FOLDER	= "Data/fonts/";
+const char* PREFABS_FOLDER	= "Data/prefabs/";
 
 //-------------------------------------------------
 // Initializing the AssetsManager loads everything
@@ -11,6 +12,7 @@ int NECROAssetsManager::Init()
 {
 	LoadAllImages();
 	LoadAllFonts();
+	LoadAllPrefabs();
 
 	return 0;
 }
@@ -24,6 +26,7 @@ int NECROAssetsManager::Init()
 void NECROAssetsManager::LoadAllImages()
 {
 	// General
+	LoadImage("null_img.png", 0, 0);
 	LoadImage("tile.png", 0, 0);
 	LoadImage("tile_highlighted.png", 0, 0);
 	LoadImage("tree.png", -15, -5);
@@ -48,6 +51,12 @@ void NECROAssetsManager::LoadAllFonts()
 	LoadFont("montserrat.regular.ttf", FONT_DEFAULT_PTSIZE, "defaultFont");
 }
 
+// TODO: Prefab loading should be done only if necessary, when loading the map we'll look at the content and only load the needed prefabs, same thing for the images
+void NECROAssetsManager::LoadAllPrefabs()
+{
+	LoadPrefab("tree01.nprfb");
+}
+
 void NECROAssetsManager::LoadImage(const std::string& filename, int xOffset, int yOffset, const std::string& shortname)
 {
 	std::string fullPath = IMGS_FOLDER;
@@ -66,34 +75,6 @@ void NECROAssetsManager::LoadTilesetImage(const std::string& filename, int xOffs
 	Image img(LoadSDLTexture(fullPath.c_str()), xOffset, yOffset, tWidth, tHeight, tNumX, tNumY);
 	if (img.GetSrc() != NULL)
 		images.insert({ shortname.empty() ? filename : shortname, img });
-}
-
-//-------------------------------------------------
-// Loads and returns an SDL_Texture
-//-------------------------------------------------
-SDL_Texture* NECROAssetsManager::LoadSDLTexture(const char* filename)
-{
-	SDL_Texture* texture;
-
-	texture = IMG_LoadTexture(engine.GetRenderer().GetInnerRenderer(), filename);
-
-	if (texture != NULL) // IMG_LoadTexture returns NULL on failure
-	{
-		return texture;
-	}
-	else
-	{
-		SDL_LogError(SDL_LOG_CATEGORY_ERROR,"NECROAssetsManager: Failed to LoadImage(%s)\n", filename);
-		return NULL;
-	}
-}
-
-//-------------------------------------------------
-// Returns an SDL_Texture*
-//-------------------------------------------------
-Image* NECROAssetsManager::GetImage(const std::string& filename)
-{
-	return &images.at(filename);
 }
 
 //-------------------------------------------------
@@ -119,9 +100,74 @@ void NECROAssetsManager::LoadFont(const std::string& filename, int ptsize, const
 }
 
 //-------------------------------------------------
+// Loads and returns an SDL_Texture
+//-------------------------------------------------
+SDL_Texture* NECROAssetsManager::LoadSDLTexture(const char* filename)
+{
+	SDL_Texture* texture;
+
+	texture = IMG_LoadTexture(engine.GetRenderer().GetInnerRenderer(), filename);
+
+	if (texture != NULL) // IMG_LoadTexture returns NULL on failure
+	{
+		return texture;
+	}
+	else
+	{
+		SDL_LogError(SDL_LOG_CATEGORY_ERROR,"NECROAssetsManager: Failed to LoadImage(%s)\n", filename);
+		return NULL;
+	}
+}
+
+void NECROAssetsManager::LoadPrefab(const std::string& filename)
+{
+	std::string fullPath = PREFABS_FOLDER;
+	fullPath += filename;
+
+	Prefab p;
+	p.LoadFromFile(fullPath);
+	prefabs.insert({ p.GetName(), p });
+}
+
+//-------------------------------------------------
+// Returns an SDL_Texture*
+//-------------------------------------------------
+Image* NECROAssetsManager::GetImage(const std::string& filename)
+{
+	auto it = images.find(filename);
+	if (it != images.end())
+	{
+		return &it->second;
+	}
+
+	SDL_LogError(SDL_LOG_CATEGORY_ERROR, "GetImage: %s not found! Returning null_img.", filename.c_str());
+	return &images.at("null_img.png");
+}
+
+
+//-------------------------------------------------
 // Returns an TTF_Font*
 //-------------------------------------------------
 TTF_Font* NECROAssetsManager::GetFont(const std::string& filename)
 {
-	return fonts.at(filename);
+	auto it = fonts.find(filename);
+	if (it != fonts.end())
+	{
+		return it->second;
+	}
+
+	SDL_LogError(SDL_LOG_CATEGORY_ERROR, "GetFont: %s not found!", filename.c_str());
+	return nullptr;
+}
+
+Prefab* NECROAssetsManager::GetPrefab(const std::string& prefabName)
+{
+	auto it = prefabs.find(prefabName);
+	if (it != prefabs.end()) 
+	{
+		return &it->second;
+	}
+
+	SDL_LogError(SDL_LOG_CATEGORY_ERROR, "GetPrefab: %s not found!", prefabName.c_str());
+	return nullptr;
 }

@@ -37,10 +37,9 @@ void World::InitializeWorld()
 			if (r < 1)
 			{
 				// Add an entity randomly
-				// TODO: prefab entities ex. AddEntity(Prefabs::Get("Tree01"))
-				std::unique_ptr<Entity> p(new Entity(Vector2(static_cast<float>(x * CELL_WIDTH), static_cast<float>(y * CELL_HEIGHT)), engine.GetAssetsManager().GetImage("tree.png")));
-				p->GetCollider().Init(true, p.get(), 0, 0, 64, 32); // set collision
-				AddEntity(std::move(p));
+				std::unique_ptr<Entity> tree = Prefab::InstantiatePrefab("tree01", Vector2(x * CELL_WIDTH, y * CELL_HEIGHT));
+				if(tree)
+					AddEntity(std::move(tree));
 			}
 		}
 
@@ -77,9 +76,9 @@ void World::Update()
 			}
 			else
 			{
-				std::unique_ptr<Entity> p(new Entity(Vector2(static_cast<float>(worldCursor->GetCellX() * CELL_WIDTH), static_cast<float>(worldCursor->GetCellY() * CELL_HEIGHT)), engine.GetAssetsManager().GetImage("tree.png")));
-				p->GetCollider().Init(true, p.get(), 0, 0, 64, 32); // set collision
-				AddEntity(std::move(p));
+				std::unique_ptr<Entity> tree = Prefab::InstantiatePrefab("tree01", Vector2(worldCursor->GetCellX() * CELL_WIDTH, worldCursor->GetCellY() * CELL_HEIGHT));
+				if(tree)
+					AddEntity(std::move(tree));
 			}
 		}
 	}
