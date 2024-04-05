@@ -3,6 +3,9 @@
 #include "NECROEngine.h"
 #include "Game.h"
 
+// Initialize static member
+uint32_t Player::ENT_ID = 0;
+
 //-------------------------------------------------
 // Initialize the player
 //-------------------------------------------------

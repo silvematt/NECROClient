@@ -32,6 +32,12 @@ private:
 
 	float panSpeed = 50.0f;
 
+	bool freeCamera = false;
+
+private:
+	void		FreeMove();
+	void		LockPlayerMove();
+
 public:
 	Vector2 pos;
 

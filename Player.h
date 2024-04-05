@@ -9,6 +9,13 @@
 const float PLAYER_MOVE_SPEED_FREE = 180.0f;
 const float PLAYER_MOVE_SPEED_AIM = 100.0f;
 
+// Dimensions of each player frame
+const int PLAYER_WIDTH = 128;
+const int PLAYER_HEIGHT = 128;
+
+const int HALF_PLAYER_WIDTH = 64;
+const int HALF_PLAYER_HEIGHT = 64;
+
 //-------------------------------------------------
 // Player class, derived by Entity
 //-------------------------------------------------
@@ -42,8 +49,10 @@ private:
 	void			UpdateCloseEntities();
 
 public:
+	static uint32_t	ENT_ID;
 	bool			controlsEnabled = true; // TEST: 
 
+public:
 	void			Init();
 
 	void			HandleAnim();

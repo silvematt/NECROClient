@@ -19,6 +19,8 @@ void World::InitializeWorld()
 	p->SetImg(engine.GetAssetsManager().GetImage("player_war_idle.png"));
 	p->pos = Vector2(static_cast<float>(0 * CELL_WIDTH), static_cast<float>(0 * CELL_HEIGHT));
 	p->Init();
+	Player::ENT_ID = p->GetID();
+	engine.GetGame().SetCurPlayer(p.get());
 	AddEntity(std::move(p));
 
 	for(int x = 0; x < WORLD_WIDTH; x++)

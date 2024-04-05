@@ -94,6 +94,14 @@ int NECROInput::GetKeyHeld(SDL_Scancode key) const
 	return keys[key];
 }
 
+int NECROInput::GetKeyDown(SDL_Scancode key) const 
+{
+	if (key < 0 || key > numKeys)
+		return -1;
+
+	return (keys[key] & ~prevKeys[key]);
+}
+
 int NECROInput::GetMouseHeld(SDL_Scancode button) const
 {
 	if (button < SDL_BUTTON_LEFT || button > SDL_BUTTON_RIGHT)

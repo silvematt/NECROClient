@@ -32,7 +32,7 @@ public:
 	int				GetMouseDown(SDL_Scancode button) const;
 	Vector2			GetMouseMotionThisFrame();
 	int				GetKeyHeld(SDL_Scancode key) const;
-
+	int				GetKeyDown(SDL_Scancode key) const;
 	int				Init();
 	void			Handle();
 
