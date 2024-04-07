@@ -49,6 +49,8 @@ private:
 	void			UpdateCloseEntities();
 
 public:
+	~Player();
+
 	static uint32_t	ENT_ID;
 	bool			controlsEnabled = true; // TEST: 
 

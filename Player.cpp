@@ -6,6 +6,12 @@
 // Initialize static member
 uint32_t Player::ENT_ID = 0;
 
+Player::~Player()
+{
+	// Set cur player to nullptr in NECROGame when destroyed
+	engine.GetGame().SetCurPlayer(nullptr);
+}
+
 //-------------------------------------------------
 // Initialize the player
 //-------------------------------------------------
@@ -25,6 +31,9 @@ void Player::Init()
 	// Construct Collider
 	coll.Init(true, this, 0, 0, 32, 16);
 	coll.SetOffset(0, -16);
+
+	occlModifierX = 100;
+	occlModifierY = 75;
 }
 
 //-------------------------------------------------

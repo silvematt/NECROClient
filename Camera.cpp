@@ -91,7 +91,10 @@ void Camera::LockPlayerMove()
 		deltaY = sy - HALF_PLAYER_HEIGHT;
 	}
 	else
+	{
 		freeCamera = true; // if the player is not there, go in free camera
+		return;
+	}
 
 	// Update position, subtracting ((oldZoomSizeX / 2) - (zoomSizeX / 2)) allows us to keep the camera centered after zooming
 	// It adjusts the camera position by half of the difference in each dimension to keep the view centered.

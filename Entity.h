@@ -12,6 +12,7 @@ class Cell;
 //-----------------------------------------------------------------------------
 class Entity
 {
+	friend class Prefab;
 	friend class Animator; // Animator is a friend class of Entity
 
 private:
@@ -28,7 +29,14 @@ protected:
 	// Used for entities that uses tilesets, index of X and Y, they will be multiplied by img->GetTileset().tileWidth and img->GetTileset().tileHeight
 	int tilesetXOff, tilesetYOff;
 
+	// DST used for occlusion testing
+	int occlModifierX, occlModifierY; // used to help shape the occlusion box starting from the dst rect
+	SDL_Rect occlusionRect;
+
+	bool occludes = false;		// if true, it will be drawn with OCCLUDED_SPRITE_ALPHA_VALUE
+
 public:
+	virtual ~Entity();
 	Entity();
 	Entity(Vector2 pInitialPos, Image* pImg);
 
@@ -41,12 +49,14 @@ public:
 	const uint32_t	GetID() const;
 	Collider&		GetCollider();
 	Cell*			GetOwner();
+	bool			Occludes();
 
 	void			SetImg(Image* pImg);
 	void			SetOwner(Cell* c);
 	void			ClearOwner();
 	void			TransferToCellImmediately(Cell* c);		// Transfer this entity to exist in another cell 
 	void			TransferToCellQueue(Cell* c);			// Transfer this entity to exist in another cell AFTER a world update completes
+	void			SetOccludes(bool val);
 
 	virtual void	Update();
 	virtual void	Draw();
@@ -65,6 +75,16 @@ inline Cell* Entity::GetOwner()
 inline Collider& Entity::GetCollider()
 {
 	return coll;
+}
+
+inline void Entity::SetOccludes(bool val)
+{
+	occludes = val;
+}
+
+inline bool Entity::Occludes()
+{
+	return occludes;
 }
 
 #endif

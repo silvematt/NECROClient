@@ -4,6 +4,7 @@
 const SDL_Color colorBlack = { 0, 0, 0, SDL_ALPHA_OPAQUE };
 const SDL_Color colorGreen = { 0, 255, 0, SDL_ALPHA_OPAQUE };
 const SDL_Color colorRed = { 255, 0, 0, SDL_ALPHA_OPAQUE };
+const SDL_Color colorYellow = { 255, 255, 0, SDL_ALPHA_OPAQUE };
 
 //--------------------------------------
 // Initialize
@@ -114,9 +115,9 @@ void NECRORenderer::DrawTextDirectly(TTF_Font* font, const char* str, int screen
 //------------------------------------------------
 // Calls SDL_RenderFillRect on the inner renderer
 //------------------------------------------------
-void NECRORenderer::DrawRect(SDL_Rect* r)
+void NECRORenderer::DrawRect(SDL_Rect* r, SDL_Color c)
 {
-	SDL_SetRenderDrawColor(innerRenderer, 0xFF, 0x00, 0x00, 0xFF);
+	SDL_SetRenderDrawColor(innerRenderer, c.r, c.g, c.b, c.a);
 	SDL_RenderFillRect(innerRenderer, r);
 }
 

@@ -15,6 +15,8 @@ private:
 	bool isStatic;
 	bool colliderEnabled;
 	SDL_Rect collRect;
+	int occlModX;
+	int occlModY;
 
 public:
 	bool		LoadFromFile(const std::string& filename);

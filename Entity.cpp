@@ -5,15 +5,21 @@
 
 uint32_t Entity::ENT_NEXT_ID = 0;
 
+Entity::~Entity()
+{
+
+}
+
 Entity::Entity()
 {
 	ID = ENT_NEXT_ID;
 	ENT_NEXT_ID++;
 
 	img = nullptr;
-	owner = nullptr;
+	owner = nextOwner = nullptr;
 	tilesetXOff = tilesetYOff = 0;
 	gridPosX = gridPosY = 0;
+	occlusionRect = { 0,0,0,0 };
 }
 
 Entity::Entity(Vector2 pInitialPos, Image* pImg)
@@ -118,6 +124,18 @@ void Entity::Update()
 	// TODO: may not have to update collider here for static entities, but need to properly set them
 	if (coll.enabled)
 		coll.Update();
+
+	// Check for occlusion against player
+	Entity* p = (Entity*)engine.GetGame().GetCurPlayer();
+	if (p && p != this) // TODO: && this.testsForOcclusion (bitflag)
+	{
+		// Check if this entity is close enough to the player to be worth testing intersection (first with gridPos, then with pos)
+		if (abs(p->gridPosX - gridPosX) < ENTITY_OCCLUSION_TEST_X_DIFF && abs(p->gridPosY - gridPosY) < ENTITY_OCCLUSION_TEST_Y_DIFF &&
+			(p->pos.x < this->pos.x || p->pos.y < this->pos.y) && SDL_HasIntersection(&occlusionRect, &p->occlusionRect))
+			SetOccludes(true);
+		else
+			SetOccludes(false);
+	}
 }
 
 //------------------------------------------------------------
@@ -125,9 +143,23 @@ void Entity::Update()
 //------------------------------------------------------------
 void Entity::Draw()
 {
+	Uint8 previousAlpha = 0;
+	SDL_GetTextureAlphaMod(img->GetSrc(), &previousAlpha);
+
+	if(occludes)
+		SDL_SetTextureAlphaMod(img->GetSrc(), OCCLUDED_SPRITE_ALPHA_VALUE);
+
 	if (!img->IsTileset())
 	{
 		SDL_Rect dstRect = { static_cast<int>(isoPos.x), static_cast<int>(isoPos.y), img->GetWidth(), img->GetHeight() };
+		occlusionRect = dstRect;
+
+		occlusionRect.w -= occlModifierX;
+		occlusionRect.h -= occlModifierY;
+		occlusionRect.x += (occlModifierX / 2);
+		occlusionRect.y += (occlModifierY / 2);
+
+		//engine.GetRenderer().DrawRect(&occlusionRect, colorYellow);
 		engine.GetRenderer().DrawImageDirectly(img->GetSrc(), NULL, &dstRect);
 	}
 	else
@@ -135,8 +167,19 @@ void Entity::Draw()
 		Image::Tileset tset = img->GetTileset();
 		SDL_Rect srcRect = { tilesetXOff * tset.tileWidth, tilesetYOff * tset.tileHeight, tset.tileWidth, tset.tileHeight };
 		SDL_Rect dstRect = { static_cast<int>(isoPos.x), static_cast<int>(isoPos.y), tset.tileWidth, tset.tileHeight };
+		occlusionRect = dstRect;
+
+		occlusionRect.w -= occlModifierX;
+		occlusionRect.h -= occlModifierY;
+		occlusionRect.x += (occlModifierX / 2);
+		occlusionRect.y += (occlModifierY / 2);
+
+		//engine.GetRenderer().DrawRect(&occlusionRect, colorYellow);
 		engine.GetRenderer().DrawImageDirectly(img->GetSrc(), &srcRect, &dstRect);
 	}
+
+	// Restore alpha mod
+	SDL_SetTextureAlphaMod(img->GetSrc(), previousAlpha);
 
 	if (coll.enabled) // && debug collider
 		coll.DebugDraw();

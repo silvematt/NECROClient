@@ -12,6 +12,12 @@ const int SCREEN_HEIGHT = 1080;
 const int HALF_SCREEN_WIDTH = 960;
 const int HALF_SCREEN_HEIGHT = 540;
 
+const int	ENTITY_OCCLUSION_TEST_X_DIFF = 6;
+const int	ENTITY_OCCLUSION_TEST_Y_DIFF = 6;
+
+const Uint8 NOT_OCCLUDED_SPRITE_ALPHA_VALUE = 255;
+const Uint8 OCCLUDED_SPRITE_ALPHA_VALUE = 100;
+
 class NECRORenderer
 {
 public:
@@ -54,7 +60,7 @@ public:
 	void					DrawImageDirectly(SDL_Texture* toDraw, const SDL_Rect* srcRect, const SDL_Rect* dstRect);
 	void					DrawTextDirectly(TTF_Font* font, const char* str, int screenX, int screenY, const SDL_Color& color);
 
-	void					DrawRect(SDL_Rect* r);
+	void					DrawRect(SDL_Rect* r, SDL_Color c);
 
 	void					SetScale(float scaleX, float scaleY);
 };
@@ -63,6 +69,7 @@ public:
 extern const SDL_Color colorBlack;
 extern const SDL_Color colorGreen;
 extern const SDL_Color colorRed;
+extern const SDL_Color colorYellow;
 
 inline SDL_Window* const NECRORenderer::GetWindow() const
 {
