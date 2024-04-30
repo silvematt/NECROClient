@@ -4,6 +4,7 @@
 #include <unordered_map>
 #include <memory>
 
+#include "Renderer.h"
 #include "Cell.h"
 
 const int WORLD_WIDTH  = 64;
@@ -45,11 +46,17 @@ private:
 	// See Entity::TransferToCellImmediately
 	std::vector<Entity*> entitiesWaitingForTransfer;
 
+	// Lighting
+	float baseLight = .5f;
+	SDL_Color baseLightColor = colorWhite;
+
 private:
 	void			UpdateVisibleCoords(); // updates visibleMinMax variables based on curCamera position and zoom
 
 public:
 	Cell* GetCellAt(int x, int y);
+	float GetBaseLightIntensity() const;
+	SDL_Color GetBaseLightColor() const;
 
 	const std::unordered_map<uint32_t, std::unique_ptr<Entity>>& GetEntities();
 
@@ -68,6 +75,16 @@ public:
 inline const std::unordered_map<uint32_t, std::unique_ptr<Entity>>& World::GetEntities()
 {
 	return allEntities;
+}
+
+inline float World::GetBaseLightIntensity() const
+{
+	return baseLight;
+}
+
+inline SDL_Color World::GetBaseLightColor() const
+{
+	return baseLightColor;
 }
 
 #endif

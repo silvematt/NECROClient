@@ -145,5 +145,8 @@
     <ClInclude Include="Prefab.h">
       <Filter>Engine\Data</Filter>
     </ClInclude>
+    <ClInclude Include="Light.h">
+      <Filter>Engine\Renderer</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

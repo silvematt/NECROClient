@@ -160,6 +160,7 @@
     <ClInclude Include="Game.h" />
     <ClInclude Include="Image.h" />
     <ClInclude Include="Input.h" />
+    <ClInclude Include="Light.h" />
     <ClInclude Include="Math.h" />
     <ClInclude Include="NECROEngine.h" />
     <ClInclude Include="Player.h" />

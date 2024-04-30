@@ -139,15 +139,38 @@ void Entity::Update()
 }
 
 //------------------------------------------------------------
+// Looks at the lighting model and updates lightingColor to 
+// draw this entity
+//------------------------------------------------------------
+void Entity::UpdateLighting()
+{
+	SDL_Color* cellColor = owner->GetLightingColor();
+	lightingColor.r = cellColor->r * owner->GetLightingIntensity();
+	lightingColor.g = cellColor->g * owner->GetLightingIntensity();
+	lightingColor.b = cellColor->b * owner->GetLightingIntensity();
+}
+
+//------------------------------------------------------------
 // Draws the Entity
 //------------------------------------------------------------
 void Entity::Draw()
 {
+	UpdateLighting();
+
+	// Save texture's alpha
 	Uint8 previousAlpha = 0;
 	SDL_GetTextureAlphaMod(img->GetSrc(), &previousAlpha);
-
+	
+	// Save texture's color
+	Uint8 previousR, previousG, previousB;
+	SDL_GetTextureColorMod(img->GetSrc(), &previousR, &previousG, &previousB);
+	
+	// Update alpha
 	if(occludes)
 		SDL_SetTextureAlphaMod(img->GetSrc(), OCCLUDED_SPRITE_ALPHA_VALUE);
+
+	// Update Color with color data
+	SDL_SetTextureColorMod(img->GetSrc(), lightingColor.r, lightingColor.g, lightingColor.b);
 
 	if (!img->IsTileset())
 	{
@@ -178,9 +201,10 @@ void Entity::Draw()
 		engine.GetRenderer().DrawImageDirectly(img->GetSrc(), &srcRect, &dstRect);
 	}
 
-	// Restore alpha mod
+	// Restore alpha mod and color mod
 	SDL_SetTextureAlphaMod(img->GetSrc(), previousAlpha);
-
-	if (coll.enabled) // && debug collider
-		coll.DebugDraw();
+	SDL_SetTextureColorMod(img->GetSrc(), previousR, previousG, previousB);
+	
+	//if (coll.enabled) // && debug collider
+	//	coll.DebugDraw();
 }

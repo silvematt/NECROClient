@@ -42,6 +42,10 @@ private:
 	// Entity ptrs logically owned by this cell
 	std::vector<Entity*> entities;
 
+	// Lighting
+	SDL_Color lColor;
+	float lIntensity;
+
 public:
 	Cell();
 
@@ -50,6 +54,9 @@ public:
 
 	SDL_Rect&		GetDstRect();
 	World*			GetWorld();
+
+	SDL_Color*		GetLightingColor();
+	float&			GetLightingIntensity();
 
 	void			SetWorld(World* w);
 	void			SetCellCoordinates(const int x, const int y);
@@ -95,4 +102,15 @@ inline size_t Cell::GetEntitiesPtrSize() const
 {
 	return entities.size();
 }
+
+inline SDL_Color* Cell::GetLightingColor()
+{
+	return &lColor;
+}
+
+inline float& Cell::GetLightingIntensity()
+{
+	return lIntensity;
+}
+
 #endif

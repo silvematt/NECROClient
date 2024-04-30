@@ -44,6 +44,9 @@ void Cell::SetCellCoordinates(const int x, const int y)
 void Cell::SetWorld(World* w)
 {
 	world = w;
+
+	lColor = w->GetBaseLightColor();
+	lIntensity = w->GetBaseLightIntensity();
 }
 
 //--------------------------------------
@@ -136,7 +139,17 @@ Entity* Cell::GetEntityPtrAt(size_t indx)
 //--------------------------------------
 void Cell::DrawCell()
 {
+	// Save texture's color
+	Uint8 previousR, previousG, previousB;
+	SDL_GetTextureColorMod(baseTexture, &previousR, &previousG, &previousB);
+
+	// Update Color with color data
+	SDL_SetTextureColorMod(baseTexture, lColor.r * lIntensity, lColor.g * lIntensity, lColor.b * lIntensity);
+
 	engine.GetRenderer().DrawImageDirectly(baseTexture, NULL, &dstRect);
+
+	// Resotre previous color mod
+	SDL_SetTextureColorMod(baseTexture, previousR, previousG, previousB);
 }
 
 //--------------------------------------

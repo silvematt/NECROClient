@@ -35,6 +35,7 @@ protected:
 
 	bool occludes = false;		// if true, it will be drawn with OCCLUDED_SPRITE_ALPHA_VALUE
 
+	SDL_Color lightingColor;	// Calculated in UpdateLighting()
 public:
 	virtual ~Entity();
 	Entity();
@@ -57,6 +58,7 @@ public:
 	void			TransferToCellImmediately(Cell* c);		// Transfer this entity to exist in another cell 
 	void			TransferToCellQueue(Cell* c);			// Transfer this entity to exist in another cell AFTER a world update completes
 	void			SetOccludes(bool val);
+	void			UpdateLighting();
 
 	virtual void	Update();
 	virtual void	Draw();
