@@ -104,7 +104,7 @@ void World::Update()
 			}
 			else
 			{
-				std::unique_ptr<Entity> tree = Prefab::InstantiatePrefab("tree01", Vector2(worldCursor->GetCellX() * CELL_WIDTH, worldCursor->GetCellY() * CELL_HEIGHT));
+				std::unique_ptr<Entity> tree = Prefab::InstantiatePrefab("campfire01", Vector2(worldCursor->GetCellX() * CELL_WIDTH, worldCursor->GetCellY() * CELL_HEIGHT));
 				if(tree)
 					AddEntity(std::move(tree));
 			}

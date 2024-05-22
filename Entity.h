@@ -12,6 +12,13 @@ class Cell;
 //-----------------------------------------------------------------------------
 class Entity
 {
+	// Flags that describe entities
+	enum Flags
+	{
+		CanOccludePlayer = 1,
+		EmitsLight = 2
+	};
+
 	friend class Prefab;
 	friend class Animator; // Animator is a friend class of Entity
 
@@ -24,6 +31,8 @@ protected:
 	Cell* owner;				// Owner of this entity
 	Cell* nextOwner;			// Used to TransferToCellQueue()
 
+	uint16_t eFlags = 0;		// this entityflags value
+
 	Collider coll;
 
 	// Used for entities that uses tilesets, index of X and Y, they will be multiplied by img->GetTileset().tileWidth and img->GetTileset().tileHeight
@@ -31,7 +40,6 @@ protected:
 
 	int occlModifierX, occlModifierY; // used to help shape the occlusion box starting from the dst rect
 	SDL_Rect occlusionRect;
-
 	bool occludes = false;		// if true, it will be drawn with OCCLUDED_SPRITE_ALPHA_VALUE
 
 	SDL_Color lightingColor;	// Calculated in UpdateLighting()
@@ -49,6 +57,11 @@ public:
 	const uint32_t	GetID() const;
 	Collider&		GetCollider();
 	Cell*			GetOwner();
+
+	void			SetFlag(Flags flag);	// Manage flags
+	void			ClearFlag(Flags flag);
+	bool			TestFlag(Flags flag);
+
 	bool			Occludes();
 
 	void			SetImg(Image* pImg);
@@ -76,6 +89,21 @@ inline Cell* Entity::GetOwner()
 inline Collider& Entity::GetCollider()
 {
 	return coll;
+}
+
+inline void Entity::SetFlag(Flags flag)
+{
+	eFlags |= flag;
+}
+
+inline void Entity::ClearFlag(Flags flag)
+{
+	eFlags &= ~flag;
+}
+
+inline bool Entity::TestFlag(Flags flag)
+{
+	return ((eFlags & flag) > 0) ? true : false;
 }
 
 inline void Entity::SetOccludes(bool val)

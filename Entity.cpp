@@ -131,7 +131,7 @@ void Entity::Update()
 
 	// Check for occlusion against player
 	Entity* p = (Entity*)engine.GetGame().GetCurPlayer();
-	if (p && p != this) // TODO: && this.testsForOcclusionAgainstPlayer (bitflag)
+	if (p && p != this && TestFlag(Entity::Flags::CanOccludePlayer))
 	{
 		// Check if this entity is close enough to the player to be worth testing intersection (first with gridPos, then with pos)
 		if (abs(p->gridPosX - gridPosX) < ENTITY_OCCLUSION_TEST_X_DIFF && abs(p->gridPosY - gridPosY) < ENTITY_OCCLUSION_TEST_Y_DIFF &&

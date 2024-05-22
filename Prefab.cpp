@@ -68,6 +68,24 @@ bool Prefab::LoadFromFile(const std::string& filename)
 	curValStr = curValStr.substr(0, curValStr.find(";"));
 	collRect.h = std::stoi(curValStr);
 
+	// collOffsetX
+	std::getline(stream, curLine);
+	curValStr = curLine.substr(curLine.find("=") + 2); // key = value;
+	curValStr = curValStr.substr(0, curValStr.find(";"));
+	collOffsetX = std::stoi(curValStr);
+
+	// collOffsetY
+	std::getline(stream, curLine);
+	curValStr = curLine.substr(curLine.find("=") + 2); // key = value;
+	curValStr = curValStr.substr(0, curValStr.find(";"));
+	collOffsetY = std::stoi(curValStr);
+
+	// occlCheck
+	std::getline(stream, curLine);
+	curValStr = curLine.substr(curLine.find("=") + 2); // key = value;
+	curValStr = curValStr.substr(0, curValStr.find(";"));
+	occlCheck = std::stoi(curValStr);
+
 	// occlModX
 	std::getline(stream, curLine);
 	curValStr = curLine.substr(curLine.find("=") + 2); // key = value;
@@ -92,6 +110,11 @@ std::unique_ptr<Entity> Prefab::InstantiatePrefab(const std::string& prefabName,
 	{
 		std::unique_ptr<Entity> e(new Entity(Vector2(static_cast<float>(pos.x), static_cast<float>(pos.y)), engine.GetAssetsManager().GetImage(p->pImgFile)));
 		e->GetCollider().Init(p->colliderEnabled, e.get(), p->collRect.x, p->collRect.y, p->collRect.w, p->collRect.h); // set collision
+		e->GetCollider().SetOffset(p->collOffsetX, p->collOffsetY);
+		
+		if(p->occlCheck)
+			e->SetFlag(Entity::Flags::CanOccludePlayer);
+
 		e->occlModifierX = p->occlModX;
 		e->occlModifierY = p->occlModY;
 		return std::move(e);
@@ -114,6 +137,9 @@ void Prefab::Log()
 	SDL_Log("CollRect.y:  %d", collRect.y);
 	SDL_Log("CollRect.w:  %d", collRect.w);
 	SDL_Log("CollRect.h:  %d", collRect.h);
+	SDL_Log("CollOff.x:   %d", collOffsetX);
+	SDL_Log("CollOff.y:   %d", collOffsetY);
+	SDL_Log("OcclCheck:   %d", occlCheck);
 	SDL_Log("OcclModX:	  %d", occlModX);
 	SDL_Log("OcclModY:	  %d", occlModY);
 	SDL_Log("END");

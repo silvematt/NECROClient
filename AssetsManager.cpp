@@ -31,6 +31,7 @@ void NECROAssetsManager::LoadAllImages()
 	LoadImage("tile_highlighted.png", 0, 0);
 	LoadImage("tree.png", -15, -5);
 	LoadImage("tile_debug_coll.png", 0, 0);
+	LoadImage("campfire01.png", 0, 0);
 
 	// Player tilesets
 	LoadTilesetImage("player_war_idle.png", -30, 12, 128, 128, 1, 8);
@@ -55,6 +56,7 @@ void NECROAssetsManager::LoadAllFonts()
 void NECROAssetsManager::LoadAllPrefabs()
 {
 	LoadPrefab("tree01.nprfb");
+	LoadPrefab("campfire01.nprfb");
 }
 
 void NECROAssetsManager::LoadImage(const std::string& filename, int xOffset, int yOffset, const std::string& shortname)

@@ -15,6 +15,9 @@ private:
 	bool isStatic;
 	bool colliderEnabled;
 	SDL_Rect collRect;
+	int collOffsetX;
+	int collOffsetY;
+	bool occlCheck;
 	int occlModX;
 	int occlModY;
 
