@@ -29,7 +29,6 @@ protected:
 	// Used for entities that uses tilesets, index of X and Y, they will be multiplied by img->GetTileset().tileWidth and img->GetTileset().tileHeight
 	int tilesetXOff, tilesetYOff;
 
-	// DST used for occlusion testing
 	int occlModifierX, occlModifierY; // used to help shape the occlusion box starting from the dst rect
 	SDL_Rect occlusionRect;
 

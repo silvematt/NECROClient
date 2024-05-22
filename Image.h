@@ -5,12 +5,11 @@
 
 //-------------------------------------------------------
 // Represents an Image
-// 
-// TODO support sprite atlas
 //-------------------------------------------------------
 class Image
 {
 public:
+	// Data for tilesets
 	struct Tileset
 	{
 		int tileWidth;

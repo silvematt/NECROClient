@@ -36,8 +36,11 @@ void RenderTarget::Create(SDL_Renderer* cntx, int w, int h)
 void RenderTarget::Clear()
 {
 	SDL_Texture* currentTarget = SDL_GetRenderTarget(context);
+
+	// Clear the RenderTarget
 	SDL_SetRenderTarget(context, texture);
 	SDL_SetRenderDrawColor(context, colorBlack.r, colorBlack.g, colorBlack.b, SDL_ALPHA_TRANSPARENT); // Ensure the empty parts are transparent
 	SDL_RenderClear(context);
+
 	SDL_SetRenderTarget(context, currentTarget);
 }

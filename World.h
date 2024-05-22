@@ -32,7 +32,6 @@ private:
 	int visibleMinY = 0;
 	int visibleMaxY = 0;
 
-
 	//--------------------------------------------------------------------------------------
 	// Entities physically exist and are phyiscally owned by the World they're spawned in.
 	// Every entity exists inside the allEntities unordered_map, indexed by EntityID.

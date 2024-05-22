@@ -18,9 +18,9 @@ void Animator::AddState(const std::string& sName, Image* sImg, float sSpeed)
 	states.emplace(sName, AnimState(sName, sImg, sSpeed));
 }
 
-//------------------------------------------------------------------
-// Updates the animator
-//------------------------------------------------------------------
+//-------------------------------------------------------------------------------------
+// Updates the animator, updates the tilesetXOffset in order to select the right frame
+//-------------------------------------------------------------------------------------
 void Animator::Update()
 {
     if (owner && curStatePlaying)

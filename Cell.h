@@ -26,7 +26,6 @@ class World;
 // more than one cell, and return all the cells that 
 // they occupy.
 //-------------------------------------------------
-
 class Cell
 {
 
@@ -71,7 +70,6 @@ public:
 
 	Entity*			GetEntityPtr(uint32_t atID);
 	Entity*			GetEntityPtrAt(size_t indx);
-
 
 	void			DrawCell();
 	void			DrawEntities();

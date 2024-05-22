@@ -53,7 +53,7 @@ void World::InitializeWorld()
 }
 
 //------------------------------------------------------------------------------
-// updates visibleMinMax variables based on curCamera position and zoom
+// Updates visibleMinMax variables based on curCamera position and zoom
 //------------------------------------------------------------------------------
 void World::UpdateVisibleCoords()
 {
@@ -70,10 +70,10 @@ void World::UpdateVisibleCoords()
 	visibleMaxY = (int)(midTile->GetCellY() + roundf(((HALF_SCREEN_HEIGHT / HALF_CELL_HEIGHT) / curCameraZoom))) + VISIBLE_X_PLUS_OFFSET;
 
 	// Clamp
-	visibleMinX = SDL_clamp(visibleMinX, 0, WORLD_WIDTH - 1);
-	visibleMinY = SDL_clamp(visibleMinY, 0, WORLD_HEIGHT - 1);
-	visibleMaxX = SDL_clamp(visibleMaxX, 0, WORLD_WIDTH - 1);
-	visibleMaxY = SDL_clamp(visibleMaxY, 0, WORLD_HEIGHT - 1);
+	visibleMinX = SDL_clamp(visibleMinX, 0, WORLD_WIDTH-1);
+	visibleMaxX = SDL_clamp(visibleMaxX, 0, WORLD_WIDTH-1);
+	visibleMinY = SDL_clamp(visibleMinY, 0, WORLD_HEIGHT-1);
+	visibleMaxY = SDL_clamp(visibleMaxY, 0, WORLD_HEIGHT-1);
 }
 
 //------------------------------------------------------------
@@ -114,12 +114,13 @@ void World::Update()
 		worldCursor = nullptr;
 
 
-	// Update cells only in the visible rect
+	// Update cells only in the visible rect : TODO: For updating entities (which are updated inside the Cell.Update() we may want to have some entities to update offscreen, like roaming bosses
+	//										   We can have a list of these entities instead of just updating the visible cells (the list will contain the entities inside the visible cells too)
 	entitiesWaitingForTransfer.clear();
 	for (int x = visibleMinX; x < visibleMaxX; x++)
 		for (int y = visibleMinY; y < visibleMaxY; y++)
 		{
-			// Draw the cells
+			// Update the cell
 			Cell& currentCell = worldmap[x][y];
 			currentCell.Update();
 		}
@@ -129,15 +130,13 @@ void World::Update()
 
 //------------------------------------------------------------
 // Draws the world. 
-// 
-// TODO: will have to draw in base of visble 
-// cells relative to the camera
 //------------------------------------------------------------
 void World::Draw()
 {
 	// Draw the world on the main target
 	engine.GetRenderer().SetRenderTarget(NECRORenderer::ERenderTargets::MAIN_TARGET);
 	
+	// TODO: The world base can just be an entity inside the cell, there's probably no need to have two for loops here to draw the cell itself and then entities.
 	// Draw the world base 
 	for (int x = visibleMinX; x < visibleMaxX; x++)
 		for (int y = visibleMinY; y < visibleMaxY; y++)
@@ -186,12 +185,14 @@ Cell* World::GetCellAt(int x, int y)
 //-----------------------------------------------------------------------
 void World::AddEntity(std::unique_ptr<Entity>&& e)
 {
-	// Add a ptr into the Cell
+	// Calculate grid position
 	e->gridPosX = e->pos.x / CELL_WIDTH;
 	e->gridPosY = e->pos.y / CELL_HEIGHT;
 
+	// Check if it is in bound
 	if (e->gridPosX >= 0 && e->gridPosX < WORLD_WIDTH && e->gridPosY >= 0 && e->gridPosY < WORLD_HEIGHT)
 	{
+		// Add a ptr into the Cell
 		worldmap[e->gridPosX][e->gridPosY].AddEntityPtr(e.get());
 
 		// Add entity in the world map

@@ -17,12 +17,12 @@ int NECROAssetsManager::Init()
 	return 0;
 }
 
-//-------------------------------------------------
+//----------------------------------------------------------
 // Load all the images 
 // 
 // TODO: This is for quick testing, actual loading
-// will be done through a proper file
-//-------------------------------------------------
+// will be done through a proper file or as we load prefabs
+//----------------------------------------------------------
 void NECROAssetsManager::LoadAllImages()
 {
 	// General

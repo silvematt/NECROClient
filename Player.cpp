@@ -32,6 +32,7 @@ void Player::Init()
 	coll.Init(true, this, 0, 0, 32, 16);
 	coll.SetOffset(0, -16);
 
+	// TODO: We can prefab players as well at least for basic info like occlModifier if we're going to have more data, we will probably have different characters with maybe different sizes
 	occlModifierX = 100;
 	occlModifierY = 75;
 }
@@ -51,6 +52,7 @@ void Player::Update()
 	// Update the entity base, pos, gridPos, isoPos etc.
 	Entity::Update();
 
+	// Perform Cell trasfer if needed
 	if (oldGridPosX != gridPosX || oldGridPosY != gridPosY)
 	{
 		nextOwner = owner->GetWorld()->GetCellAt(gridPosX, gridPosY);
@@ -104,7 +106,7 @@ void Player::HandleMovements()
 	// Set speed
 	curMoveSpeed = isAiming ? PLAYER_MOVE_SPEED_AIM : PLAYER_MOVE_SPEED_FREE;
 
-	// TODO: Instead of checking against all the entities in the world, only check against the one close to the player
+	// Move while accounting for close entities colliders
 	float moveAmountX = moveInput.x * curMoveSpeed * engine.GetDeltaTime();
 	float moveAmountY = moveInput.y * curMoveSpeed * engine.GetDeltaTime();
 
@@ -287,8 +289,11 @@ void Player::CalculateIsoDirectionWhileAiming()
 	playerScreenPos.x = isoPos.x + (img->GetTilesetWidth() / 2);
 	playerScreenPos.y = isoPos.y + (img->GetTilesetHeight() / 2);
 
+	relativeMouseX = playerScreenPos.x - (input.GetMouseX() / curZoom);
+	relativeMouseY = playerScreenPos.y - (input.GetMouseY() / curZoom);
+
 	// Calculate the angle (while accounting for zoom)
-	float angle = atan2f(playerScreenPos.y - (input.GetMouseY() / curZoom), playerScreenPos.x - (input.GetMouseX() / curZoom));
+	float angle = atan2f(relativeMouseY, relativeMouseX);
 
 	// Use degrees, wrap around negatives
 	angle = angle * (180.0 / M_PI);

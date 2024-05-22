@@ -12,11 +12,12 @@ const int SCREEN_HEIGHT = 1080;
 const int HALF_SCREEN_WIDTH = 960;
 const int HALF_SCREEN_HEIGHT = 540;
 
+// The distance in terms of gridpos of entity->player to know when to start checking for occlusion tests
 const int	ENTITY_OCCLUSION_TEST_X_DIFF = 6;
 const int	ENTITY_OCCLUSION_TEST_Y_DIFF = 6;
 
 const Uint8 NOT_OCCLUDED_SPRITE_ALPHA_VALUE = 255;
-const Uint8 OCCLUDED_SPRITE_ALPHA_VALUE = 100;
+const Uint8 OCCLUDED_SPRITE_ALPHA_VALUE = 80;
 
 class NECRORenderer
 {

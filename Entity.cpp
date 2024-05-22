@@ -58,8 +58,8 @@ void Entity::ClearOwner()
 	owner = nullptr;
 }
 
-//----------------------------------------------------------------------------------------------
-// Moves the entity to the cell specified in the argument,
+//-----------------------------------------------------------------------------------------------
+// Moves the entity to the cell specified in the argument, (if nullptr is passed, it's nextOwner)
 // removing the Ptr present in the previous owner's vector
 // 
 // Immediately: does the transfer right away, (as for now, as soon as Entity::Update is called)
@@ -69,7 +69,7 @@ void Entity::ClearOwner()
 // 
 // Use TransferToCellQueue to let the world perform the transfer AFTER a world update completes.
 // This function will be called by the World with nullptr as argument
-//----------------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------------
 void Entity::TransferToCellImmediately(Cell* c)
 {
 	// If this is called with nullptr as argument, the transfer is supposed to be in nextOwner
@@ -88,6 +88,9 @@ void Entity::TransferToCellImmediately(Cell* c)
 	nextOwner = nullptr;
 }
 
+//-----------------------------------------------------------------------------------------------
+// TransferToCellQueue lets the world perform the transfer AFTER a world update completes.
+//-----------------------------------------------------------------------------------------------
 void Entity::TransferToCellQueue(Cell* c)
 {
 	nextOwner = c;
@@ -108,16 +111,17 @@ void Entity::Update()
 
 	isoPos.x -= HALF_CELL_WIDTH;
 
-	// Adjust isoX and isoY to the world offset
+	// Adjust isoX and isoY to the camera offset
 	isoPos.x += engine.GetGame().GetMainCamera()->pos.x;
 	isoPos.y += engine.GetGame().GetMainCamera()->pos.y;
-
+	
+	// Account for bottom-left origin
 	if (!img->IsTileset())
 		isoPos.y -= img->GetHeight();
 	else
 		isoPos.y -= img->GetTilesetHeight();
 
-	// Account for the Y offset of the image
+	// Account for the offset of the image
 	isoPos.x += img->GetXOffset();
 	isoPos.y += img->GetYOffset();
 
@@ -127,7 +131,7 @@ void Entity::Update()
 
 	// Check for occlusion against player
 	Entity* p = (Entity*)engine.GetGame().GetCurPlayer();
-	if (p && p != this) // TODO: && this.testsForOcclusion (bitflag)
+	if (p && p != this) // TODO: && this.testsForOcclusionAgainstPlayer (bitflag)
 	{
 		// Check if this entity is close enough to the player to be worth testing intersection (first with gridPos, then with pos)
 		if (abs(p->gridPosX - gridPosX) < ENTITY_OCCLUSION_TEST_X_DIFF && abs(p->gridPosY - gridPosY) < ENTITY_OCCLUSION_TEST_Y_DIFF &&
@@ -182,7 +186,7 @@ void Entity::Draw()
 		occlusionRect.x += (occlModifierX / 2);
 		occlusionRect.y += (occlModifierY / 2);
 
-		//engine.GetRenderer().DrawRect(&occlusionRect, colorYellow);
+		//engine.GetRenderer().DrawRect(&occlusionRect, colorYellow); // TODO: Add a debug rendering option to toggle occlusion rect draw
 		engine.GetRenderer().DrawImageDirectly(img->GetSrc(), NULL, &dstRect);
 	}
 	else
@@ -197,7 +201,7 @@ void Entity::Draw()
 		occlusionRect.x += (occlModifierX / 2);
 		occlusionRect.y += (occlModifierY / 2);
 
-		//engine.GetRenderer().DrawRect(&occlusionRect, colorYellow);
+		//engine.GetRenderer().DrawRect(&occlusionRect, colorYellow); // TODO: Add a debug rendering option to toggle occlusion rect draw
 		engine.GetRenderer().DrawImageDirectly(img->GetSrc(), &srcRect, &dstRect);
 	}
 
@@ -205,6 +209,6 @@ void Entity::Draw()
 	SDL_SetTextureAlphaMod(img->GetSrc(), previousAlpha);
 	SDL_SetTextureColorMod(img->GetSrc(), previousR, previousG, previousB);
 	
-	//if (coll.enabled) // && debug collider
+	//if (coll.enabled) // && TODO: debug collider
 	//	coll.DebugDraw();
 }

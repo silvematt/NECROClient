@@ -25,10 +25,9 @@ private:
 	Animator anim;
 
 	float curMoveSpeed = 2.5f;
-	IsoDirection isoDirection = IsoDirection::WEST;			// The isometric direction the player is facing
+	IsoDirection isoDirection = IsoDirection::SOUTH;		// The isometric direction the player is facing
 
 	float deltaX = 0.0f, deltaY = 0.0f;
-
 
 	bool wasAiming = false;
 	bool isAiming = false;									// Is the player in aim mode?
@@ -36,6 +35,7 @@ private:
 	bool wasMoving = false;
 	bool isMoving = false;
 
+	// Relative mouse pos used when aiming
 	float relativeMouseX, relativeMouseY;
 
 	// List of close (8-neighbours close) entities, filled every frame
@@ -45,6 +45,7 @@ private:
 	void			CalculateIsoDirection(float deltaX, float deltaY);
 	void			CalculateIsoDirectionWhileAiming();
 	void			HandleMovements();
+	void			HandleAnim();
 
 	void			UpdateCloseEntities();
 
@@ -56,8 +57,6 @@ public:
 
 public:
 	void			Init();
-
-	void			HandleAnim();
 	virtual void	Update() override;
 
 	float			GetCurMoveSpeed() const;

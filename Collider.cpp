@@ -55,6 +55,8 @@ void Collider::Update()
 	// Account for the Y offset of the image
 	isoPosX += debugImg->GetXOffset();
 	isoPosY += debugImg->GetYOffset();
+
+	// }
 }
 
 void Collider::DebugDraw()
@@ -64,7 +66,7 @@ void Collider::DebugDraw()
 	// Set debug target, update scale in base of the main camera zoom
 	engine.GetRenderer().SetRenderTarget(NECRORenderer::ERenderTargets::DEBUG_TARGET);
 	float zoomLevel = engine.GetGame().GetMainCamera()->GetZoom();
-	engine.GetRenderer().SetScale(zoomLevel, zoomLevel);
+	engine.GetRenderer().SetScale(zoomLevel, zoomLevel); // TODO: this should not be here (probably in SetZoom with the main RenderTarget scale), we need to set the scale of the renderer one time and not for each debug draw
 
 	SDL_Rect dstRect;
 	dstRect = { (int)isoPosX, (int)isoPosY, r.w, r.h };
