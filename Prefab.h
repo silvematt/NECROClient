@@ -13,13 +13,19 @@ private:
 	std::string pName;
 	std::string pImgFile;
 	bool isStatic;
-	bool colliderEnabled;
+	bool hasCollider;
 	SDL_Rect collRect;
 	int collOffsetX;
 	int collOffsetY;
 	bool occlCheck;
 	int occlModX;
 	int occlModY;
+	bool emitsLight;
+	float lightRadius;
+	float lightIntensity;
+	int lightR;
+	int lightG;
+	int lightB;
 
 public:
 	bool		LoadFromFile(const std::string& filename);

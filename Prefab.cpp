@@ -42,7 +42,7 @@ bool Prefab::LoadFromFile(const std::string& filename)
 	std::getline(stream, curLine);
 	curValStr = curLine.substr(curLine.find("=") + 2); // key = value;
 	curValStr = curValStr.substr(0, curValStr.find(";"));
-	colliderEnabled = std::stoi(curValStr);
+	hasCollider = std::stoi(curValStr);
 
 	// colliderRectX
 	std::getline(stream, curLine);
@@ -98,6 +98,43 @@ bool Prefab::LoadFromFile(const std::string& filename)
 	curValStr = curValStr.substr(0, curValStr.find(";"));
 	occlModY = std::stoi(curValStr);
 
+	// EmitsLight
+	std::getline(stream, curLine);
+	curValStr = curLine.substr(curLine.find("=") + 2); // key = value;
+	curValStr = curValStr.substr(0, curValStr.find(";"));
+	emitsLight = std::stoi(curValStr);
+
+	// LightRadius
+	std::getline(stream, curLine);
+	curValStr = curLine.substr(curLine.find("=") + 2); // key = value;
+	curValStr = curValStr.substr(0, curValStr.find(";"));
+	lightRadius = std::stof(curValStr);
+
+	// LightRadius
+	std::getline(stream, curLine);
+	curValStr = curLine.substr(curLine.find("=") + 2); // key = value;
+	curValStr = curValStr.substr(0, curValStr.find(";"));
+	lightIntensity = std::stof(curValStr);
+
+	// LightR
+	std::getline(stream, curLine);
+	curValStr = curLine.substr(curLine.find("=") + 2); // key = value;
+	curValStr = curValStr.substr(0, curValStr.find(";"));
+	lightR = std::stoi(curValStr);
+
+	// LightG
+	std::getline(stream, curLine);
+	curValStr = curLine.substr(curLine.find("=") + 2); // key = value;
+	curValStr = curValStr.substr(0, curValStr.find(";"));
+	lightG = std::stoi(curValStr);
+
+	// LightG
+	std::getline(stream, curLine);
+	curValStr = curLine.substr(curLine.find("=") + 2); // key = value;
+	curValStr = curValStr.substr(0, curValStr.find(";"));
+	lightB = std::stoi(curValStr);
+
+
 	// ifstream is closed by destructor
 	return true;
 }
@@ -108,15 +145,43 @@ std::unique_ptr<Entity> Prefab::InstantiatePrefab(const std::string& prefabName,
 
 	if (p)
 	{
+		// Create the entity
 		std::unique_ptr<Entity> e(new Entity(Vector2(static_cast<float>(pos.x), static_cast<float>(pos.y)), engine.GetAssetsManager().GetImage(p->pImgFile)));
-		e->GetCollider().Init(p->colliderEnabled, e.get(), p->collRect.x, p->collRect.y, p->collRect.w, p->collRect.h); // set collision
-		e->GetCollider().SetOffset(p->collOffsetX, p->collOffsetY);
+
+		// Check if the prefab has a collider
+		if (p->hasCollider)
+		{
+			// If so, create and set it
+			e->CreateCollider();
+			e->GetCollider()->Init(true, e.get(), p->collRect.x, p->collRect.y, p->collRect.w, p->collRect.h);
+			e->GetCollider()->SetOffset(p->collOffsetX, p->collOffsetY);
+		}
 		
+		// Check occlusion
 		if(p->occlCheck)
-			e->SetFlag(Entity::Flags::CanOccludePlayer);
+			e->SetFlag(Entity::Flags::FCanOccludePlayer);
 
 		e->occlModifierX = p->occlModX;
 		e->occlModifierY = p->occlModY;
+
+		// Check Lighting
+		if (p->emitsLight)
+		{
+			e->CreateLight();
+
+			Light* thisLight = e->GetLight();
+
+			thisLight->color.r = p->lightR;
+			thisLight->color.g = p->lightG;
+			thisLight->color.b = p->lightB;
+			thisLight->intensity = p->lightIntensity;
+			thisLight->radius = p->lightRadius;
+
+			// Pos relative to entity
+			thisLight->pos.x = 0;
+			thisLight->pos.y = 0;
+		}
+
 		return std::move(e);
 	}
 	else
@@ -132,7 +197,7 @@ void Prefab::Log()
 	SDL_Log("Prefab Name: %s", pName.c_str());
 	SDL_Log("Prefab File: %s", pImgFile.c_str());
 	SDL_Log("IsStatic:    %d", isStatic);
-	SDL_Log("CollEnabled: %d", colliderEnabled);
+	SDL_Log("CollEnabled: %d", hasCollider);
 	SDL_Log("CollRect.x:  %d", collRect.x);
 	SDL_Log("CollRect.y:  %d", collRect.y);
 	SDL_Log("CollRect.w:  %d", collRect.w);
@@ -142,5 +207,11 @@ void Prefab::Log()
 	SDL_Log("OcclCheck:   %d", occlCheck);
 	SDL_Log("OcclModX:	  %d", occlModX);
 	SDL_Log("OcclModY:	  %d", occlModY);
+	SDL_Log("EmitsLight:  %d", emitsLight);
+	SDL_Log("LightRadius: %f", lightRadius);
+	SDL_Log("LIntensity:  %f", lightIntensity);
+	SDL_Log("LightColorR: %d", lightR);
+	SDL_Log("LightColorG: %d", lightG);
+	SDL_Log("LightColorB: %d", lightB);
 	SDL_Log("END");
 }

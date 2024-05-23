@@ -29,8 +29,9 @@ void Player::Init()
 	anim.Play("idle");
 
 	// Construct Collider
-	coll.Init(true, this, 0, 0, 32, 16);
-	coll.SetOffset(0, -16);
+	CreateCollider();
+	coll->Init(true, this, 0, 0, 32, 16);
+	coll->SetOffset(0, -16);
 
 	// TODO: We can prefab players as well at least for basic info like occlModifier if we're going to have more data, we will probably have different characters with maybe different sizes
 	occlModifierX = 100;
@@ -112,24 +113,26 @@ void Player::HandleMovements()
 
 	// Checking is performed on each axis to allow the player to slide on the colliders
 	pos.x += moveAmountX;
-	coll.Update();
+	coll->Update();
 
 	for (auto const& e : closeEntities)
 	{
-		if (coll.TestIntersection(&e->GetCollider()))
-			pos.x -= moveAmountX;
+		if (e->HasCollider())
+			if (coll->TestIntersection(e->GetCollider()))
+				pos.x -= moveAmountX;
 	}
 
 	pos.y += moveAmountY;
-	coll.Update();
+	coll->Update();
 
 	for (auto const& e : closeEntities)
 	{
-		if (coll.TestIntersection(&e->GetCollider()))
-			pos.y -= moveAmountY;
+		if(e->HasCollider())
+			if (coll->TestIntersection(e->GetCollider()))
+				pos.y -= moveAmountY;
 	}
 
-	coll.Update();
+	coll->Update();
 }
 
 

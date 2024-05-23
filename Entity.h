@@ -1,9 +1,12 @@
 #ifndef NECROENTITY_H
 #define NECROENTITY_H
 
+#include <memory>
+
 #include "Vector2.h"
 #include "Image.h"
 #include "Collider.h"
+#include "Light.h"
 
 class Cell;
 
@@ -15,8 +18,7 @@ class Entity
 	// Flags that describe entities
 	enum Flags
 	{
-		CanOccludePlayer = 1,
-		EmitsLight = 2
+		FCanOccludePlayer = 1,
 	};
 
 	friend class Prefab;
@@ -33,8 +35,6 @@ protected:
 
 	uint16_t eFlags = 0;		// this entityflags value
 
-	Collider coll;
-
 	// Used for entities that uses tilesets, index of X and Y, they will be multiplied by img->GetTileset().tileWidth and img->GetTileset().tileHeight
 	int tilesetXOff, tilesetYOff;
 
@@ -42,7 +42,12 @@ protected:
 	SDL_Rect occlusionRect;
 	bool occludes = false;		// if true, it will be drawn with OCCLUDED_SPRITE_ALPHA_VALUE
 
-	SDL_Color lightingColor;	// Calculated in UpdateLighting()
+	SDL_Color lightingColor;	// Calculated in UpdateLighting(), it is the color the entity when drawn (not the color of the light it emits)
+
+	// "Components", they are created or not in base of prefab options. An alternative could be std::optional
+	std::unique_ptr<Collider> coll;
+	std::unique_ptr<Light> emittingLight;
+	
 public:
 	virtual ~Entity();
 	Entity();
@@ -55,12 +60,20 @@ public:
 
 public:
 	const uint32_t	GetID() const;
-	Collider&		GetCollider();
 	Cell*			GetOwner();
 
 	void			SetFlag(Flags flag);	// Manage flags
 	void			ClearFlag(Flags flag);
 	bool			TestFlag(Flags flag);
+
+	// Optional components functions
+	void			CreateLight();
+	bool			HasLight() const;
+	Light*			GetLight() const;
+
+	void			CreateCollider();
+	bool			HasCollider() const;
+	Collider*		GetCollider() const;
 
 	bool			Occludes();
 
@@ -86,9 +99,36 @@ inline Cell* Entity::GetOwner()
 	return owner;
 }
 
-inline Collider& Entity::GetCollider()
+inline void Entity::CreateCollider()
 {
-	return coll;
+	if (!HasCollider())
+		coll = std::make_unique<Collider>();
+}
+
+inline bool Entity::HasCollider() const
+{
+	return coll != nullptr;
+}
+
+inline Collider* Entity::GetCollider() const
+{
+	return coll.get();
+}
+
+inline void Entity::CreateLight()
+{
+	if (!HasLight())
+		emittingLight = std::make_unique<Light>();
+}
+
+inline bool Entity::HasLight() const
+{
+	return emittingLight != nullptr;
+}
+
+inline Light* Entity::GetLight() const
+{
+	return emittingLight.get();
 }
 
 inline void Entity::SetFlag(Flags flag)

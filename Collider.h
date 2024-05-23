@@ -11,10 +11,6 @@ class Entity;
 //-------------------------------------------------------------------------------------
 // A collider is attached to an Entity (or classes derived from Entity) and is used to
 // define the collision box of the entities.
-// 
-// TODO: For dynamic entities that move such as the player and projectiles, we can test
-// collision against all entities that are near (in terms of the gridmap)
-// so we test the collision ONLY against entities that are close to the dynamic entity
 //-------------------------------------------------------------------------------------
 class Collider
 {
