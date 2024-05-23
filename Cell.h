@@ -6,6 +6,7 @@
 
 #include "SDL.h"
 
+#include "Utility.h"
 #include "Entity.h"
 
 const int CELL_WIDTH = 64;
@@ -42,6 +43,11 @@ private:
 	std::vector<Entity*> entities;
 
 	// Lighting
+	// Base
+	SDL_Color baseColor;
+	float baseIntensity;
+
+	// Actual color and intensity, calculated every frame, used to render 
 	SDL_Color lColor;
 	float lIntensity;
 
@@ -50,12 +56,15 @@ public:
 
 	int				GetCellX() const;
 	int				GetCellY() const;
-
 	SDL_Rect&		GetDstRect();
 	World*			GetWorld();
 
 	SDL_Color*		GetLightingColor();
 	float&			GetLightingIntensity();
+
+	void			SetLightingIntensity(float i);
+	void			SetLightingColor(int r, int g, int b);
+	void			SetLightingInfluence(Light* l, int dropoff);
 
 	void			SetWorld(World* w);
 	void			SetCellCoordinates(const int x, const int y);
@@ -109,6 +118,23 @@ inline SDL_Color* Cell::GetLightingColor()
 inline float& Cell::GetLightingIntensity()
 {
 	return lIntensity;
+}
+
+inline void Cell::SetLightingColor(int r, int g, int b)
+{
+	r = SDL_clamp(r, 0, 255);
+	g = SDL_clamp(g, 0, 255);
+	b = SDL_clamp(b, 0, 255);
+
+	lColor.r = r;
+	lColor.g = g;
+	lColor.b = b;
+}
+
+inline void Cell::SetLightingIntensity(float i)
+{
+	i = Utility::Clampf(i, 0.0f, 1.0f);
+	lIntensity = i;
 }
 
 #endif

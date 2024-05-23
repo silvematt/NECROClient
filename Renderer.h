@@ -72,6 +72,7 @@ extern const SDL_Color colorGreen;
 extern const SDL_Color colorRed;
 extern const SDL_Color colorYellow;
 extern const SDL_Color colorWhite;
+extern const SDL_Color colorGray;
 
 inline SDL_Window* const NECRORenderer::GetWindow() const
 {

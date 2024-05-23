@@ -45,8 +45,11 @@ void Cell::SetWorld(World* w)
 {
 	world = w;
 
-	lColor = w->GetBaseLightColor();
-	lIntensity = w->GetBaseLightIntensity();
+	baseColor = w->GetBaseLightColor();
+	baseIntensity = w->GetBaseLightIntensity();
+
+	lColor = baseColor;
+	lIntensity = baseIntensity;
 }
 
 //--------------------------------------
@@ -160,4 +163,24 @@ void Cell::DrawEntities()
 	for (auto& ent : entities)
 		if (ent)
 			ent->Draw();
+}
+
+//-----------------------------------------------------------------------------
+// Given a light, computes how much illumination has to change in this cell
+//-----------------------------------------------------------------------------
+void Cell::SetLightingInfluence(Light* l, int dropoff)
+{
+	if (dropoff == 0)
+		dropoff = 1;
+
+	// If the light is dropping off by far, accentuate it so we don't create a barely lit square
+	if (dropoff > l->farDropoffThreshold)
+		dropoff *= l->farDropoffMultiplier;
+
+	dropoff *= l->dropoffMultiplier;
+
+	SetLightingIntensity(lIntensity + (l->intensity / dropoff));
+	SetLightingColor(lColor.r + ((l->color.r / dropoff) * l->intensity), 
+					 lColor.g + ((l->color.g / dropoff) * l->intensity), 
+					 lColor.b + ((l->color.b / dropoff) * l->intensity));
 }

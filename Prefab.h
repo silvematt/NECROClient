@@ -23,6 +23,9 @@ private:
 	bool emitsLight;
 	float lightRadius;
 	float lightIntensity;
+	float lightDropoffMultiplier; // how much reduction of light there is for cells that are far from the source
+	float lightFarDropoffThreshold; // the dropoff distance (in cells) from which the lightFarDropoffMultiplier is applied on top of the base dropoff
+	float lightFarDropoffMultiplier;
 	int lightR;
 	int lightG;
 	int lightB;

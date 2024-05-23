@@ -45,25 +45,29 @@ private:
 	// See Entity::TransferToCellImmediately
 	std::vector<Entity*> entitiesWaitingForTransfer;
 
-	// Lighting
+	// Lighting, for how lighting works it's better to have the world totally black and let entities with lights lit it, because if we apply a base color like gray (128,128,128), we can never have a fully red zone (255, 0, 0)
+	SDL_Color baseLightColor = colorGray;
 	float baseLight = .5f;
-	SDL_Color baseLightColor = colorWhite;
 
 private:
 	void			UpdateVisibleCoords(); // updates visibleMinMax variables based on curCamera position and zoom
 
 public:
-	Cell* GetCellAt(int x, int y);
-	float GetBaseLightIntensity() const;
-	SDL_Color GetBaseLightColor() const;
-
 	const std::unordered_map<uint32_t, std::unique_ptr<Entity>>& GetEntities();
+
+	Cell*			GetCellAt(int x, int y);
+	float			GetBaseLightIntensity() const;
+	SDL_Color		GetBaseLightColor() const;
+	void			ResetLighting(); // Sets the current lColor and lIntensity of the cell to the base color, so light can be applied again the current frame
+
 
 	void			AddEntity(std::unique_ptr<Entity>&& e);
 	void			RemoveEntity(uint32_t atID);
 
 	void			InitializeWorld();
 	void			Update();
+
+	bool			IsInWorldBounds(int x, int y);
 
 	void			AddPendingEntityToTransfer(Entity* e);
 	void			TransferPendingEntities();		// Transferring the entity is done AFTER a world update, otherwise if an entity is fast enough (or framerate is low enough) 

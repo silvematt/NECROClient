@@ -110,11 +110,29 @@ bool Prefab::LoadFromFile(const std::string& filename)
 	curValStr = curValStr.substr(0, curValStr.find(";"));
 	lightRadius = std::stof(curValStr);
 
-	// LightRadius
+	// Light Intensity
 	std::getline(stream, curLine);
 	curValStr = curLine.substr(curLine.find("=") + 2); // key = value;
 	curValStr = curValStr.substr(0, curValStr.find(";"));
 	lightIntensity = std::stof(curValStr);
+
+	// Dropoff multiplier
+	std::getline(stream, curLine);
+	curValStr = curLine.substr(curLine.find("=") + 2); // key = value;
+	curValStr = curValStr.substr(0, curValStr.find(";"));
+	lightDropoffMultiplier = std::stof(curValStr);
+
+	// lightFarDropoffThreshold
+	std::getline(stream, curLine);
+	curValStr = curLine.substr(curLine.find("=") + 2); // key = value;
+	curValStr = curValStr.substr(0, curValStr.find(";"));
+	lightFarDropoffThreshold = std::stof(curValStr);
+
+	// lightFarDropoffMultiplier
+	std::getline(stream, curLine);
+	curValStr = curLine.substr(curLine.find("=") + 2); // key = value;
+	curValStr = curValStr.substr(0, curValStr.find(";"));
+	lightFarDropoffMultiplier = std::stof(curValStr);
 
 	// LightR
 	std::getline(stream, curLine);
@@ -176,6 +194,9 @@ std::unique_ptr<Entity> Prefab::InstantiatePrefab(const std::string& prefabName,
 			thisLight->color.b = p->lightB;
 			thisLight->intensity = p->lightIntensity;
 			thisLight->radius = p->lightRadius;
+			thisLight->dropoffMultiplier = p->lightDropoffMultiplier;
+			thisLight->farDropoffThreshold = p->lightFarDropoffThreshold;
+			thisLight->farDropoffMultiplier = p->lightFarDropoffMultiplier;
 
 			// Pos relative to entity
 			thisLight->pos.x = 0;

@@ -140,6 +140,16 @@ void Entity::Update()
 		else
 			SetOccludes(false);
 	}
+
+	// If this Entity has a light, update the near cells
+	if (HasLight())
+	{
+		Light* l = GetLight();
+		for (int i = -l->radius; i < l->radius; i++)
+			for (int j = -l->radius; j < l->radius; j++)
+				if(owner->GetWorld()->IsInWorldBounds(owner->GetCellX() + i, owner->GetCellY() + j))
+					owner->GetWorld()->GetCellAt(owner->GetCellX() + i, owner->GetCellY() + j)->SetLightingInfluence(l, std::abs(i) + std::abs(j));
+	}
 }
 
 //------------------------------------------------------------

@@ -113,6 +113,8 @@ void World::Update()
 	else
 		worldCursor = nullptr;
 
+	// Reset the lighting for all visible cells, it is re-calculated later
+	ResetLighting();
 
 	// Update cells only in the visible rect : TODO: For updating entities (which are updated inside the Cell.Update() we may want to have some entities to update offscreen, like roaming bosses
 	//										   We can have a list of these entities instead of just updating the visible cells (the list will contain the entities inside the visible cells too)
@@ -223,3 +225,21 @@ void World::AddPendingEntityToTransfer(Entity* e)
 {
 	entitiesWaitingForTransfer.push_back(e);
 }
+
+void World::ResetLighting()
+{
+	for (int x = visibleMinX; x < visibleMaxX; x++)
+		for (int y = visibleMinY; y < visibleMaxY; y++)
+		{
+			// Reset lighting for the visible world to the world base light and color
+			Cell& currentCell = worldmap[x][y];
+			currentCell.SetLightingIntensity(baseLight);
+			currentCell.SetLightingColor(baseLightColor.r, baseLightColor.g, baseLightColor.b);
+		}
+}
+
+bool World::IsInWorldBounds(int x, int y)
+{
+	return (x >= 0 && x < WORLD_WIDTH && y >= 0 && y < WORLD_HEIGHT);
+}
+

@@ -18,7 +18,9 @@ public:
 	Vector2 pos;
 	float intensity;
 	float radius;
-
+	float dropoffMultiplier; // how much reduction of light there is for cells that are far from the source
+	float farDropoffThreshold; // the dropoff distance (in cells) from which the lightFarDropoffMultiplier is applied on top of the base dropoff
+	float farDropoffMultiplier;
 	SDL_Color color;
 };
 

@@ -33,6 +33,20 @@ void Player::Init()
 	coll->Init(true, this, 0, 0, 32, 16);
 	coll->SetOffset(0, -16);
 
+	// Add player light
+	/*
+	CreateLight();
+	Light* thisLight = GetLight();
+
+	thisLight->color.r = 4;
+	thisLight->color.g = 4;
+	thisLight->color.b = 4;
+	thisLight->intensity = 1;
+	thisLight->radius = 2;
+	thisLight->pos.x = 0;
+	thisLight->pos.y = 0;
+	*/
+
 	// TODO: We can prefab players as well at least for basic info like occlModifier if we're going to have more data, we will probably have different characters with maybe different sizes
 	occlModifierX = 100;
 	occlModifierY = 75;
