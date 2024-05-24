@@ -98,6 +98,18 @@ bool Prefab::LoadFromFile(const std::string& filename)
 	curValStr = curValStr.substr(0, curValStr.find(";"));
 	occlModY = std::stoi(curValStr);
 
+	// BlocksLight
+	std::getline(stream, curLine);
+	curValStr = curLine.substr(curLine.find("=") + 2); // key = value;
+	curValStr = curValStr.substr(0, curValStr.find(";"));
+	blocksLight = std::stoi(curValStr);
+
+	// blocksLightValue
+	std::getline(stream, curLine);
+	curValStr = curLine.substr(curLine.find("=") + 2); // key = value;
+	curValStr = curValStr.substr(0, curValStr.find(";"));
+	blocksLightValue = std::stof(curValStr);
+
 	// EmitsLight
 	std::getline(stream, curLine);
 	curValStr = curLine.substr(curLine.find("=") + 2); // key = value;
@@ -200,6 +212,12 @@ std::unique_ptr<Entity> Prefab::InstantiatePrefab(const std::string& prefabName,
 		e->occlModifierX = p->occlModX;
 		e->occlModifierY = p->occlModY;
 
+		// Light block
+		if (p->blocksLight)
+			e->SetFlag(Entity::Flags::FBlocksLight);
+
+		e->blocksLightValue = p->blocksLightValue;
+
 		// Check Lighting
 		if (p->emitsLight)
 		{
@@ -226,7 +244,7 @@ std::unique_ptr<Entity> Prefab::InstantiatePrefab(const std::string& prefabName,
 			thisLight->animSpeed = p->lightAnimSpeed;
 
 			// Init
-			thisLight->Init();
+			thisLight->Init(e.get());
 		}
 
 		return std::move(e);

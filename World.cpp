@@ -109,6 +109,19 @@ void World::Update()
 					AddEntity(std::move(tree));
 			}
 		}
+		else if (engine.GetInput().GetMouseDown(static_cast<SDL_Scancode>(SDL_BUTTON_RIGHT)))
+		{
+			if (worldCursor->GetEntitiesPtrSize() != 0)
+			{
+				RemoveEntity(worldCursor->GetEntityPtrAt(0)->GetID());
+			}
+			else
+			{
+				std::unique_ptr<Entity> tree = Prefab::InstantiatePrefab("tree01", Vector2(worldCursor->GetCellX() * CELL_WIDTH, worldCursor->GetCellY() * CELL_HEIGHT));
+				if (tree)
+					AddEntity(std::move(tree));
+			}
+		}
 	}
 	else
 		worldCursor = nullptr;

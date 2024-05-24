@@ -165,10 +165,34 @@ void Cell::DrawEntities()
 			ent->Draw();
 }
 
+//------------------------------------------------------------------
+// Return if there is an entity in this Cell that blocks light
+//------------------------------------------------------------------
+bool Cell::BlocksLight()
+{
+	for (auto& ent : entities)
+		if (ent && ent->BlocksLight()) // if an entity that blocks light sits in this cell, then this cell blocks light
+			return true;
+
+	return false;
+}
+
+//------------------------------------------------------------------
+// Returns the amount of light blocked by this cell
+//------------------------------------------------------------------
+float Cell::GetLightBlockPercent()
+{
+	for (auto& ent : entities)
+		if (ent && ent->BlocksLight()) // TODO: may accumulate light block value for all entites instead of just picking the first found
+			return ent->GetLightBlockValue();
+
+	return 0.0f;
+}
+
 //-----------------------------------------------------------------------------
 // Given a light, computes how much illumination has to change in this cell
 //-----------------------------------------------------------------------------
-void Cell::SetLightingInfluence(Light* l, int dropoff)
+void Cell::SetLightingInfluence(Light* l, float dropoff, float occlusion)
 {
 	if (dropoff == 0)
 		dropoff = 1;
@@ -177,7 +201,7 @@ void Cell::SetLightingInfluence(Light* l, int dropoff)
 	if (dropoff > l->farDropoffThreshold)
 		dropoff *= l->farDropoffMultiplier;
 
-	dropoff *= l->dropoffMultiplier;
+	dropoff *= l->dropoffMultiplier + occlusion;
 
 	SetLightingIntensity(lIntensity + (l->intensity / dropoff));
 	SetLightingColor(lColor.r + ((l->color.r / dropoff) * l->intensity), 

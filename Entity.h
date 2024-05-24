@@ -19,6 +19,7 @@ class Entity
 	enum Flags
 	{
 		FCanOccludePlayer = 1,
+		FBlocksLight = 2
 	};
 
 	friend class Prefab;
@@ -43,6 +44,8 @@ protected:
 	bool occludes = false;		// if true, it will be drawn with OCCLUDED_SPRITE_ALPHA_VALUE
 
 	SDL_Color lightingColor;	// Calculated in UpdateLighting(), it is the color the entity when drawn (not the color of the light it emits)
+
+	float blocksLightValue = 0.0f;
 
 	// "Components", they are created or not in base of prefab options. An alternative could be std::optional
 	std::unique_ptr<Collider> coll;
@@ -84,6 +87,8 @@ public:
 	void			TransferToCellQueue(Cell* c);			// Transfer this entity to exist in another cell AFTER a world update completes
 	void			SetOccludes(bool val);
 	void			UpdateLighting();
+	bool			BlocksLight();
+	float			GetLightBlockValue();
 
 	virtual void	Update();
 	virtual void	Draw();
@@ -154,6 +159,16 @@ inline void Entity::SetOccludes(bool val)
 inline bool Entity::Occludes()
 {
 	return occludes;
+}
+
+inline bool Entity::BlocksLight()
+{
+	return TestFlag(FBlocksLight);
+}
+
+inline float Entity::GetLightBlockValue()
+{
+	return blocksLightValue;
 }
 
 #endif

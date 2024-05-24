@@ -2,7 +2,10 @@
 #define NECROLIGHT_H
 
 #include "SDL.h"
+
 #include "Vector2.h"
+
+class Entity;
 
 //-----------------------------------------------------------------------------------------------------------------
 // A light is attached to an Entity (or classes derived from Entity)
@@ -15,6 +18,8 @@
 class Light
 {
 public:
+	Entity* owner;
+
 	Vector2 pos;
 	float intensity;
 	float radius;
@@ -39,9 +44,10 @@ private:
 
 private:
 	void Animate();
+	void PropagateLight();
 
 public:
-	void Init();
+	void Init(Entity* owner);
 	void Update();
 
 	void SetAnim(bool v);

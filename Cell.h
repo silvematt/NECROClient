@@ -64,7 +64,7 @@ public:
 
 	void			SetLightingIntensity(float i);
 	void			SetLightingColor(int r, int g, int b);
-	void			SetLightingInfluence(Light* l, int dropoff);
+	void			SetLightingInfluence(Light* l, float dropoff, float occlusion);
 
 	void			SetWorld(World* w);
 	void			SetCellCoordinates(const int x, const int y);
@@ -82,6 +82,9 @@ public:
 
 	void			DrawCell();
 	void			DrawEntities();
+
+	bool			BlocksLight();
+	float			GetLightBlockPercent();
 };
 
 

@@ -20,6 +20,8 @@ private:
 	bool occlCheck;
 	int occlModX;
 	int occlModY;
+	bool blocksLight;
+	float blocksLightValue;
 	bool emitsLight;
 	float lightRadius;
 	float lightIntensity;
