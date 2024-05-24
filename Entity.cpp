@@ -145,6 +145,9 @@ void Entity::Update()
 	if (HasLight())
 	{
 		Light* l = GetLight();
+
+		l->Update(); // Update light
+
 		for (int i = -l->radius; i < l->radius; i++)
 			for (int j = -l->radius; j < l->radius; j++)
 				if(owner->GetWorld()->IsInWorldBounds(owner->GetCellX() + i, owner->GetCellY() + j))

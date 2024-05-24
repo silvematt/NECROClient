@@ -146,11 +146,29 @@ bool Prefab::LoadFromFile(const std::string& filename)
 	curValStr = curValStr.substr(0, curValStr.find(";"));
 	lightG = std::stoi(curValStr);
 
-	// LightG
+	// LightB
 	std::getline(stream, curLine);
 	curValStr = curLine.substr(curLine.find("=") + 2); // key = value;
 	curValStr = curValStr.substr(0, curValStr.find(";"));
 	lightB = std::stoi(curValStr);
+
+	// lightAnimated
+	std::getline(stream, curLine);
+	curValStr = curLine.substr(curLine.find("=") + 2); // key = value;
+	curValStr = curValStr.substr(0, curValStr.find(";"));
+	lightAnimated = std::stoi(curValStr);
+
+	// lightMinIntensityDivider
+	std::getline(stream, curLine);
+	curValStr = curLine.substr(curLine.find("=") + 2); // key = value;
+	curValStr = curValStr.substr(0, curValStr.find(";"));
+	lightMinIntensityDivider = std::stof(curValStr);
+
+	// lightAnimSpeed
+	std::getline(stream, curLine);
+	curValStr = curLine.substr(curLine.find("=") + 2); // key = value;
+	curValStr = curValStr.substr(0, curValStr.find(";"));
+	lightAnimSpeed = std::stof(curValStr);
 
 
 	// ifstream is closed by destructor
@@ -201,6 +219,14 @@ std::unique_ptr<Entity> Prefab::InstantiatePrefab(const std::string& prefabName,
 			// Pos relative to entity
 			thisLight->pos.x = 0;
 			thisLight->pos.y = 0;
+
+			// Animated
+			thisLight->SetAnim(p->lightAnimated);
+			thisLight->minIntensityDivider = p->lightMinIntensityDivider;
+			thisLight->animSpeed = p->lightAnimSpeed;
+
+			// Init
+			thisLight->Init();
 		}
 
 		return std::move(e);
@@ -234,5 +260,8 @@ void Prefab::Log()
 	SDL_Log("LightColorR: %d", lightR);
 	SDL_Log("LightColorG: %d", lightG);
 	SDL_Log("LightColorB: %d", lightB);
+	SDL_Log("LightAnim:   %d", lightAnimated);
+	SDL_Log("LMinIntDivid:%f", lightMinIntensityDivider);
+	SDL_Log("LAnimSpeed:  %f", lightAnimSpeed);
 	SDL_Log("END");
 }

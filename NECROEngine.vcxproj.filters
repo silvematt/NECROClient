@@ -86,6 +86,9 @@
     <ClCompile Include="Prefab.cpp">
       <Filter>Engine\Data</Filter>
     </ClCompile>
+    <ClCompile Include="Light.cpp">
+      <Filter>Engine\Renderer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="NECROEngine.h">

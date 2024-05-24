@@ -29,6 +29,9 @@ private:
 	int lightR;
 	int lightG;
 	int lightB;
+	bool lightAnimated;
+	float lightMinIntensityDivider;
+	float lightAnimSpeed;
 
 public:
 	bool		LoadFromFile(const std::string& filename);

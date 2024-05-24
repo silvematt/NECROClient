@@ -17,6 +17,11 @@ public:
 		const float t = d < min ? min : d;
 		return t > max ? max : t;
 	}
+
+	inline static float RandomFloat(float min, float max)
+	{
+		return min + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (max - min)));
+	}
 };
 
 #endif
