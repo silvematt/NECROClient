@@ -58,6 +58,7 @@ int NECROEngine::Init()
 
 	lastUpdate = 0;
 	deltaTime = 0;
+	fps = 0;
 
 	SDL_Log("Initializing done.\n");
 	return 0;
@@ -107,6 +108,7 @@ void NECROEngine::Update()
 	// Engine Loop
 	while (isRunning)
 	{
+		Uint64 start = SDL_GetPerformanceCounter();
 		uint32_t current = SDL_GetTicks();
 		deltaTime = (current - lastUpdate) / 1000.0f;
 		lastUpdate = current;
@@ -118,6 +120,10 @@ void NECROEngine::Update()
 
 		renderer.Update();
 		renderer.Show();
+
+		Uint64 end = SDL_GetPerformanceCounter();
+		float elapsed = (end - start) / (float)SDL_GetPerformanceFrequency();
+		fps = (1.0f / elapsed);
 	}
 
 	// Shutdown

@@ -176,12 +176,18 @@ void World::Draw()
 
 	// Draw the UI on the overlay target
 	engine.GetRenderer().SetRenderTarget(NECRORenderer::ERenderTargets::OVERLAY_TARGET);
+
 	// Draw some text
+	// FPS
+	std::string textFPS = "FPS: " + std::to_string((int)engine.GetFPS());
+	engine.GetRenderer().DrawTextDirectly(engine.GetAssetsManager().GetFont("defaultFont"), textFPS.c_str(), 10, 10, colorRed);
+
+	// Draw selected cell
 	std::string textSelCell = "Selected Cell: ";
 	if (worldCursor)
 		textSelCell = textSelCell + "(" + std::to_string(worldCursor->GetCellX()) + ", " + std::to_string(worldCursor->GetCellY()) + ")";
 
-	engine.GetRenderer().DrawTextDirectly(engine.GetAssetsManager().GetFont("defaultFont"), textSelCell.c_str(), 10, 10, colorRed);
+	engine.GetRenderer().DrawTextDirectly(engine.GetAssetsManager().GetFont("defaultFont"), textSelCell.c_str(), 10, 50, colorRed);
 }
 
 //------------------------------------------------------------------------

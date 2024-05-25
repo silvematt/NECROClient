@@ -116,6 +116,12 @@ bool Prefab::LoadFromFile(const std::string& filename)
 	curValStr = curValStr.substr(0, curValStr.find(";"));
 	emitsLight = std::stoi(curValStr);
 
+	// lightPropagationType
+	std::getline(stream, curLine);
+	curValStr = curLine.substr(curLine.find("=") + 2); // key = value;
+	curValStr = curValStr.substr(0, curValStr.find(";"));
+	lightPropagationType = std::stoi(curValStr);
+
 	// LightRadius
 	std::getline(stream, curLine);
 	curValStr = curLine.substr(curLine.find("=") + 2); // key = value;
@@ -225,6 +231,8 @@ std::unique_ptr<Entity> Prefab::InstantiatePrefab(const std::string& prefabName,
 
 			Light* thisLight = e->GetLight();
 
+			thisLight->SetPropagationSetting(static_cast<Light::PropagationSetting>(p->lightPropagationType));
+
 			thisLight->color.r = p->lightR;
 			thisLight->color.g = p->lightG;
 			thisLight->color.b = p->lightB;
@@ -273,6 +281,7 @@ void Prefab::Log()
 	SDL_Log("OcclModX:	  %d", occlModX);
 	SDL_Log("OcclModY:	  %d", occlModY);
 	SDL_Log("EmitsLight:  %d", emitsLight);
+	SDL_Log("LPropagation:%d", lightPropagationType);
 	SDL_Log("LightRadius: %f", lightRadius);
 	SDL_Log("LIntensity:  %f", lightIntensity);
 	SDL_Log("LightColorR: %d", lightR);

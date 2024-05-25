@@ -23,6 +23,7 @@ private:
 	bool blocksLight;
 	float blocksLightValue;
 	bool emitsLight;
+	int lightPropagationType; // flat, raycast, etc
 	float lightRadius;
 	float lightIntensity;
 	float lightDropoffMultiplier; // how much reduction of light there is for cells that are far from the source

@@ -21,16 +21,45 @@ void Light::Update()
     if (doAnim)
         Animate();
 
+    if (engine.GetInput().GetKeyDown(SDL_SCANCODE_X))
+    {
+        if (curPropagation == PropagationSetting::Raycast)
+            curPropagation = PropagationSetting::Flat;
+        else
+            curPropagation = PropagationSetting::Raycast;
+    }
+
     PropagateLight();
 }
 
-//-----------------------------------------------------------------
-// Propagates the light through the world 
-// 
-// TODO: Also allow for simpler lighting instead of always raycasting
-// and make it a setting for prefabs.
-//-----------------------------------------------------------------
+//----------------------------------------------------------------------
+// Propagates the light through the world in base of the curPropagation
+//----------------------------------------------------------------------
 void Light::PropagateLight()
+{
+    switch (curPropagation)
+    {
+        case PropagationSetting::Flat:
+            FlatLightPropagation();
+            break;
+
+        case PropagationSetting::Raycast:
+            RaycastLightPropagation();
+            break;
+
+        default:
+            FlatLightPropagation();
+            break;
+    }
+}
+
+//-------------------------------------------------------------------------------------------
+// Light propagation using raycast, can be expensive and should be used only when necessary.
+// 
+// TODO: The number of rays to cast can be < 360 for certain lights, so we can increment i
+// by more than just 1 per loop. Make it a setting.
+//-------------------------------------------------------------------------------------------
+void Light::RaycastLightPropagation()
 {
     // X and Y of the cell where the light is
     int lightCellX = owner->GetOwner()->GetCellX();
@@ -40,7 +69,7 @@ void Light::PropagateLight()
     // TODO: Instead of having matrix allocation every frame for every light, we can keep a global matrix "touched" that has the size of the biggest light used (dynamically resize) or a predetermined max size
     // Touched is used to know which cells have already been hit by a ray of this light, so two rays cannot add up light in the same cell
     char touched[32][32];
-    std::fill(&touched[0][0], &touched[0][0] + sizeof(touched) , 0);
+    std::fill(&touched[0][0], &touched[0][0] + sizeof(touched), 0);
 
     // Propagate light through world using Raycasting
     // This is done every frame for visible every light, we can surely optimize this
@@ -48,7 +77,7 @@ void Light::PropagateLight()
     {
         // Get the angle
         float angle = (i * M_PI) / 180.f;
-        
+
         // Get the direction
         float dirX = cos(angle);
         float dirY = sin(angle);
@@ -77,7 +106,7 @@ void Light::PropagateLight()
                 float cellBlock = curCell->GetLightBlockPercent();
                 if (cellBlock > curBlock)
                     curBlock = cellBlock;
-                
+
                 // If the Cell wasn't already touched, lit it
                 if (touched[touchedX][touchedY] == false)
                 {
@@ -91,6 +120,25 @@ void Light::PropagateLight()
             rayY += dirY * CELL_HEIGHT;
         }
     }
+}
+
+//---------------------------------------------------------------------------
+// Lightweight light propagation for lights that do not need to be occluded.
+//---------------------------------------------------------------------------
+void Light::FlatLightPropagation()
+{
+    int lightCellX = owner->GetOwner()->GetCellX();
+    int lightCellY = owner->GetOwner()->GetCellY();
+    World* world = owner->GetOwner()->GetWorld();
+
+    for (int i = -radius; i < radius; i++)
+        for (int j = -radius; j < radius; j++)
+        {
+            // Do lighting in a circle instead of a square, so it looks beter and not so much different from raycasting method
+            if (i * i + j * j <= radius * radius)
+                if (world->IsInWorldBounds(lightCellX + i, lightCellY + j))
+                    world->GetCellAt(lightCellX + i, lightCellY + j)->SetLightingInfluence(this, std::abs(i) + std::abs(j), 0.0f); // No occlusion supported for flat lights
+        }
 }
 
 //-----------------------------------------------------------------

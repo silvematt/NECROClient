@@ -18,6 +18,7 @@ private:
 	bool isRunning;
 	double deltaTime;
 	uint32_t lastUpdate;
+	float fps;
 
 	// Game
 	NECROGame game;
@@ -35,6 +36,7 @@ public:
 	NECROAssetsManager&		GetAssetsManager();
 
 	const double			GetDeltaTime() const;
+	const float				GetFPS() const;
 
 	int						Init();
 	void					Update();
@@ -70,6 +72,11 @@ inline NECROAssetsManager& NECROEngine::GetAssetsManager()
 inline const double NECROEngine::GetDeltaTime() const
 {
 	return deltaTime;
+}
+
+inline const float NECROEngine::GetFPS() const
+{
+	return fps;
 }
 
 #endif

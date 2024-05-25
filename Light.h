@@ -18,6 +18,13 @@ class Entity;
 class Light
 {
 public:
+	enum PropagationSetting
+	{
+		Flat = 0,
+		Raycast = 1
+	};
+
+public:
 	Entity* owner;
 
 	Vector2 pos;
@@ -35,6 +42,8 @@ public:
 	float minIntensityDivider;
 
 private:
+	PropagationSetting curPropagation;
+
 	// Settings to animate lights
 	bool doAnim = false;
 
@@ -46,11 +55,22 @@ private:
 	void Animate();
 	void PropagateLight();
 
+	// Different kinds of light propagation
+	void RaycastLightPropagation();
+	void FlatLightPropagation();
+
 public:
 	void Init(Entity* owner);
 	void Update();
 
 	void SetAnim(bool v);
+
+	void SetPropagationSetting(PropagationSetting s);
 };
+
+inline void Light::SetPropagationSetting(PropagationSetting s)
+{
+	curPropagation = s;
+}
 
 #endif
