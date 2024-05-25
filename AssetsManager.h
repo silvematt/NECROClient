@@ -41,4 +41,9 @@ public:
 	Prefab*				GetPrefab(const std::string& prefabName);
 };
 
+extern const char* IMGS_FOLDER;
+extern const char* FONTS_FOLDER;
+extern const char* PREFABS_FOLDER;
+extern const char* ANIMATORS_FOLDER;
+
 #endif

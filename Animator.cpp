@@ -1,4 +1,8 @@
 #include "Animator.h"
+#include "AssetsManager.h"
+#include "NECROEngine.h"
+
+#include <fstream>
 
 //------------------------------------------------------------------
 // Initializes the Animator and set the owner of this Animator
@@ -51,4 +55,89 @@ void Animator::Play(const std::string& sName)
     }
     else // State doesn't exist in map
         SDL_LogError(SDL_LOG_CATEGORY_ERROR, "ANIMATOR Error: State %s not found in the states map", sName.c_str());
+}
+
+//------------------------------------------------------------------
+// Load an animator from a .nanim file
+//------------------------------------------------------------------
+bool Animator::LoadFromFile(const std::string& fName, bool clear)
+{
+    if (clear)
+        states.clear();
+
+    std::string fullPath = ANIMATORS_FOLDER;
+    fullPath += fName;
+
+    std::ifstream stream(fullPath);
+
+    if (!stream.is_open())
+    {
+        SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Could not load animator at: %s\n", fName.c_str());
+        return false;
+    }
+
+    std::string curLine;
+    std::string curValStr;
+
+    // Animator name
+    std::getline(stream, curLine);
+    curValStr = curLine.substr(curLine.find("=") + 2); // key = value;
+    curValStr = curValStr.substr(0, curValStr.find(";"));
+    name = curValStr;
+
+    // Default State
+    std::getline(stream, curLine);
+    curValStr = curLine.substr(curLine.find("=") + 2); // key = value;
+    curValStr = curValStr.substr(0, curValStr.find(";"));
+    defaultStateName = curValStr;
+
+    // Load Animator States
+    bool doneLoadingStates = false;
+    while (!doneLoadingStates)
+    {
+        std::getline(stream, curLine);
+
+        if(curLine.find("ENDSTATES") != std::string::npos)
+            doneLoadingStates = true;
+        else
+        {
+            // Load States
+            //                                                            AnimSpeed
+            // STATE:("state_name", "animation_file_name_for_this_state", 75);
+            // SDL_Log("%s\n", curLine.c_str());
+
+            std::string stateName;
+            std::string animFile;
+            float animSpeed;
+
+            // Get state_name
+            int startPos = curLine.find("\"");
+            int endPos = curLine.find("\"", startPos + 1);
+            stateName = curLine.substr(startPos + 1, endPos - startPos - 1);
+
+            // Get animation_file_name_for_this_state
+            startPos = curLine.find("\"", endPos + 1);
+            endPos = curLine.find("\"", startPos + 1);
+            animFile = curLine.substr(startPos + 1, endPos - startPos - 1);
+
+            // Get animSpeed
+            startPos = curLine.find_last_of(",") + 1;
+            animSpeed = std::stof(curLine.substr(startPos));
+
+            AddState(stateName, engine.GetAssetsManager().GetImage(animFile), animSpeed);
+        }
+    }
+
+    std::getline(stream, curLine); //; end of file 
+
+    return true;
+}
+
+//------------------------------------------------------------------
+// Plays the defaultState if set
+//------------------------------------------------------------------
+void Animator::PlayDefaultIfNotNull()
+{
+    if (!defaultStateName.empty() && defaultStateName.compare("NULL") != 0)
+        Play(defaultStateName);
 }

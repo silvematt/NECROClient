@@ -144,6 +144,9 @@ void Entity::Update()
 	// If this Entity has a light, update it
 	if (HasLight())
 		GetLight()->Update();
+
+	if (HasAnimator())
+		GetAnimator()->Update();
 }
 
 //------------------------------------------------------------

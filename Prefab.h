@@ -13,15 +13,19 @@ private:
 	std::string pName;
 	std::string pImgFile;
 	bool isStatic;
+
 	bool hasCollider;
 	SDL_Rect collRect;
 	int collOffsetX;
 	int collOffsetY;
+
 	bool occlCheck;
 	int occlModX;
 	int occlModY;
+
 	bool blocksLight;
 	float blocksLightValue;
+
 	bool emitsLight;
 	int lightPropagationType; // flat, raycast, etc
 	float lightRadius;
@@ -35,6 +39,9 @@ private:
 	bool lightAnimated;
 	float lightMinIntensityDivider;
 	float lightAnimSpeed;
+
+	bool hasAnimator;
+	std::string animFile;
 
 public:
 	bool		LoadFromFile(const std::string& filename);

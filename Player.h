@@ -22,8 +22,6 @@ const int HALF_PLAYER_HEIGHT = 64;
 class Player : public Entity
 {
 private:
-	Animator anim;
-
 	float curMoveSpeed = 2.5f;
 	IsoDirection isoDirection = IsoDirection::SOUTH;		// The isometric direction the player is facing
 

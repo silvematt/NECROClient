@@ -38,6 +38,8 @@ bool Prefab::LoadFromFile(const std::string& filename)
 	curValStr = curValStr.substr(0, curValStr.find(";"));
 	isStatic = std::stoi(curValStr);
 
+	std::getline(stream, curLine); // line break
+
 	// ColliderEnabled
 	std::getline(stream, curLine);
 	curValStr = curLine.substr(curLine.find("=") + 2); // key = value;
@@ -80,6 +82,8 @@ bool Prefab::LoadFromFile(const std::string& filename)
 	curValStr = curValStr.substr(0, curValStr.find(";"));
 	collOffsetY = std::stoi(curValStr);
 
+	std::getline(stream, curLine); // line break
+
 	// occlCheck
 	std::getline(stream, curLine);
 	curValStr = curLine.substr(curLine.find("=") + 2); // key = value;
@@ -92,11 +96,13 @@ bool Prefab::LoadFromFile(const std::string& filename)
 	curValStr = curValStr.substr(0, curValStr.find(";"));
 	occlModX = std::stoi(curValStr);
 
-	// occlModX
+	// occlModY
 	std::getline(stream, curLine);
 	curValStr = curLine.substr(curLine.find("=") + 2); // key = value;
 	curValStr = curValStr.substr(0, curValStr.find(";"));
 	occlModY = std::stoi(curValStr);
+
+	std::getline(stream, curLine); // line break
 
 	// BlocksLight
 	std::getline(stream, curLine);
@@ -109,6 +115,8 @@ bool Prefab::LoadFromFile(const std::string& filename)
 	curValStr = curLine.substr(curLine.find("=") + 2); // key = value;
 	curValStr = curValStr.substr(0, curValStr.find(";"));
 	blocksLightValue = std::stof(curValStr);
+
+	std::getline(stream, curLine); // line break
 
 	// EmitsLight
 	std::getline(stream, curLine);
@@ -188,6 +196,20 @@ bool Prefab::LoadFromFile(const std::string& filename)
 	curValStr = curValStr.substr(0, curValStr.find(";"));
 	lightAnimSpeed = std::stof(curValStr);
 
+	std::getline(stream, curLine); // line break
+
+	// HasAnim
+	std::getline(stream, curLine);
+	curValStr = curLine.substr(curLine.find("=") + 2); // key = value;
+	curValStr = curValStr.substr(0, curValStr.find(";"));
+	hasAnimator = std::stoi(curValStr);
+
+	// Anim File name
+	std::getline(stream, curLine);
+	curValStr = curLine.substr(curLine.find("=") + 2); // key = value;
+	curValStr = curValStr.substr(0, curValStr.find(";"));
+	animFile = curValStr;
+
 
 	// ifstream is closed by destructor
 	return true;
@@ -253,6 +275,20 @@ std::unique_ptr<Entity> Prefab::InstantiatePrefab(const std::string& prefabName,
 
 			// Init
 			thisLight->Init(e.get());
+		}
+
+		// Check Animator
+		if (p->hasAnimator)
+		{
+			e->CreateAnimator();
+			e->GetAnimator()->Init(e.get());
+			
+			if (!p->animFile.empty() && p->animFile.compare("NULL") != 0)
+			{
+				Animator* anim = e->GetAnimator();
+				anim->LoadFromFile(p->animFile);
+				anim->PlayDefaultIfNotNull();
+			}
 		}
 
 		return std::move(e);

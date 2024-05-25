@@ -7,6 +7,7 @@
 #include "Image.h"
 #include "Collider.h"
 #include "Light.h"
+#include "Animator.h"
 
 class Cell;
 
@@ -50,6 +51,7 @@ protected:
 	// "Components", they are created or not in base of prefab options. An alternative could be std::optional
 	std::unique_ptr<Collider> coll;
 	std::unique_ptr<Light> emittingLight;
+	std::unique_ptr<Animator> anim;
 	
 public:
 	virtual ~Entity();
@@ -77,6 +79,10 @@ public:
 	void			CreateCollider();
 	bool			HasCollider() const;
 	Collider*		GetCollider() const;
+
+	void			CreateAnimator();
+	bool			HasAnimator() const;
+	Animator*		GetAnimator() const;
 
 	bool			Occludes();
 
@@ -134,6 +140,22 @@ inline bool Entity::HasLight() const
 inline Light* Entity::GetLight() const
 {
 	return emittingLight.get();
+}
+
+inline void Entity::CreateAnimator()
+{
+	if (!HasAnimator())
+		anim = std::make_unique<Animator>();
+}
+
+inline bool Entity::HasAnimator() const
+{
+	return anim != nullptr;
+}
+
+inline Animator* Entity::GetAnimator() const
+{
+	return anim.get();
 }
 
 inline void Entity::SetFlag(Flags flag)
