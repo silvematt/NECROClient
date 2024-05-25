@@ -13,6 +13,7 @@ private:
 	std::string pName;
 	std::string pImgFile;
 	bool isStatic;
+	Vector2 posOffset; // position offset when instantiated in a cell
 
 	bool hasCollider;
 	SDL_Rect collRect;

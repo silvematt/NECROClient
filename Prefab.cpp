@@ -38,6 +38,18 @@ bool Prefab::LoadFromFile(const std::string& filename)
 	curValStr = curValStr.substr(0, curValStr.find(";"));
 	isStatic = std::stoi(curValStr);
 
+	// PosOffsetX
+	std::getline(stream, curLine);
+	curValStr = curLine.substr(curLine.find("=") + 2); // key = value;
+	curValStr = curValStr.substr(0, curValStr.find(";"));
+	posOffset.x = std::stof(curValStr);
+
+	// PosOffsetY
+	std::getline(stream, curLine);
+	curValStr = curLine.substr(curLine.find("=") + 2); // key = value;
+	curValStr = curValStr.substr(0, curValStr.find(";"));
+	posOffset.y = std::stof(curValStr);
+
 	std::getline(stream, curLine); // line break
 
 	// ColliderEnabled
@@ -222,7 +234,7 @@ std::unique_ptr<Entity> Prefab::InstantiatePrefab(const std::string& prefabName,
 	if (p)
 	{
 		// Create the entity
-		std::unique_ptr<Entity> e(new Entity(Vector2(static_cast<float>(pos.x), static_cast<float>(pos.y)), engine.GetAssetsManager().GetImage(p->pImgFile)));
+		std::unique_ptr<Entity> e(new Entity(Vector2(static_cast<float>(pos.x + p->posOffset.x), static_cast<float>(pos.y + p->posOffset.y)), engine.GetAssetsManager().GetImage(p->pImgFile)));
 
 		// Check if the prefab has a collider
 		if (p->hasCollider)

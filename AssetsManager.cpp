@@ -32,7 +32,6 @@ void NECROAssetsManager::LoadAllImages()
 	LoadImage("tile_highlighted.png", 0, 0);
 	LoadImage("tree.png", -15, -5);
 	LoadImage("tile_debug_coll.png", 0, 0);
-	LoadImage("campfire01.png", 0, 0);
 
 	// Player tilesets
 	LoadTilesetImage("player_war_idle.png", -30, 12, 128, 128, 1, 8);
@@ -40,6 +39,7 @@ void NECROAssetsManager::LoadAllImages()
 	LoadTilesetImage("player_war_aim_stand.png", -30, 12, 128, 128, 1, 8);
 	LoadTilesetImage("player_war_aim_walk.png", -30, 12, 128, 128, 11, 8);
 	LoadTilesetImage("player_war_aim_strafe.png", -30, 12, 128, 128, 11, 8);
+	LoadTilesetImage("campfire01.png", 0, 0, 46, 46, 4, 1);
 }
 
 //-------------------------------------------------
