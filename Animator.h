@@ -18,16 +18,18 @@ private:
 	float animTime = 0;
 
 	Entity* owner;
-
 	std::map<std::string, AnimState> states;
 
 	AnimState* curStatePlaying = nullptr;			// Keeps the state of the currently active state
 	std::string curStateNamePlaying = "NULL";
 
 public:
+	Animator& operator=(const Animator& other); //copy-assignment
+	
+public:
 	void Init(Entity* pOwner);
 
-	bool LoadFromFile(const std::string& fName, bool clear = true); // Load an animator from a .nanim file
+	bool LoadFromFile(const std::string& fullPath, bool clear = true); // Load an animator from a .nanim file
 
 	void AddState(const std::string& sName, Image* sImg, float sSpeed);
 	void Play(const std::string& sName);

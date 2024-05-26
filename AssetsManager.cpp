@@ -11,79 +11,119 @@ const char* ANIMATORS_FOLDER = "Data/prefabs/animators/";
 //-------------------------------------------------
 int NECROAssetsManager::Init()
 {
-	LoadAllImages();
-	LoadAllFonts();
-	LoadAllPrefabs();
+	// Load the fallback image, required for the AssetsManager to work properly
+	if (LoadImage("null_img.png", 0, 0))
+	{
+		LoadAllFonts(); // TODO: Fonts can be loaded only if needed as well as images, animators and prefabs, and we can have a default fallback font like the null_img.png
+		return 0;
+	}
 
-	return 0;
+	return 1;
 }
 
-//----------------------------------------------------------
-// Load all the images 
-// 
-// TODO: This is for quick testing, actual loading
-// will be done through a proper file or as we load prefabs
-//----------------------------------------------------------
+//----------------------------------------------------------------------------
+// Load all the images directly (Unused now, images are loaded when necessary)
+//----------------------------------------------------------------------------
 void NECROAssetsManager::LoadAllImages()
 {
 	// General
-	LoadImage("null_img.png", 0, 0);
-	LoadImage("tile.png", 0, 0);
-	LoadImage("tile_highlighted.png", 0, 0);
-	LoadImage("tree.png", -15, -5);
-	LoadImage("tile_debug_coll.png", 0, 0);
+
+	//LoadImage("tile.png", 0, 0);
+	//LoadImage("tile_highlighted.png", 0, 0);
+	//LoadImage("tree.png", -15, -5);
+	//LoadImage("tile_debug_coll.png", 0, 0);
 
 	// Player tilesets
-	LoadTilesetImage("player_war_idle.png", -30, 12, 128, 128, 1, 8);
-	LoadTilesetImage("player_war_run.png", -30, 12, 128, 128, 12, 8);
-	LoadTilesetImage("player_war_aim_stand.png", -30, 12, 128, 128, 1, 8);
-	LoadTilesetImage("player_war_aim_walk.png", -30, 12, 128, 128, 11, 8);
-	LoadTilesetImage("player_war_aim_strafe.png", -30, 12, 128, 128, 11, 8);
-	LoadTilesetImage("campfire01.png", 0, 0, 46, 46, 4, 1);
+	//LoadTilesetImage("player_war_idle.png", -30, 12, 128, 128, 1, 8);
+	//LoadTilesetImage("player_war_run.png", -30, 12, 128, 128, 12, 8);
+	//LoadTilesetImage("player_war_aim_stand.png", -30, 12, 128, 128, 1, 8);
+	//LoadTilesetImage("player_war_aim_walk.png", -30, 12, 128, 128, 11, 8);
+	//LoadTilesetImage("player_war_aim_strafe.png", -30, 12, 128, 128, 11, 8);
+	//LoadTilesetImage("campfire01.png", 0, 0, 46, 46, 4, 1);
 }
 
 //-------------------------------------------------
 // Load all the fonts 
-// 
-// TODO: This is for quick testing, actual loading
-// will be done through a proper file.
 //-------------------------------------------------
 void NECROAssetsManager::LoadAllFonts()
 {
 	LoadFont("montserrat.regular.ttf", FONT_DEFAULT_PTSIZE, "defaultFont");
 }
 
-// TODO: Prefab loading should be done only if necessary, when loading the map we'll look at the content and only load the needed prefabs, same thing for the images
+
+// Unused now, prefabs are loaded when necessary
 void NECROAssetsManager::LoadAllPrefabs()
 {
-	LoadPrefab("tree01.nprfb");
-	LoadPrefab("campfire01.nprfb");
+	//LoadPrefab("tree01.nprfb");
+	//LoadPrefab("campfire01.nprfb");
 }
 
-void NECROAssetsManager::LoadImage(const std::string& filename, int xOffset, int yOffset, const std::string& shortname)
+// Unused now, animators are loaded when necessary
+void NECROAssetsManager::LoadAllAnimators()
+{
+	//LoadAnimator("player_war.nanim");
+	//LoadAnimator("campfire01.nanim");
+}
+
+//-------------------------------------------------
+// Directly loads an Image 
+//-------------------------------------------------
+bool NECROAssetsManager::LoadImage(const std::string& filename, int xOffset, int yOffset, const std::string& shortname)
 {
 	std::string fullPath = IMGS_FOLDER;
 	fullPath += filename;
 	
 	Image img(LoadSDLTexture(fullPath.c_str()), xOffset, yOffset);
-	if(img.GetSrc() != NULL)
+	if (img.GetSrc() != NULL)
+	{
 		images.insert({ shortname.empty() ? filename : shortname, img });
+		return true;
+	}
+
+	return false;
 }
 
-void NECROAssetsManager::LoadTilesetImage(const std::string& filename, int xOffset, int yOffset, int tWidth, int tHeight, int tNumX, int tNumY, const std::string& shortname)
+//-------------------------------------------------
+// Directly loads a Tileset Image 
+//-------------------------------------------------
+bool NECROAssetsManager::LoadTilesetImage(const std::string& filename, int xOffset, int yOffset, int tWidth, int tHeight, int tNumX, int tNumY, const std::string& shortname)
 {
 	std::string fullPath = IMGS_FOLDER;
 	fullPath += filename;
 
 	Image img(LoadSDLTexture(fullPath.c_str()), xOffset, yOffset, tWidth, tHeight, tNumX, tNumY);
 	if (img.GetSrc() != NULL)
+	{
 		images.insert({ shortname.empty() ? filename : shortname, img });
+		return true;
+	}
+
+	return false;
+}
+
+//-------------------------------------------------------------------------------------
+// Loads an Image looking for its definition file 
+// It's the default way of loading images and it's called after a GetImage() call fails
+//-------------------------------------------------------------------------------------
+bool NECROAssetsManager::LoadImageWithDefinition(const std::string& filename, const std::string& shortname)
+{
+	std::string fullPath = IMGS_FOLDER;
+	fullPath += filename;
+
+	Image img(LoadSDLTexture(fullPath.c_str()), filename);
+	if (img.GetSrc() != NULL)
+	{
+		images.insert({ shortname.empty() ? filename : shortname, img });
+		return true;
+	}
+
+	return false;
 }
 
 //-------------------------------------------------
-// Loads a single font into the fonts vector
+// Loads a single font into the fonts map
 //-------------------------------------------------
-void NECROAssetsManager::LoadFont(const std::string& filename, int ptsize, const std::string& shortname)
+bool NECROAssetsManager::LoadFont(const std::string& filename, int ptsize, const std::string& shortname)
 {
 	std::string fullPath = FONTS_FOLDER;
 	fullPath += filename;
@@ -95,46 +135,55 @@ void NECROAssetsManager::LoadFont(const std::string& filename, int ptsize, const
 	if (font != nullptr)
 	{
 		fonts.insert({ shortname.empty() ? filename : shortname, font });
+		return true;
 	}
 	else
 	{
 		SDL_LogError(SDL_LOG_CATEGORY_ERROR, "NECROAssetsManager: Failed to LoadFont(%s)\n", filename.c_str());
 	}
+
+	return false;
 }
 
 //-------------------------------------------------
-// Loads and returns an SDL_Texture
+// Loads a single animator in the animators map
 //-------------------------------------------------
-SDL_Texture* NECROAssetsManager::LoadSDLTexture(const char* filename)
+bool NECROAssetsManager::LoadAnimator(const std::string & filename, const std::string& shortname)
 {
-	SDL_Texture* texture;
+	std::string fullPath = ANIMATORS_FOLDER;
+	fullPath += filename;
 
-	texture = IMG_LoadTexture(engine.GetRenderer().GetInnerRenderer(), filename);
+	Animator a; // animators.insert makes a copy, that's why we can define this here as a local member
+	if (a.LoadFromFile(fullPath))
+	{
+		animators.insert({ shortname.empty() ? filename : shortname, a });
+		return true;
+	}
 
-	if (texture != NULL) // IMG_LoadTexture returns NULL on failure
-	{
-		return texture;
-	}
-	else
-	{
-		SDL_LogError(SDL_LOG_CATEGORY_ERROR,"NECROAssetsManager: Failed to LoadImage(%s)\n", filename);
-		return NULL;
-	}
+	return false;
 }
 
-void NECROAssetsManager::LoadPrefab(const std::string& filename)
+//-------------------------------------------------
+// Loads a single prefab in the prefabs map
+//-------------------------------------------------
+bool NECROAssetsManager::LoadPrefab(const std::string& filename)
 {
 	std::string fullPath = PREFABS_FOLDER;
 	fullPath += filename;
 
 	Prefab p;
-	p.LoadFromFile(fullPath);
-	prefabs.insert({ p.GetName(), p });
+	if (p.LoadFromFile(fullPath))
+	{
+		prefabs.insert({ p.GetName(), p });
+		return true;
+	}
+
+	return false;
 }
 
-//-------------------------------------------------
-// Returns an SDL_Texture*
-//-------------------------------------------------
+//--------------------------------------------------------------------------
+// Gets an Image from the images map and attempts to load it if not found
+//--------------------------------------------------------------------------
 Image* NECROAssetsManager::GetImage(const std::string& filename)
 {
 	auto it = images.find(filename);
@@ -143,7 +192,18 @@ Image* NECROAssetsManager::GetImage(const std::string& filename)
 		return &it->second;
 	}
 
-	SDL_LogError(SDL_LOG_CATEGORY_ERROR, "GetImage: %s not found! Returning null_img.", filename.c_str());
+	SDL_LogWarn(SDL_LOG_PRIORITY_WARN, "GetImage: %s not found! Attempting to load it...", filename.c_str());
+
+	if (LoadImageWithDefinition(filename))
+	{
+		// Return it
+		it = images.find(filename);
+		if (it != images.end())
+		{
+			return &it->second;
+		}
+	}
+
 	return &images.at("null_img.png");
 }
 
@@ -163,14 +223,76 @@ TTF_Font* NECROAssetsManager::GetFont(const std::string& filename)
 	return nullptr;
 }
 
+//--------------------------------------------------------------------------
+// Gets a Prefab from the prefabs map and attempts to load it if not found
+//--------------------------------------------------------------------------
 Prefab* NECROAssetsManager::GetPrefab(const std::string& prefabName)
 {
+	// Search for the prefab
 	auto it = prefabs.find(prefabName);
 	if (it != prefabs.end()) 
 	{
 		return &it->second;
 	}
 
-	SDL_LogError(SDL_LOG_CATEGORY_ERROR, "GetPrefab: %s not found!", prefabName.c_str());
+	// If it wasn't found, attempt to load it
+	SDL_LogWarn(SDL_LOG_PRIORITY_WARN, "GetPrefab: %s not found! Attempting to load it...", prefabName.c_str());
+	if (LoadPrefab(prefabName + ".nprfb"))
+	{
+		// Try the search again
+		it = prefabs.find(prefabName);
+		if (it != prefabs.end())
+		{
+			return &it->second;
+		}
+	}
+
 	return nullptr;
+}
+
+//-------------------------------------------------------------------------------
+// Gets an Animator from the animators map and attempts to load it if not found
+//-------------------------------------------------------------------------------
+Animator* NECROAssetsManager::GetAnimator(const std::string& animName)
+{
+	auto it = animators.find(animName);
+	if (it != animators.end())
+	{
+		return &it->second;
+	}
+
+	// If it wasn't found, attempt to load it
+	SDL_LogWarn(SDL_LOG_PRIORITY_WARN, "GetAnimator: %s not found! Attempting to load it...", animName.c_str());
+	if (LoadAnimator(animName))
+	{
+		// Try the search again
+		it = animators.find(animName);
+		if (it != animators.end())
+		{
+			return &it->second;
+		}
+	}
+
+	return nullptr;
+}
+
+
+//-------------------------------------------------------
+// Loads and returns an SDL_Texture using IMG_LoadTexture
+//-------------------------------------------------------
+SDL_Texture* NECROAssetsManager::LoadSDLTexture(const char* filename)
+{
+	SDL_Texture* texture;
+
+	texture = IMG_LoadTexture(engine.GetRenderer().GetInnerRenderer(), filename);
+
+	if (texture != NULL) // IMG_LoadTexture returns NULL on failure
+	{
+		return texture;
+	}
+	else
+	{
+		SDL_LogError(SDL_LOG_CATEGORY_ERROR, "NECROAssetsManager: Failed to LoadImage(%s)\n", filename);
+		return NULL;
+	}
 }

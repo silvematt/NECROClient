@@ -4,6 +4,25 @@
 
 #include <fstream>
 
+// -----------------------------------------------------------------------
+// Used for Copy-Assignment. When Animators are created they are copied
+// from the ones loaded in the AssetsManager.
+// -----------------------------------------------------------------------
+Animator& Animator::operator=(const Animator& other)
+{
+    // Check for self-assignment
+    if (this == &other)
+        return *this;
+
+    // Copy the data from the other Animator
+    name = other.name;
+    defaultStateName = other.defaultStateName;
+    states = other.states;
+
+    // Return the current object
+    return *this;
+}
+
 //------------------------------------------------------------------
 // Initializes the Animator and set the owner of this Animator
 //------------------------------------------------------------------
@@ -27,7 +46,7 @@ void Animator::AddState(const std::string& sName, Image* sImg, float sSpeed)
 //-------------------------------------------------------------------------------------
 void Animator::Update()
 {
-    if (owner && curStatePlaying)
+    if (owner && curStatePlaying && curStatePlaying->GetImg()->IsTileset())
         owner->tilesetXOff = ((int)floor((SDL_GetTicks() - animTime) / curStatePlaying->GetSpeed()) % curStatePlaying->GetImg()->GetTileset().tileXNum);
 }
 
@@ -58,21 +77,29 @@ void Animator::Play(const std::string& sName)
 }
 
 //------------------------------------------------------------------
-// Load an animator from a .nanim file
+// Plays the defaultState if set
 //------------------------------------------------------------------
-bool Animator::LoadFromFile(const std::string& fName, bool clear)
+void Animator::PlayDefaultIfNotNull()
+{
+    if (!defaultStateName.empty() && defaultStateName.compare("NULL") != 0)
+        Play(defaultStateName);
+}
+
+//--------------------------------------------------------------------------------------------------------------------------------------------
+// Load an animator from a .nanim file
+//--------------------------------------------------------------------------------------------------------------------------------------------
+bool Animator::LoadFromFile(const std::string& fullPath, bool clear)
 {
     if (clear)
         states.clear();
 
-    std::string fullPath = ANIMATORS_FOLDER;
-    fullPath += fName;
+    SDL_Log("Loading Animator: '%s'\n", fullPath.c_str());
 
     std::ifstream stream(fullPath);
 
     if (!stream.is_open())
     {
-        SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Could not load animator at: %s\n", fName.c_str());
+        SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Could not load animator at: %s\n", fullPath.c_str());
         return false;
     }
 
@@ -122,7 +149,8 @@ bool Animator::LoadFromFile(const std::string& fName, bool clear)
 
             // Get animSpeed
             startPos = curLine.find_last_of(",") + 1;
-            animSpeed = std::stof(curLine.substr(startPos));
+            endPos = curLine.find(")", startPos + 1);
+            animSpeed = Utility::TryParseFloat(curLine.substr(startPos + 1, endPos - startPos - 1));
 
             AddState(stateName, engine.GetAssetsManager().GetImage(animFile), animSpeed);
         }
@@ -131,13 +159,4 @@ bool Animator::LoadFromFile(const std::string& fName, bool clear)
     std::getline(stream, curLine); //; end of file 
 
     return true;
-}
-
-//------------------------------------------------------------------
-// Plays the defaultState if set
-//------------------------------------------------------------------
-void Animator::PlayDefaultIfNotNull()
-{
-    if (!defaultStateName.empty() && defaultStateName.compare("NULL") != 0)
-        Play(defaultStateName);
 }

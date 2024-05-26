@@ -44,6 +44,13 @@ private:
 	bool hasAnimator;
 	std::string animFile;
 
+private:
+	// Methods to read lines from Prefab file
+	void		GetIntFromFile(int* v, std::ifstream* stream, std::string* curLine, std::string* curValStr);
+	void		GetBoolFromFile(bool* v, std::ifstream* stream, std::string* curLine, std::string* curValStr);
+	void		GetFloatFromFile(float* v, std::ifstream* stream, std::string* curLine, std::string* curValStr);
+	void		GetStringFromFile(std::string* v, std::ifstream* stream, std::string* curLine, std::string* curValStr);
+
 public:
 	bool		LoadFromFile(const std::string& filename);
 	void		Log();

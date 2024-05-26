@@ -2,6 +2,13 @@
 #define NECROIMAGE_H
 
 #include "SDL.h"
+#include "Utility.h"
+
+#include <fstream>
+
+// IMGs Defs folder and extension
+#define IMG_DEFS_FOLDER "Data/imgs/defs/"
+#define IMG_DEFS_EXTENSION ".nidf"
 
 //-------------------------------------------------------
 // Represents an Image
@@ -35,7 +42,8 @@ private:
 public:
 	Image(SDL_Texture* tex, int xOff, int yOff);
 	Image(SDL_Texture* tex, int xOff, int yOff, int tWidth, int tHeight, int tNumX, int tNumY);
-
+	Image(SDL_Texture* tex, const std::string& fileDef); // Constructor with img definition
+	
 	SDL_Texture*				GetSrc() const;
 	SDL_Rect&					GetRect();
 	int							GetWidth() const;
@@ -49,8 +57,6 @@ public:
 	int							GetTilesetWidth() const; // shortcut
 	int							GetTilesetHeight() const; // shortcut
 };
-
-
 
 
 //-------------------------------------------------------
@@ -93,6 +99,89 @@ inline Image::Image(SDL_Texture* tex, int xOff, int yOff, int tWidth, int tHeigh
 	tileset.tileHeight = tHeight;
 	tileset.tileXNum = tNumX;
 	tileset.tileYNum = tNumY;
+}
+
+//--------------------------------------------------------
+// Looks if there's a img definition and loads the image
+//--------------------------------------------------------
+inline Image::Image(SDL_Texture* tex, const std::string& fileDefinition) : Image::Image(tex, 0, 0) // Base constructor is called first
+{
+	// At this point fileDefinition is 'img_name.png'
+
+	// Cut the img extension and add the img_def extension
+	std::string filedefName = fileDefinition.substr(0, fileDefinition.find_last_of('.'));
+	filedefName += IMG_DEFS_EXTENSION;
+
+	// Build a path to the img definition
+	std::string fullPath = IMG_DEFS_FOLDER;
+	fullPath += filedefName;
+
+	// Try to open the file definition
+	SDL_Log("Loading IMG '%s'... Looking for definition.\n", fileDefinition.c_str());
+	std::ifstream stream(fullPath);
+
+	if (!stream.is_open())
+	{
+		SDL_Log("No IMG definition found.\n");
+
+		// At this point this image is loaded with the base constructor Image::Image(tex, 0, 0)
+		return;
+	}
+	else
+	{
+		SDL_Log("Loading IMG '%s' from definition.\n", fileDefinition.c_str());
+
+		std::string curLine;
+		std::string curValStr;
+
+		// IsTileset
+		std::getline(stream, curLine);
+		curValStr = curLine.substr(curLine.find("=") + 2); // key = value;
+		curValStr = curValStr.substr(0, curValStr.find(";"));
+		isTileset = Utility::TryParseInt(curValStr);
+
+		// xOffset
+		std::getline(stream, curLine);
+		curValStr = curLine.substr(curLine.find("=") + 2); // key = value;
+		curValStr = curValStr.substr(0, curValStr.find(";"));
+		offsetX = Utility::TryParseInt(curValStr);
+
+		// yOffset
+		std::getline(stream, curLine);
+		curValStr = curLine.substr(curLine.find("=") + 2); // key = value;
+		curValStr = curValStr.substr(0, curValStr.find(";"));
+		offsetY = Utility::TryParseInt(curValStr);
+
+		if (isTileset)
+		{
+			// tWidth
+			std::getline(stream, curLine);
+			curValStr = curLine.substr(curLine.find("=") + 2); // key = value;
+			curValStr = curValStr.substr(0, curValStr.find(";"));
+			tileset.tileWidth = Utility::TryParseInt(curValStr);
+
+			// tHeight
+			std::getline(stream, curLine);
+			curValStr = curLine.substr(curLine.find("=") + 2); // key = value;
+			curValStr = curValStr.substr(0, curValStr.find(";"));
+			tileset.tileHeight = Utility::TryParseInt(curValStr);
+
+			// tileXNum
+			std::getline(stream, curLine);
+			curValStr = curLine.substr(curLine.find("=") + 2); // key = value;
+			curValStr = curValStr.substr(0, curValStr.find(";"));
+			tileset.tileXNum = Utility::TryParseInt(curValStr);
+
+			// tileYNum
+			std::getline(stream, curLine);
+			curValStr = curLine.substr(curLine.find("=") + 2); // key = value;
+			curValStr = curValStr.substr(0, curValStr.find(";"));
+			tileset.tileYNum = Utility::TryParseInt(curValStr);
+		}
+
+		// ifstream is closed by destructor
+		return;
+	}
 }
 
 inline SDL_Texture* Image::GetSrc() const

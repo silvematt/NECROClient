@@ -20,7 +20,9 @@ void Player::Init()
 	// Construct Animator
 	CreateAnimator();
 	anim->Init(this);
-	anim->LoadFromFile("player_war.nanim");
+	Animator* animAsset = engine.GetAssetsManager().GetAnimator("player_war.nanim");
+	if(animAsset)
+		*(anim.get()) = *engine.GetAssetsManager().GetAnimator("player_war.nanim");
 	anim->Play("idle"); // Set default
 
 	// Construct Collider

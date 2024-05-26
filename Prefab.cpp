@@ -5,10 +5,47 @@
 #include "NECROEngine.h"
 #include "Entity.h"
 
-// TODO: Organize loading better, if the prefabImage is not loaded, load it
+// Methods to read lines from the Prefab file
+void Prefab::GetIntFromFile(int* v, std::ifstream* stream, std::string* curLine, std::string* curValStr)
+{
+	std::getline(*stream, *curLine);
+	*curValStr = curLine->substr(curLine->find("=") + 2); // key = value;
+	*curValStr = curValStr->substr(0, curValStr->find(";"));
+	*v = Utility::TryParseInt(*curValStr);
+}
+
+void Prefab::GetBoolFromFile(bool* v, std::ifstream* stream, std::string* curLine, std::string* curValStr)
+{
+	std::getline(*stream, *curLine);
+	*curValStr = curLine->substr(curLine->find("=") + 2); // key = value;
+	*curValStr = curValStr->substr(0, curValStr->find(";"));
+	*v = Utility::TryParseInt(*curValStr);
+}
+
+void Prefab::GetFloatFromFile(float* v, std::ifstream* stream, std::string* curLine, std::string* curValStr)
+{
+	std::getline(*stream, *curLine);
+	*curValStr = curLine->substr(curLine->find("=") + 2); // key = value;
+	*curValStr = curValStr->substr(0, curValStr->find(";"));
+	*v = Utility::TryParseFloat(*curValStr);
+}
+
+void Prefab::GetStringFromFile(std::string* v, std::ifstream* stream, std::string* curLine, std::string* curValStr)
+{
+	std::getline(*stream, *curLine);
+	*curValStr = curLine->substr(curLine->find("=") + 2); // key = value;
+	*curValStr = curValStr->substr(0, curValStr->find(";"));
+	*v = *curValStr;
+}
+
+//--------------------------------------------------------
+// Loads a Prefab from the file specified in 'filename'
+//--------------------------------------------------------
 bool Prefab::LoadFromFile(const std::string& filename)
 {
 	std::ifstream stream(filename);
+
+	SDL_Log("Loading Prefab: '%s'\n", filename.c_str());
 
 	if (!stream.is_open())
 	{
@@ -21,212 +58,118 @@ bool Prefab::LoadFromFile(const std::string& filename)
 	int curValInt;
 
 	// Prefab Name
-	std::getline(stream, curLine);
-	curValStr = curLine.substr(curLine.find("=") + 2); // key = value;
-	curValStr = curValStr.substr(0, curValStr.find(";"));
-	pName = curValStr;
+	GetStringFromFile(&pName, &stream, &curLine, &curValStr);
 
 	// Prefab Img
-	std::getline(stream, curLine);
-	curValStr = curLine.substr(curLine.find("=") + 2); // key = value;
-	curValStr = curValStr.substr(0, curValStr.find(";"));
-	pImgFile = curValStr;
+	GetStringFromFile(&pImgFile, &stream, &curLine, &curValStr);
 
 	// isStatic
-	std::getline(stream, curLine);
-	curValStr = curLine.substr(curLine.find("=") + 2); // key = value;
-	curValStr = curValStr.substr(0, curValStr.find(";"));
-	isStatic = std::stoi(curValStr);
+	GetBoolFromFile(&isStatic, &stream, &curLine, &curValStr);
 
 	// PosOffsetX
-	std::getline(stream, curLine);
-	curValStr = curLine.substr(curLine.find("=") + 2); // key = value;
-	curValStr = curValStr.substr(0, curValStr.find(";"));
-	posOffset.x = std::stof(curValStr);
+	GetFloatFromFile(&posOffset.x, &stream, &curLine, &curValStr);
 
 	// PosOffsetY
-	std::getline(stream, curLine);
-	curValStr = curLine.substr(curLine.find("=") + 2); // key = value;
-	curValStr = curValStr.substr(0, curValStr.find(";"));
-	posOffset.y = std::stof(curValStr);
+	GetFloatFromFile(&posOffset.y, &stream, &curLine, &curValStr);
 
 	std::getline(stream, curLine); // line break
 
 	// ColliderEnabled
-	std::getline(stream, curLine);
-	curValStr = curLine.substr(curLine.find("=") + 2); // key = value;
-	curValStr = curValStr.substr(0, curValStr.find(";"));
-	hasCollider = std::stoi(curValStr);
+	GetBoolFromFile(&hasCollider, &stream, &curLine, &curValStr);
 
 	// colliderRectX
-	std::getline(stream, curLine);
-	curValStr = curLine.substr(curLine.find("=") + 2); // key = value;
-	curValStr = curValStr.substr(0, curValStr.find(";"));
-	collRect.x = std::stoi(curValStr);
+	GetIntFromFile(&collRect.x, &stream, &curLine, &curValStr);
 
 	// colliderRectY
-	std::getline(stream, curLine);
-	curValStr = curLine.substr(curLine.find("=") + 2); // key = value;
-	curValStr = curValStr.substr(0, curValStr.find(";"));
-	collRect.y = std::stoi(curValStr);
+	GetIntFromFile(&collRect.y, &stream, &curLine, &curValStr);
 
 	// colliderRectW
-	std::getline(stream, curLine);
-	curValStr = curLine.substr(curLine.find("=") + 2); // key = value;
-	curValStr = curValStr.substr(0, curValStr.find(";"));
-	collRect.w = std::stoi(curValStr);
+	GetIntFromFile(&collRect.w, &stream, &curLine, &curValStr);
 
 	// colliderRectH
-	std::getline(stream, curLine);
-	curValStr = curLine.substr(curLine.find("=") + 2); // key = value;
-	curValStr = curValStr.substr(0, curValStr.find(";"));
-	collRect.h = std::stoi(curValStr);
+	GetIntFromFile(&collRect.h, &stream, &curLine, &curValStr);
 
 	// collOffsetX
-	std::getline(stream, curLine);
-	curValStr = curLine.substr(curLine.find("=") + 2); // key = value;
-	curValStr = curValStr.substr(0, curValStr.find(";"));
-	collOffsetX = std::stoi(curValStr);
+	GetIntFromFile(&collOffsetX, &stream, &curLine, &curValStr);
 
 	// collOffsetY
-	std::getline(stream, curLine);
-	curValStr = curLine.substr(curLine.find("=") + 2); // key = value;
-	curValStr = curValStr.substr(0, curValStr.find(";"));
-	collOffsetY = std::stoi(curValStr);
+	GetIntFromFile(&collOffsetY, &stream, &curLine, &curValStr);
 
 	std::getline(stream, curLine); // line break
 
 	// occlCheck
-	std::getline(stream, curLine);
-	curValStr = curLine.substr(curLine.find("=") + 2); // key = value;
-	curValStr = curValStr.substr(0, curValStr.find(";"));
-	occlCheck = std::stoi(curValStr);
+	GetBoolFromFile(&occlCheck, &stream, &curLine, &curValStr);
 
 	// occlModX
-	std::getline(stream, curLine);
-	curValStr = curLine.substr(curLine.find("=") + 2); // key = value;
-	curValStr = curValStr.substr(0, curValStr.find(";"));
-	occlModX = std::stoi(curValStr);
+	GetIntFromFile(&occlModX, &stream, &curLine, &curValStr);
 
 	// occlModY
-	std::getline(stream, curLine);
-	curValStr = curLine.substr(curLine.find("=") + 2); // key = value;
-	curValStr = curValStr.substr(0, curValStr.find(";"));
-	occlModY = std::stoi(curValStr);
+	GetIntFromFile(&occlModY, &stream, &curLine, &curValStr);
 
 	std::getline(stream, curLine); // line break
 
 	// BlocksLight
-	std::getline(stream, curLine);
-	curValStr = curLine.substr(curLine.find("=") + 2); // key = value;
-	curValStr = curValStr.substr(0, curValStr.find(";"));
-	blocksLight = std::stoi(curValStr);
+	GetBoolFromFile(&blocksLight, &stream, &curLine, &curValStr);
 
 	// blocksLightValue
-	std::getline(stream, curLine);
-	curValStr = curLine.substr(curLine.find("=") + 2); // key = value;
-	curValStr = curValStr.substr(0, curValStr.find(";"));
-	blocksLightValue = std::stof(curValStr);
+	GetFloatFromFile(&blocksLightValue, &stream, &curLine, &curValStr);
 
 	std::getline(stream, curLine); // line break
 
 	// EmitsLight
-	std::getline(stream, curLine);
-	curValStr = curLine.substr(curLine.find("=") + 2); // key = value;
-	curValStr = curValStr.substr(0, curValStr.find(";"));
-	emitsLight = std::stoi(curValStr);
+	GetBoolFromFile(&emitsLight, &stream, &curLine, &curValStr);
 
 	// lightPropagationType
-	std::getline(stream, curLine);
-	curValStr = curLine.substr(curLine.find("=") + 2); // key = value;
-	curValStr = curValStr.substr(0, curValStr.find(";"));
-	lightPropagationType = std::stoi(curValStr);
+	GetIntFromFile(&lightPropagationType, &stream, &curLine, &curValStr);
 
 	// LightRadius
-	std::getline(stream, curLine);
-	curValStr = curLine.substr(curLine.find("=") + 2); // key = value;
-	curValStr = curValStr.substr(0, curValStr.find(";"));
-	lightRadius = std::stof(curValStr);
+	GetFloatFromFile(&lightRadius, &stream, &curLine, &curValStr);
 
 	// Light Intensity
-	std::getline(stream, curLine);
-	curValStr = curLine.substr(curLine.find("=") + 2); // key = value;
-	curValStr = curValStr.substr(0, curValStr.find(";"));
-	lightIntensity = std::stof(curValStr);
+	GetFloatFromFile(&lightIntensity, &stream, &curLine, &curValStr);
 
 	// Dropoff multiplier
-	std::getline(stream, curLine);
-	curValStr = curLine.substr(curLine.find("=") + 2); // key = value;
-	curValStr = curValStr.substr(0, curValStr.find(";"));
-	lightDropoffMultiplier = std::stof(curValStr);
+	GetFloatFromFile(&lightDropoffMultiplier, &stream, &curLine, &curValStr);
 
 	// lightFarDropoffThreshold
-	std::getline(stream, curLine);
-	curValStr = curLine.substr(curLine.find("=") + 2); // key = value;
-	curValStr = curValStr.substr(0, curValStr.find(";"));
-	lightFarDropoffThreshold = std::stof(curValStr);
+	GetFloatFromFile(&lightFarDropoffThreshold, &stream, &curLine, &curValStr);
 
 	// lightFarDropoffMultiplier
-	std::getline(stream, curLine);
-	curValStr = curLine.substr(curLine.find("=") + 2); // key = value;
-	curValStr = curValStr.substr(0, curValStr.find(";"));
-	lightFarDropoffMultiplier = std::stof(curValStr);
+	GetFloatFromFile(&lightFarDropoffMultiplier, &stream, &curLine, &curValStr);
 
 	// LightR
-	std::getline(stream, curLine);
-	curValStr = curLine.substr(curLine.find("=") + 2); // key = value;
-	curValStr = curValStr.substr(0, curValStr.find(";"));
-	lightR = std::stoi(curValStr);
+	GetIntFromFile(&lightR, &stream, &curLine, &curValStr);
 
 	// LightG
-	std::getline(stream, curLine);
-	curValStr = curLine.substr(curLine.find("=") + 2); // key = value;
-	curValStr = curValStr.substr(0, curValStr.find(";"));
-	lightG = std::stoi(curValStr);
+	GetIntFromFile(&lightG, &stream, &curLine, &curValStr);
 
 	// LightB
-	std::getline(stream, curLine);
-	curValStr = curLine.substr(curLine.find("=") + 2); // key = value;
-	curValStr = curValStr.substr(0, curValStr.find(";"));
-	lightB = std::stoi(curValStr);
+	GetIntFromFile(&lightB, &stream, &curLine, &curValStr);
 
 	// lightAnimated
-	std::getline(stream, curLine);
-	curValStr = curLine.substr(curLine.find("=") + 2); // key = value;
-	curValStr = curValStr.substr(0, curValStr.find(";"));
-	lightAnimated = std::stoi(curValStr);
+	GetBoolFromFile(&lightAnimated, &stream, &curLine, &curValStr);
 
 	// lightMinIntensityDivider
-	std::getline(stream, curLine);
-	curValStr = curLine.substr(curLine.find("=") + 2); // key = value;
-	curValStr = curValStr.substr(0, curValStr.find(";"));
-	lightMinIntensityDivider = std::stof(curValStr);
+	GetFloatFromFile(&lightMinIntensityDivider, &stream, &curLine, &curValStr);
 
 	// lightAnimSpeed
-	std::getline(stream, curLine);
-	curValStr = curLine.substr(curLine.find("=") + 2); // key = value;
-	curValStr = curValStr.substr(0, curValStr.find(";"));
-	lightAnimSpeed = std::stof(curValStr);
+	GetFloatFromFile(&lightAnimSpeed, &stream, &curLine, &curValStr);
 
 	std::getline(stream, curLine); // line break
 
 	// HasAnim
-	std::getline(stream, curLine);
-	curValStr = curLine.substr(curLine.find("=") + 2); // key = value;
-	curValStr = curValStr.substr(0, curValStr.find(";"));
-	hasAnimator = std::stoi(curValStr);
+	GetBoolFromFile(&hasAnimator, &stream, &curLine, &curValStr);
 
 	// Anim File name
-	std::getline(stream, curLine);
-	curValStr = curLine.substr(curLine.find("=") + 2); // key = value;
-	curValStr = curValStr.substr(0, curValStr.find(";"));
-	animFile = curValStr;
-
+	GetStringFromFile(&animFile, &stream, &curLine, &curValStr);
 
 	// ifstream is closed by destructor
 	return true;
 }
 
+//-------------------------------------------------------------------
+// Instantiates and returns an Entity unique_ptr from a Prefab
+//-------------------------------------------------------------------
 std::unique_ptr<Entity> Prefab::InstantiatePrefab(const std::string& prefabName, Vector2 pos)
 {
 	Prefab* p = engine.GetAssetsManager().GetPrefab(prefabName);
@@ -298,8 +241,16 @@ std::unique_ptr<Entity> Prefab::InstantiatePrefab(const std::string& prefabName,
 			if (!p->animFile.empty() && p->animFile.compare("NULL") != 0)
 			{
 				Animator* anim = e->GetAnimator();
-				anim->LoadFromFile(p->animFile);
-				anim->PlayDefaultIfNotNull();
+				Animator* other = engine.GetAssetsManager().GetAnimator(p->animFile);
+				if (other)
+				{
+					*anim = *other; // Sets *anim to be equal to the one in the asset manager (copy-assignment)
+					anim->PlayDefaultIfNotNull();
+				}
+			}
+			else
+			{
+				SDL_LogWarn(SDL_LOG_PRIORITY_WARN, "Prefab %s has Animator enabled, but no Animator file was specified.", p->pName.c_str());
 			}
 		}
 
