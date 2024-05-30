@@ -21,7 +21,8 @@ class World
 private:
 	Cell worldmap[WORLD_WIDTH][WORLD_HEIGHT];
 	Cell* worldCursor = nullptr;					// The cell the mouse is currently hovering on (if any)
-	SDL_Texture* worldCursorTexture;
+	SDL_Texture* worldCursorEditTexture;
+	SDL_Texture* worldCursorPlayTexture;
 
 	// Constant added to visible min/max
 	const int VISIBLE_X_PLUS_OFFSET = 4;
@@ -51,6 +52,9 @@ private:
 
 private:
 	void			UpdateVisibleCoords(); // updates visibleMinMax variables based on curCamera position and zoom
+
+	void			ComputeOnSelectedCell(); // allows to perform actions on the selected cell, called in Update
+	void			DrawUI();
 
 public:
 	const std::unordered_map<uint32_t, std::unique_ptr<Entity>>& GetEntities();

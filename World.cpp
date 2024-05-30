@@ -12,7 +12,8 @@ Camera* curCamera;
 void World::InitializeWorld()
 {
 	worldCursor = nullptr;
-	worldCursorTexture = engine.GetAssetsManager().GetImage("tile_highlighted.png")->GetSrc();
+	worldCursorEditTexture = engine.GetAssetsManager().GetImage("tile_highlighted.png")->GetSrc();
+	worldCursorPlayTexture = engine.GetAssetsManager().GetImage("tile_highlighted_play.png")->GetSrc();
 
 	// Add a player, just for testing (ID = 0)
 	std::unique_ptr<Player> p(new Player());
@@ -83,48 +84,7 @@ void World::Update()
 {
 	UpdateVisibleCoords();
 
-	// Compute selected cell
-	int selectedCellX = 0, selectedCellY = 0;
-
-	Vector2 mousePos(static_cast<float>(engine.GetInput().GetMouseX()), static_cast<float>(engine.GetInput().GetMouseY()));
-	Vector2 mouseInWorld = curCamera->ScreenToWorld(mousePos);
-
-	selectedCellX = mouseInWorld.x;
-	selectedCellY = mouseInWorld.y;
-
-	if (selectedCellX >= 0 && selectedCellX < WORLD_WIDTH && selectedCellY >= 0 && selectedCellY < WORLD_HEIGHT)
-	{
-		worldCursor = &worldmap[selectedCellX][selectedCellY];
-
-		if (engine.GetInput().GetMouseDown(static_cast<SDL_Scancode>(SDL_BUTTON_LEFT)))
-		{
-			if (worldCursor->GetEntitiesPtrSize() != 0)
-			{
-				RemoveEntity(worldCursor->GetEntityPtrAt(0)->GetID());
-			}
-			else
-			{
-				std::unique_ptr<Entity> tree = Prefab::InstantiatePrefab("campfire01", Vector2(worldCursor->GetCellX() * CELL_WIDTH, worldCursor->GetCellY() * CELL_HEIGHT));
-				if(tree)
-					AddEntity(std::move(tree));
-			}
-		}
-		else if (engine.GetInput().GetMouseDown(static_cast<SDL_Scancode>(SDL_BUTTON_RIGHT)))
-		{
-			if (worldCursor->GetEntitiesPtrSize() != 0)
-			{
-				RemoveEntity(worldCursor->GetEntityPtrAt(0)->GetID());
-			}
-			else
-			{
-				std::unique_ptr<Entity> tree = Prefab::InstantiatePrefab("tree01", Vector2(worldCursor->GetCellX() * CELL_WIDTH, worldCursor->GetCellY() * CELL_HEIGHT));
-				if (tree)
-					AddEntity(std::move(tree));
-			}
-		}
-	}
-	else
-		worldCursor = nullptr;
+	ComputeOnSelectedCell();
 
 	// Reset the lighting for all visible cells, it is re-calculated later
 	ResetLighting();
@@ -172,22 +132,91 @@ void World::Draw()
 
 	// Draw the world cursor
 	if(worldCursor)
-		engine.GetRenderer().DrawImageDirectly(worldCursorTexture, NULL, &worldCursor->GetDstRect());
+		engine.GetRenderer().DrawImageDirectly(engine.GetGame().GetCurMode() == GameMode::EDIT_MODE ? worldCursorEditTexture : worldCursorPlayTexture, NULL, &worldCursor->GetDstRect());
 
+	DrawUI();
+}
+
+//------------------------------------------------------------
+// Allows to perform actions on the mouse-selected cell 
+// Must be called from Update()
+//------------------------------------------------------------
+void World::ComputeOnSelectedCell()
+{
+	// Compute selected cell
+	int selectedCellX = 0, selectedCellY = 0;
+
+	Vector2 mousePos(static_cast<float>(engine.GetInput().GetMouseX()), static_cast<float>(engine.GetInput().GetMouseY()));
+	Vector2 mouseInWorld = curCamera->ScreenToWorld(mousePos);
+
+	selectedCellX = mouseInWorld.x;
+	selectedCellY = mouseInWorld.y;
+
+	if (selectedCellX >= 0 && selectedCellX < WORLD_WIDTH && selectedCellY >= 0 && selectedCellY < WORLD_HEIGHT)
+	{
+		worldCursor = &worldmap[selectedCellX][selectedCellY];
+
+		// IF IN EDIT MDOE
+		if (engine.GetGame().GetCurMode() == GameMode::EDIT_MODE)
+		{
+			if (engine.GetInput().GetMouseDown(static_cast<SDL_Scancode>(SDL_BUTTON_LEFT)))
+			{
+				if (worldCursor->GetEntitiesPtrSize() != 0)
+				{
+					RemoveEntity(worldCursor->GetEntityPtrAt(0)->GetID());
+				}
+				else
+				{
+					std::unique_ptr<Entity> tree = Prefab::InstantiatePrefab("campfire01", Vector2(worldCursor->GetCellX() * CELL_WIDTH, worldCursor->GetCellY() * CELL_HEIGHT));
+					if (tree)
+						AddEntity(std::move(tree));
+				}
+			}
+			else if (engine.GetInput().GetMouseDown(static_cast<SDL_Scancode>(SDL_BUTTON_RIGHT)))
+			{
+				if (worldCursor->GetEntitiesPtrSize() != 0)
+				{
+					RemoveEntity(worldCursor->GetEntityPtrAt(0)->GetID());
+				}
+				else
+				{
+					std::unique_ptr<Entity> tree = Prefab::InstantiatePrefab("tree01", Vector2(worldCursor->GetCellX() * CELL_WIDTH, worldCursor->GetCellY() * CELL_HEIGHT));
+					if (tree)
+						AddEntity(std::move(tree));
+				}
+			}
+		}
+		// Game mode input can be handled in Player class
+	}
+	else
+		worldCursor = nullptr;
+}
+
+//------------------------------------------------------------
+// Draws interface (FPS, Selected Cell etc) 
+//------------------------------------------------------------
+void World::DrawUI()
+{
+	NECRORenderer& renderer = engine.GetRenderer();
 	// Draw the UI on the overlay target
-	engine.GetRenderer().SetRenderTarget(NECRORenderer::ERenderTargets::OVERLAY_TARGET);
+	renderer.SetRenderTarget(NECRORenderer::ERenderTargets::OVERLAY_TARGET);
 
-	// Draw some text
+	// Draw text
+	
 	// FPS
 	std::string textFPS = "FPS: " + std::to_string((int)engine.GetFPS());
-	engine.GetRenderer().DrawTextDirectly(engine.GetAssetsManager().GetFont("defaultFont"), textFPS.c_str(), 10, 10, colorRed);
+	renderer.DrawTextDirectly(engine.GetAssetsManager().GetFont("defaultFont"), textFPS.c_str(), 10, 10, colorRed);
 
 	// Draw selected cell
 	std::string textSelCell = "Selected Cell: ";
 	if (worldCursor)
 		textSelCell = textSelCell + "(" + std::to_string(worldCursor->GetCellX()) + ", " + std::to_string(worldCursor->GetCellY()) + ")";
+	renderer.DrawTextDirectly(engine.GetAssetsManager().GetFont("defaultFont"), textSelCell.c_str(), 10, 50, colorRed);
 
-	engine.GetRenderer().DrawTextDirectly(engine.GetAssetsManager().GetFont("defaultFont"), textSelCell.c_str(), 10, 50, colorRed);
+	// Draw current mode
+	std::string textCurrentMode = "Mode: " + GameModeMap[engine.GetGame().GetCurMode()];
+	renderer.DrawTextDirectly(engine.GetAssetsManager().GetFont("defaultFont"), textCurrentMode.c_str(), SCREEN_WIDTH - (18 * textCurrentMode.size()), 10, colorRed);
+
 }
 
 //------------------------------------------------------------------------
