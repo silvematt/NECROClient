@@ -102,6 +102,9 @@ void Entity::TransferToCellQueue(Cell* c)
 //------------------------------------------------------------
 void Entity::Update()
 {
+	int oldGridPosX = gridPosX;
+	int oldGridPosY = gridPosY;
+
 	// Update grid position
 	gridPosX = pos.x / CELL_WIDTH;
 	gridPosY = pos.y / CELL_HEIGHT;
@@ -147,6 +150,13 @@ void Entity::Update()
 
 	if (HasAnimator())
 		GetAnimator()->Update();
+
+	// Perform Cell trasfer if needed
+	if (oldGridPosX != gridPosX || oldGridPosY != gridPosY)
+	{
+		nextOwner = owner->GetWorld()->GetCellAt(gridPosX, gridPosY);
+		TransferToCellQueue(nextOwner); // will be done as soon as the world update is finished
+	}
 }
 
 //------------------------------------------------------------

@@ -18,6 +18,9 @@ void Light::Init(Entity* pOwner)
 //-----------------------------------------------------------------
 void Light::Update()
 {
+    if (!enabled)
+        return;
+
     if (doAnim)
         Animate();
 

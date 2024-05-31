@@ -8,7 +8,9 @@
 #include "Collider.h"
 #include "Light.h"
 #include "Animator.h"
+#include "Interactable.h"
 
+class Interactable;
 class Cell;
 
 //-----------------------------------------------------------------------------
@@ -52,6 +54,7 @@ protected:
 	std::unique_ptr<Collider> coll;
 	std::unique_ptr<Light> emittingLight;
 	std::unique_ptr<Animator> anim;
+	std::unique_ptr<Interactable> interactable;
 	
 public:
 	virtual ~Entity();
@@ -83,6 +86,11 @@ public:
 	void			CreateAnimator();
 	bool			HasAnimator() const;
 	Animator*		GetAnimator() const;
+
+	void			CreateInteractable();
+	bool			HasInteractable() const;
+	Interactable*	GetInteractable() const;
+	void			DestroyInteractable();		// Called if InteractableType is out of bounds during prefab loading, to prevent destructive behaviors
 
 	bool			Occludes();
 
@@ -156,6 +164,29 @@ inline bool Entity::HasAnimator() const
 inline Animator* Entity::GetAnimator() const
 {
 	return anim.get();
+}
+
+inline void Entity::CreateInteractable()
+{
+	if (!HasInteractable())
+		interactable = std::make_unique<Interactable>(this);
+}
+
+inline bool Entity::HasInteractable() const
+{
+	return interactable != nullptr;
+}
+
+inline Interactable* Entity::GetInteractable() const
+{
+	return interactable.get();
+}
+
+// Called if InteractableType is out of bounds, to prevent destructive behaviors
+inline void Entity::DestroyInteractable()
+{
+	if (HasInteractable())
+		interactable.reset();
 }
 
 inline void Entity::SetFlag(Flags flag)

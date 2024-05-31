@@ -54,22 +54,12 @@ void Player::Init()
 //-------------------------------------------------
 void Player::Update()
 {
-	int oldGridPosX = gridPosX;
-	int oldGridPosY = gridPosY;
-
 	UpdateCloseEntities();
 	HandleMovements();
 	HandleAnim();
 
 	// Update the entity base, pos, gridPos, isoPos etc.
 	Entity::Update();
-
-	// Perform Cell trasfer if needed
-	if (oldGridPosX != gridPosX || oldGridPosY != gridPosY)
-	{
-		nextOwner = owner->GetWorld()->GetCellAt(gridPosX, gridPosY);
-		TransferToCellQueue(nextOwner); // will be done as soon as the world update is finished
-	}
 }
 
 void Player::HandleMovements()

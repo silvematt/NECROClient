@@ -4,6 +4,7 @@
 
 #include "NECROEngine.h"
 #include "Entity.h"
+#include "Interactable.h"
 
 // Methods to read lines from the Prefab file
 void Prefab::GetIntFromFile(int* v, std::ifstream* stream, std::string* curLine, std::string* curValStr)
@@ -163,6 +164,30 @@ bool Prefab::LoadFromFile(const std::string& filename)
 	// Anim File name
 	GetStringFromFile(&animFile, &stream, &curLine, &curValStr);
 
+	std::getline(stream, curLine); // line break
+
+	// Interactable
+	GetBoolFromFile(&interactable, &stream, &curLine, &curValStr);
+
+	if (interactable)
+	{
+		// gridDistanceInteraction
+		GetIntFromFile(&gridDistanceInteraction, &stream, &curLine, &curValStr);
+
+		// Interact type
+		GetIntFromFile(&interactType, &stream, &curLine, &curValStr);
+
+		// Params
+		// parStr
+		GetStringFromFile(&parStr, &stream, &curLine, &curValStr);
+
+		// parFloat1
+		GetFloatFromFile(&parFloat1, &stream, &curLine, &curValStr);
+
+		// parFloat2
+		GetFloatFromFile(&parFloat2, &stream, &curLine, &curValStr);
+	}
+
 	// ifstream is closed by destructor
 	return true;
 }
@@ -251,6 +276,28 @@ std::unique_ptr<Entity> Prefab::InstantiatePrefab(const std::string& prefabName,
 			else
 			{
 				SDL_LogWarn(SDL_LOG_PRIORITY_WARN, "Prefab %s has Animator enabled, but no Animator file was specified.", p->pName.c_str());
+			}
+		}
+
+		// Check Interactable
+		if (p->interactable)
+		{
+			e->CreateInteractable();
+
+			if (p->interactType >= 0 && p->interactType < static_cast<int>(Interactable::InteractType::LAST_VAL))
+			{
+				Interactable* i = e->GetInteractable();
+				i->gridDistanceInteraction = p->gridDistanceInteraction;
+				i->type = static_cast<Interactable::InteractType>(p->interactType);
+				i->parStr = p->parStr;
+				i->parFloat1 = p->parFloat1;
+				i->parFloat2 = p->parFloat2;
+			}
+			else
+			{
+				SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Error during Prefab Instantiation of '%s', InteractType is out of bounds.", prefabName.c_str());
+
+				e->DestroyInteractable();
 			}
 		}
 

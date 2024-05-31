@@ -121,6 +121,10 @@ void World::Draw()
 			currentCell.DrawCell();
 		}
 
+	// Draw interact cursor before the actual entity
+	if (worldCursor && engine.GetGame().GetCurMode() == GameMode::PLAY_MODE && canInteract)
+		engine.GetRenderer().DrawImageDirectly(worldCursorPlayTexture, NULL, &worldCursor->GetDstRect());
+
 	// Draw the entities
 	for (int x = visibleMinX; x < visibleMaxX; x++)
 		for (int y = visibleMinY; y < visibleMaxY; y++)
@@ -130,9 +134,9 @@ void World::Draw()
 			currentCell.DrawEntities();
 		}
 
-	// Draw the world cursor
-	if(worldCursor)
-		engine.GetRenderer().DrawImageDirectly(engine.GetGame().GetCurMode() == GameMode::EDIT_MODE ? worldCursorEditTexture : worldCursorPlayTexture, NULL, &worldCursor->GetDstRect());
+	// Draw the edit cursor on top of entities
+	if(worldCursor && engine.GetGame().GetCurMode() == GameMode::EDIT_MODE)
+		engine.GetRenderer().DrawImageDirectly(worldCursorEditTexture, NULL, &worldCursor->GetDstRect());
 
 	DrawUI();
 }
@@ -186,7 +190,33 @@ void World::ComputeOnSelectedCell()
 				}
 			}
 		}
-		// Game mode input can be handled in Player class
+		// Handle PlayMode interaction
+		else if (engine.GetGame().GetCurMode() == GameMode::PLAY_MODE)
+		{
+			canInteract = false;
+			if (worldCursor->GetEntitiesPtrSize() != 0)
+			{
+				// TODO make proper entity selection instead of selecting the first one
+				Entity* e = worldCursor->GetEntityPtrAt(0);
+				if (e->HasInteractable())
+				{
+					// Check if the player is closer enough to interact with this interactable
+					Interactable* i = e->GetInteractable();
+					Player* p = engine.GetGame().GetCurPlayer();
+
+					// If player is valid
+					if(p)
+						if (std::max(abs(p->gridPosX - e->gridPosX), abs(p->gridPosY - e->gridPosY)) <= i->gridDistanceInteraction || // check distance
+							i->gridDistanceInteraction == 0) // 0 means interact from any distance
+						{
+							canInteract = true;
+
+							if (engine.GetInput().GetMouseDown(static_cast<SDL_Scancode>(SDL_BUTTON_LEFT)))
+								worldCursor->GetEntityPtrAt(0)->GetInteractable()->Interact();
+						}
+				}
+			}
+		}
 	}
 	else
 		worldCursor = nullptr;

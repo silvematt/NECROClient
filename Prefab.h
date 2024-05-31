@@ -44,6 +44,13 @@ private:
 	bool hasAnimator;
 	std::string animFile;
 
+	bool interactable;
+	int gridDistanceInteraction;
+	int interactType;
+	std::string parStr;
+	float parFloat1;
+	float parFloat2;
+
 private:
 	// Methods to read lines from Prefab file
 	void		GetIntFromFile(int* v, std::ifstream* stream, std::string* curLine, std::string* curValStr);

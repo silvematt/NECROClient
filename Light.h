@@ -27,6 +27,8 @@ public:
 public:
 	Entity* owner;
 
+	bool enabled = true;
+
 	Vector2 pos;
 	float intensity;
 	float radius;

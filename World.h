@@ -50,6 +50,10 @@ private:
 	SDL_Color baseLightColor = colorGray;
 	float baseLight = .5f;
 
+	// True if the player can interact with hovered entity during PLAY_MODE
+	// Used to draw the cell highlight
+	bool canInteract = false;
+
 private:
 	void			UpdateVisibleCoords(); // updates visibleMinMax variables based on curCamera position and zoom
 
