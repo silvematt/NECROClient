@@ -54,7 +54,7 @@ protected:
 	std::unique_ptr<Collider> coll;
 	std::unique_ptr<Light> emittingLight;
 	std::unique_ptr<Animator> anim;
-	std::unique_ptr<Interactable> interactable;
+	std::vector<std::unique_ptr<Interactable>> interactables;
 	
 public:
 	virtual ~Entity();
@@ -89,8 +89,9 @@ public:
 
 	void			CreateInteractable();
 	bool			HasInteractable() const;
-	Interactable*	GetInteractable() const;
-	void			DestroyInteractable();		// Called if InteractableType is out of bounds during prefab loading, to prevent destructive behaviors
+	Interactable*	GetInteractable(int indx) const;
+	int				GetInteractablesSize() const;
+	void			DestroyInteractables();		// Called if InteractableType is out of bounds during prefab loading, to prevent destructive behaviors
 
 	bool			Occludes();
 
@@ -168,25 +169,37 @@ inline Animator* Entity::GetAnimator() const
 
 inline void Entity::CreateInteractable()
 {
-	if (!HasInteractable())
-		interactable = std::make_unique<Interactable>(this);
+	interactables.push_back(std::make_unique<Interactable>(this));
 }
 
 inline bool Entity::HasInteractable() const
 {
-	return interactable != nullptr;
+	return interactables.size() > 0;
 }
 
-inline Interactable* Entity::GetInteractable() const
+inline Interactable* Entity::GetInteractable(int indx) const
 {
-	return interactable.get();
+	if (interactables.at(indx))
+		return interactables[indx].get();
+	else
+		return nullptr;
 }
+
+inline int Entity::GetInteractablesSize() const
+{
+	return interactables.size();
+}
+
 
 // Called if InteractableType is out of bounds, to prevent destructive behaviors
-inline void Entity::DestroyInteractable()
+inline void Entity::DestroyInteractables()
 {
-	if (HasInteractable())
-		interactable.reset();
+	for (int i = 0; i < interactables.size(); i++)
+	{
+		interactables[i].reset();
+	}
+
+	interactables.clear();
 }
 
 inline void Entity::SetFlag(Flags flag)

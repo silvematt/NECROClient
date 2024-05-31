@@ -196,12 +196,13 @@ void World::ComputeOnSelectedCell()
 			canInteract = false;
 			if (worldCursor->GetEntitiesPtrSize() != 0)
 			{
-				// TODO make proper entity selection instead of selecting the first one
+				// TODO_ make proper entity selection instead of selecting the first one,
+				// If we end up with possible multiple interactable entities on the same cell, we can have an UI box that allows us to select which one we want to interact with
 				Entity* e = worldCursor->GetEntityPtrAt(0);
 				if (e->HasInteractable())
 				{
 					// Check if the player is closer enough to interact with this interactable
-					Interactable* i = e->GetInteractable();
+					Interactable* i = e->GetInteractable(0); // get the first interactable to get the gridDistanceInteraction, it must be the same on every interactables anyways
 					Player* p = engine.GetGame().GetCurPlayer();
 
 					// If player is valid
@@ -212,7 +213,11 @@ void World::ComputeOnSelectedCell()
 							canInteract = true;
 
 							if (engine.GetInput().GetMouseDown(static_cast<SDL_Scancode>(SDL_BUTTON_LEFT)))
-								worldCursor->GetEntityPtrAt(0)->GetInteractable()->Interact();
+							{
+								// Call Interact() on all interactables
+								for (int i = 0; i < e->GetInteractablesSize(); i++)
+									e->GetInteractable(i)->Interact();
+							}
 						}
 				}
 			}

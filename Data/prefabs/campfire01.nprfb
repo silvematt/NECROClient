@@ -38,8 +38,6 @@ animFile = campfire01.nanim;
 
 interactable = 1;
 interactableGridDistance = 1;
-interactType = 1;
-parStr = NULL;
-parFloat1 = 64.0;
-parFloat2 = 0.0;
+INTERACT_ACTION:(1, "NULL", 0.0, 0.0); // Type, parStr, parFloat1, parFloat2
+ENDINTERACTABLES
 ;

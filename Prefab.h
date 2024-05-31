@@ -7,6 +7,15 @@
 #include "SDL.h"
 #include "Entity.h"
 
+// Structs to group array-based Prefabs data, like Interactables
+struct InteractableData
+{
+	int interactType;
+	std::string parStr;
+	float parFloat1;
+	float parFloat2;
+};
+
 class Prefab
 {
 private:
@@ -46,10 +55,7 @@ private:
 
 	bool interactable;
 	int gridDistanceInteraction;
-	int interactType;
-	std::string parStr;
-	float parFloat1;
-	float parFloat2;
+	std::vector<InteractableData> interactablesData;
 
 private:
 	// Methods to read lines from Prefab file

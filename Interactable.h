@@ -5,12 +5,9 @@
 
 class Entity;
 
-#include "Entity.h"
-
 //---------------------------------------------------------------------------------------------
 // This class is attached to Entities that can be interacted with, upon interaction, a specific
 // function is triggered in base of the selected InteractType.
-// TODO: Allow entities to have multiple interactables to allow for multiple actions upon interaction
 //---------------------------------------------------------------------------------------------
 class Interactable
 {

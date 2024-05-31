@@ -174,18 +174,50 @@ bool Prefab::LoadFromFile(const std::string& filename)
 		// gridDistanceInteraction
 		GetIntFromFile(&gridDistanceInteraction, &stream, &curLine, &curValStr);
 
-		// Interact type
-		GetIntFromFile(&interactType, &stream, &curLine, &curValStr);
 
-		// Params
-		// parStr
-		GetStringFromFile(&parStr, &stream, &curLine, &curValStr);
 
-		// parFloat1
-		GetFloatFromFile(&parFloat1, &stream, &curLine, &curValStr);
+		// Load Interactables
+		bool doneReadingInteratables = false;
+		while (!doneReadingInteratables)
+		{
+			std::getline(stream, curLine);
 
-		// parFloat2
-		GetFloatFromFile(&parFloat2, &stream, &curLine, &curValStr);
+			if (curLine.find("ENDINTERACTABLES") != std::string::npos)
+				doneReadingInteratables = true;
+			else
+			{
+				// Load Interactables
+				// INTERACT_ACTION:(1, "NULL", 0.0, 0.0); // Type, parStr, parFloat1, parFloat2
+				// SDL_Log("%s\n", curLine.c_str());
+
+				InteractableData data;
+
+				// Load each data component
+
+				// interactType
+				int startPos = curLine.find("(");
+				int endPos = curLine.find(",", startPos + 1);
+				data.interactType = Utility::TryParseInt(curLine.substr(startPos + 1, endPos - startPos - 1));
+
+				// parStr
+				startPos = curLine.find("\"");
+				endPos = curLine.find("\"", startPos + 1);
+				data.parStr = curLine.substr(startPos + 1, endPos - startPos - 1);
+
+				// parFloat1
+				startPos = curLine.find(",", startPos + 1);
+				endPos = curLine.find(",", startPos + 1);
+				data.parFloat1 = Utility::TryParseFloat(curLine.substr(startPos + 1, endPos - startPos - 1));
+
+				// parFloat2
+				startPos = curLine.find(",", startPos + 1);
+				endPos = curLine.find(")", startPos + 1);
+				data.parFloat2 = Utility::TryParseFloat(curLine.substr(startPos + 1, endPos - startPos - 1));
+
+				// Add to vector
+				interactablesData.push_back(data);
+			}
+		}
 	}
 
 	// ifstream is closed by destructor
@@ -282,22 +314,24 @@ std::unique_ptr<Entity> Prefab::InstantiatePrefab(const std::string& prefabName,
 		// Check Interactable
 		if (p->interactable)
 		{
-			e->CreateInteractable();
-
-			if (p->interactType >= 0 && p->interactType < static_cast<int>(Interactable::InteractType::LAST_VAL))
+			for (int i = 0; i < p->interactablesData.size(); i++)
 			{
-				Interactable* i = e->GetInteractable();
-				i->gridDistanceInteraction = p->gridDistanceInteraction;
-				i->type = static_cast<Interactable::InteractType>(p->interactType);
-				i->parStr = p->parStr;
-				i->parFloat1 = p->parFloat1;
-				i->parFloat2 = p->parFloat2;
-			}
-			else
-			{
-				SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Error during Prefab Instantiation of '%s', InteractType is out of bounds.", prefabName.c_str());
+				e->CreateInteractable();
 
-				e->DestroyInteractable();
+				InteractableData* data = &p->interactablesData[i];
+				if (data->interactType >= 0 && data->interactType < static_cast<int>(Interactable::InteractType::LAST_VAL))
+				{
+					Interactable* thisIn = e->GetInteractable(i);
+					thisIn->gridDistanceInteraction = p->gridDistanceInteraction;
+					thisIn->type = static_cast<Interactable::InteractType>(data->interactType);
+					thisIn->parStr = data->parStr;
+					thisIn->parFloat1 = data->parFloat1;
+					thisIn->parFloat2 = data->parFloat2;
+				}
+				else
+				{
+					SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Error during Prefab Instantiation of '%s', InteractType is out of bounds at %d.", prefabName.c_str(), i);
+				}
 			}
 		}
 
