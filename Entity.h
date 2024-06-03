@@ -34,6 +34,7 @@ private:
 protected:
 	uint32_t ID;				// EntityID
 	Image* img;
+	int layer;	// TODO: set and use this
 	Cell* owner;				// Owner of this entity
 	Cell* nextOwner;			// Used to TransferToCellQueue()
 
@@ -73,6 +74,8 @@ public:
 	void			SetFlag(Flags flag);	// Manage flags
 	void			ClearFlag(Flags flag);
 	bool			TestFlag(Flags flag);
+
+	void			SetTilesetOffset(int x, int y);
 
 	// Optional components functions
 	void			CreateLight();
@@ -117,6 +120,12 @@ inline const uint32_t Entity::GetID() const
 inline Cell* Entity::GetOwner()
 {
 	return owner;
+}
+
+inline void Entity::SetTilesetOffset(int x, int y)
+{
+	tilesetXOff = x;
+	tilesetYOff = y;
 }
 
 inline void Entity::CreateCollider()

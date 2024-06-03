@@ -1,0 +1,8 @@
+name = tdefMain;
+tilesetsNum = 2;
+src = 64_32_desert.png;
+END
+src = 64_64_desert.png;
+END
+ENDTILESETS
+;

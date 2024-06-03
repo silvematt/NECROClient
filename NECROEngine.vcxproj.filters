@@ -92,6 +92,12 @@
     <ClCompile Include="Interactable.cpp">
       <Filter>Engine\Entity</Filter>
     </ClCompile>
+    <ClCompile Include="TilesetDef.cpp">
+      <Filter>Engine\Assets</Filter>
+    </ClCompile>
+    <ClCompile Include="Mapfile.cpp">
+      <Filter>Engine\Assets</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="NECROEngine.h">
@@ -156,6 +162,12 @@
     </ClInclude>
     <ClInclude Include="Interactable.h">
       <Filter>Engine\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Mapfile.h">
+      <Filter>Engine\Assets</Filter>
+    </ClInclude>
+    <ClInclude Include="TilesetDef.h">
+      <Filter>Engine\Assets</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

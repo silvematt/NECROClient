@@ -37,7 +37,6 @@ private:
 	int isoX, isoY;
 
 	SDL_Rect dstRect;				// dstRect used to DrawImageDirectly
-	SDL_Texture* baseTexture;		// TODO this is just for quick testing, will have to structure this properly
 
 	// Entity ptrs logically owned by this cell
 	std::vector<Entity*> entities;
@@ -68,7 +67,6 @@ public:
 
 	void			SetWorld(World* w);
 	void			SetCellCoordinates(const int x, const int y);
-	void			SetBaseTexture(SDL_Texture* texture);
 
 	void			Update();
 
@@ -80,7 +78,6 @@ public:
 	Entity*			GetEntityPtr(uint32_t atID);
 	Entity*			GetEntityPtrAt(size_t indx);
 
-	void			DrawCell();
 	void			DrawEntities();
 
 	bool			BlocksLight();

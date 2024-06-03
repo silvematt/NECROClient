@@ -6,9 +6,12 @@
 
 #include "Renderer.h"
 #include "Cell.h"
+#include "Mapfile.h"
+#include "TilesetDef.h"
 
-const int WORLD_WIDTH  = 64;
-const int WORLD_HEIGHT = 64;
+
+const int WORLD_WIDTH  = 50; //TODO make this variable and specified in Mapfile
+const int WORLD_HEIGHT = 50;
 
 //-------------------------------------------------
 // A World represents a level or a map with its
@@ -18,7 +21,12 @@ const int WORLD_HEIGHT = 64;
 //-------------------------------------------------
 class World
 {
+	friend Mapfile;
+
 private:
+	Mapfile map;
+	TilesetDef tileDef;
+
 	Cell worldmap[WORLD_WIDTH][WORLD_HEIGHT];
 	Cell* worldCursor = nullptr;					// The cell the mouse is currently hovering on (if any)
 	SDL_Texture* worldCursorEditTexture;
@@ -47,8 +55,8 @@ private:
 	std::vector<Entity*> entitiesWaitingForTransfer;
 
 	// Lighting, for how lighting works it's better to have the world totally black and let entities with lights lit it, because if we apply a base color like gray (128,128,128), we can never have a fully red zone (255, 0, 0)
-	SDL_Color baseLightColor = colorGray;
-	float baseLight = .5f;
+	SDL_Color baseLightColor = colorWhite;
+	float baseLight = 1;
 
 	// True if the player can interact with hovered entity during PLAY_MODE
 	// Used to draw the cell highlight

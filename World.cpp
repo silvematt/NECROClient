@@ -7,7 +7,7 @@
 Camera* curCamera;
 
 //------------------------------------------------------------
-// Initializes the World, TODO: will be loading the world file
+// Initializes the World
 //------------------------------------------------------------
 void World::InitializeWorld()
 {
@@ -24,6 +24,8 @@ void World::InitializeWorld()
 	engine.GetGame().SetCurPlayer(p.get());
 	AddEntity(std::move(p));
 
+	map.LoadMap("world.nmap");
+
 	for(int x = 0; x < WORLD_WIDTH; x++)
 		for (int y = 0; y < WORLD_HEIGHT; y++)
 		{
@@ -32,18 +34,6 @@ void World::InitializeWorld()
 
 			currentCell.SetWorld(this);
 			currentCell.SetCellCoordinates(x, y);
-
-			currentCell.SetBaseTexture(engine.GetAssetsManager().GetImage("tile.png")->GetSrc());
-
-			// For testing, randomly spawn an entity
-			int r = rand() % 100;
-			if (r < 1)
-			{
-				// Add an entity randomly
-				std::unique_ptr<Entity> tree = Prefab::InstantiatePrefab("tree01", Vector2(x * CELL_WIDTH, y * CELL_HEIGHT));
-				if(tree)
-					AddEntity(std::move(tree));
-			}
 		}
 
 	// Set camera
@@ -110,16 +100,7 @@ void World::Draw()
 {
 	// Draw the world on the main target
 	engine.GetRenderer().SetRenderTarget(NECRORenderer::ERenderTargets::MAIN_TARGET);
-	
-	// TODO: The world base can just be an entity inside the cell, there's probably no need to have two for loops here to draw the cell itself and then entities.
-	// Draw the world base 
-	for (int x = visibleMinX; x < visibleMaxX; x++)
-		for (int y = visibleMinY; y < visibleMaxY; y++)
-		{
-			// Draw the cells
-			Cell& currentCell = worldmap[x][y];
-			currentCell.DrawCell();
-		}
+
 
 	// Draw interact cursor before the actual entity
 	if (worldCursor && engine.GetGame().GetCurMode() == GameMode::PLAY_MODE && canInteract)

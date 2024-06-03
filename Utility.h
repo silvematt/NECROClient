@@ -1,6 +1,8 @@
 #ifndef NECROUTILITY_H
 #define NECROUTILITY_H
 
+#include "SDL.h"
+
 #include "string"
 #include <vector>
 

@@ -143,12 +143,14 @@
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="Interactable.cpp" />
     <ClCompile Include="Light.cpp" />
+    <ClCompile Include="Mapfile.cpp" />
     <ClCompile Include="NECROEngine.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Prefab.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="RenderTarget.cpp" />
+    <ClCompile Include="TilesetDef.cpp" />
     <ClCompile Include="World.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -164,12 +166,14 @@
     <ClInclude Include="Input.h" />
     <ClInclude Include="Interactable.h" />
     <ClInclude Include="Light.h" />
+    <ClInclude Include="Mapfile.h" />
     <ClInclude Include="Math.h" />
     <ClInclude Include="NECROEngine.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Prefab.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="RenderTarget.h" />
+    <ClInclude Include="TilesetDef.h" />
     <ClInclude Include="Utility.h" />
     <ClInclude Include="Vector2.h" />
     <ClInclude Include="World.h" />

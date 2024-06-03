@@ -56,6 +56,7 @@ public:
 
 	int							GetTilesetWidth() const; // shortcut
 	int							GetTilesetHeight() const; // shortcut
+	SDL_Rect					TilesetGetSubframeAt(int x, int y);
 };
 
 
@@ -182,6 +183,16 @@ inline Image::Image(SDL_Texture* tex, const std::string& fileDefinition) : Image
 		// ifstream is closed by destructor
 		return;
 	}
+}
+
+inline SDL_Rect Image::TilesetGetSubframeAt(int x, int y)
+{
+	SDL_Rect r;
+	r.x = x * tileset.tileWidth;
+	r.y = y * tileset.tileHeight;
+	r.w = tileset.tileWidth;
+	r.h = tileset.tileHeight;
+	return r;
 }
 
 inline SDL_Texture* Image::GetSrc() const
