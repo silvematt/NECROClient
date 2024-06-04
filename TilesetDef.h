@@ -16,12 +16,11 @@
 //----------------------------------------------------------------------------------------------
 class TilesetDef
 {
-public:
+private:
 	bool loaded = false;
 
 	std::string name;
 	int nTilesets; // the number of tileset images in this definition
-
 
 	std::vector<Image*> resources;						// The imgs ptrs to the actual image loaded in the assets manager
 	std::vector<std::pair<int, int>> resourceEndMap;	// Maps the Resource ID and the last tile ID of that resource (the actual .png image), so we can know translate by tileID what resource contains that tile
@@ -30,9 +29,47 @@ public:
 
 public:
 	bool		LoadFromFile(const std::string& filename);
+	bool		IsLoaded();
+
+	Image*				GetResource(int indx);
+	std::pair<int, int>	GetResourceEndMap(int indx);
+	std::pair<int, int> GetTile(int indx);
 
 	int			GetResourceIndexFromID(int ID);
 };
+
+inline bool TilesetDef::IsLoaded()
+{
+	return loaded;
+}
+
+inline Image* TilesetDef::GetResource(int indx)
+{
+	if (indx < resources.size())
+		return resources[indx];
+
+	return nullptr;
+}
+
+inline std::pair<int, int> TilesetDef::GetResourceEndMap(int indx)
+{
+	if (indx < tiles.size())
+		return tiles[indx];
+
+	SDL_Log("Warning! Accessing TileDef '%s' resources_end_map was out of bound!", name.c_str());
+
+	return std::make_pair<int, int>(0, 0);
+}
+
+inline std::pair<int, int> TilesetDef::GetTile(int indx)
+{
+	if (indx < tiles.size())
+		return tiles[indx];
+
+	SDL_Log("Warning! Accessing TileDef '%s' resources_end_map was out of bound!", name.c_str());
+
+	return std::make_pair<int, int>(0, 0);
+}
 
 //----------------------------------------------------------------------------------------------
 // Given the ID of a tile, returns the ID of the resource the tile comes from
@@ -40,7 +77,10 @@ public:
 inline int TilesetDef::GetResourceIndexFromID(int ID)
 {
 	if (!loaded)
+	{
+		SDL_Log("Warning! Called GetResourceIndexFromID on TileDef: '%s' but it was not loaded!", name.c_str());
 		return -1;
+	}
 
 	for (int i = 0; i < nTilesets; i++)
 	{

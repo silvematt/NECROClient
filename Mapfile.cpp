@@ -91,8 +91,8 @@ bool Mapfile::LoadMap(const std::string& filename)
 					int resIndex = w->tileDef.GetResourceIndexFromID(curVal); 
 
 					// Spawn the Tile as an Entity, TODO: add collision data, occlusionData etc, they will be specified in the TilesetDef
-					std::unique_ptr<Entity> e(new Entity(Vector2(static_cast<float>(CELL_WIDTH * j), static_cast<float>(CELL_HEIGHT * i)), w->tileDef.resources[resIndex]));
-					e->SetTilesetOffset(w->tileDef.tiles.at(curVal).first, w->tileDef.tiles.at(curVal).second);
+					std::unique_ptr<Entity> e(new Entity(Vector2(static_cast<float>(CELL_WIDTH * j), static_cast<float>(CELL_HEIGHT * i)), w->tileDef.GetResource(resIndex)));
+					e->SetTilesetOffset(w->tileDef.GetTile(curVal).first, w->tileDef.GetTile(curVal).second);
 					w->AddEntity(std::move(e));
 				}
 
