@@ -2,6 +2,7 @@
 #define NECROCAMERA_H
 
 #include "Vector2.h"
+#include "Entity.h"
 
 const float CAMERA_DEFAULT_ZOOM = 1.0f;
 
@@ -34,6 +35,9 @@ private:
 
 	bool freeCamera = false;
 
+	// TODO make a list of visible but "static" entities, to allow things like layer0 to be drawn without any sorting
+	std::vector<Entity*> visibleEntities; // Entities that are in the camera-space, that will need to be drawn after sorting
+
 private:
 	void		FreeMove();
 	void		LockPlayerMove();
@@ -45,6 +49,9 @@ public:
 	void		SetZoom(float newZoom);
 	void		ResetZoom();
 	float		GetZoom();
+
+	void		AddToVisibleEntities(Entity* e);
+	void		RenderVisibleEntities();
 
 	Vector2		ScreenToWorld(const Vector2& point);	// ScreenToWorld while accounting for zoom
 };

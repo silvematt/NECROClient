@@ -34,7 +34,7 @@ private:
 protected:
 	uint32_t ID;				// EntityID
 	Image* img;
-	int layer;	// TODO: set and use this
+	uint32_t layer = 0;
 	Cell* owner;				// Owner of this entity
 	Cell* nextOwner;			// Used to TransferToCellQueue()
 
@@ -63,6 +63,9 @@ public:
 	Entity(Vector2 pInitialPos, Image* pImg);
 
 	Vector2 pos;				// orthographic pos
+	float	zPos;				// Z is up
+	float depth;				// For isometric sorting
+
 	int gridPosX, gridPosY;		// Position in the gridmap
 
 	Vector2 isoPos;				// isometric pos (used only for rendering)
@@ -98,6 +101,8 @@ public:
 
 	bool			Occludes();
 
+	void			SetLayer(uint32_t newLayer);
+	uint32_t		GetLayer();
 	void			SetImg(Image* pImg);
 	void			SetOwner(Cell* c);
 	void			ClearOwner();
@@ -244,6 +249,16 @@ inline bool Entity::BlocksLight()
 inline float Entity::GetLightBlockValue()
 {
 	return blocksLightValue;
+}
+
+inline void Entity::SetLayer(uint32_t newLayer)
+{
+	layer = newLayer;
+}
+
+inline uint32_t Entity::GetLayer()
+{
+	return layer;
 }
 
 #endif

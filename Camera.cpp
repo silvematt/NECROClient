@@ -52,6 +52,8 @@ Vector2 Camera::ScreenToWorld(const Vector2& point)
 // ----------------------------------------------------------------------------------------------------
 void Camera::Update()
 {
+	visibleEntities.clear();
+
 	if (engine.GetInput().GetKeyDown(SDL_SCANCODE_C))
 		freeCamera = !freeCamera;
 
@@ -132,4 +134,52 @@ void Camera::FreeMove()
 	// It adjusts the camera position by half of the difference in each dimension to keep the view centered.
 	pos.x = oldX - ((oldZoomSizeX / 2) - (zoomSizeX / 2)) + deltaX;
 	pos.y = oldY - ((oldZoomSizeY / 2) - (zoomSizeY / 2)) + deltaY;
+}
+
+
+void Camera::AddToVisibleEntities(Entity* e)
+{
+	visibleEntities.push_back(e);
+}
+
+// TODO make this a template in Utility class
+void QuickSort(std::vector<Entity*>& entities, int left, int right)
+{
+	int i = left, j = right;
+	float pivot = entities[(left + right) / 2]->depth;
+
+	while (i <= j)
+	{
+		while (entities[i]->depth < pivot)
+			i++;
+		while (entities[j]->depth > pivot)
+			j--;
+		if (i <= j)
+		{
+			std::swap(entities[i], entities[j]);
+			i++;
+			j--;
+		}
+	}
+
+	if (left < j)
+		QuickSort(entities, left, j);
+	if (i < right)
+		QuickSort(entities, i, right);
+}
+
+void Camera::RenderVisibleEntities()
+{
+	engine.GetRenderer().SetRenderTarget(NECRORenderer::MAIN_TARGET);
+
+	// Sort and draw the visibleEntities list
+	if (!visibleEntities.empty())
+	{
+		QuickSort(visibleEntities, 0, visibleEntities.size() - 1);
+
+		// Draw them
+		for (auto& ent : visibleEntities)
+			if (ent)
+				ent->Draw();
+	}
 }

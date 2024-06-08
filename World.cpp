@@ -19,6 +19,8 @@ void World::InitializeWorld()
 	std::unique_ptr<Player> p(new Player());
 	p->SetImg(engine.GetAssetsManager().GetImage("player_war_idle.png"));
 	p->pos = Vector2(static_cast<float>(0 * CELL_WIDTH), static_cast<float>(0 * CELL_HEIGHT));
+	p->zPos = 150; // Player Z placement is controlled by zPos, while for static entities (map-defined) we use layers
+	p->SetLayer(0);
 	p->Init();
 	Player::ENT_ID = p->GetID();
 	engine.GetGame().SetCurPlayer(p.get());
@@ -98,21 +100,20 @@ void World::Update()
 //------------------------------------------------------------
 void World::Draw()
 {
-	// Draw the world on the main target
-	engine.GetRenderer().SetRenderTarget(NECRORenderer::ERenderTargets::MAIN_TARGET);
-
+	// Draw the debug-related world sprites and add all the entities that needs to be drawn to the camera list
+	engine.GetRenderer().SetRenderTarget(NECRORenderer::DEBUG_TARGET);
+	engine.GetRenderer().SetScale(curCamera->GetZoom(), curCamera->GetZoom()); // TODO: this should not be here (probably in SetZoom with the main RenderTarget scale), we need to set the scale of the renderer one time and not for each debug draw
 
 	// Draw interact cursor before the actual entity
 	if (worldCursor && engine.GetGame().GetCurMode() == GameMode::PLAY_MODE && canInteract)
 		engine.GetRenderer().DrawImageDirectly(worldCursorPlayTexture, NULL, &worldCursor->GetDstRect());
 
-	// Draw the entities
+	// Add visible entities to the camera list
 	for (int x = visibleMinX; x < visibleMaxX; x++)
 		for (int y = visibleMinY; y < visibleMaxY; y++)
 		{
-			// Draw the cells
 			Cell& currentCell = worldmap[x][y];
-			currentCell.DrawEntities();
+			currentCell.AddEntitiesAsVisible();
 		}
 
 	// Draw the edit cursor on top of entities

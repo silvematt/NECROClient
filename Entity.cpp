@@ -30,6 +30,7 @@ Entity::Entity(Vector2 pInitialPos, Image* pImg)
 	pos = pInitialPos;
 	gridPosX = pos.x / CELL_WIDTH;
 	gridPosY = pos.y / CELL_HEIGHT;
+	zPos = 0;
 
 	SetImg(pImg);
 }
@@ -127,6 +128,11 @@ void Entity::Update()
 	// Account for the offset of the image
 	isoPos.x += img->GetXOffset();
 	isoPos.y += img->GetYOffset();
+
+	// TODO: naive, temporaney solution, we'll do topological sort instead of a single depth value
+	// It seems it can work, but there may be situations that cannot be solved
+	// In particular, we most likely going to have issues with variable-height sprites
+	depth = pos.x + pos.y + zPos + (100 * layer);
 
 	// If this entity has a collider and it is enabled, update it
 	if (coll && coll->enabled)

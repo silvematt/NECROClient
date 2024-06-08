@@ -67,6 +67,7 @@ bool Mapfile::LoadMap(const std::string& filename)
 
 	// Load layers and add tiles as entities
 	bool layersDone = false;
+	int curLayer = 0;
 	std::getline(stream, curLine); // layerX:
 	while (!layersDone)
 	{
@@ -92,6 +93,7 @@ bool Mapfile::LoadMap(const std::string& filename)
 
 					// Spawn the Tile as an Entity, TODO: add collision data, occlusionData etc, they will be specified in the TilesetDef
 					std::unique_ptr<Entity> e(new Entity(Vector2(static_cast<float>(CELL_WIDTH * j), static_cast<float>(CELL_HEIGHT * i)), w->tileDef.GetResource(resIndex)));
+					e->SetLayer(curLayer);
 					e->SetTilesetOffset(w->tileDef.GetTile(curVal).first, w->tileDef.GetTile(curVal).second);
 					w->AddEntity(std::move(e));
 				}
@@ -107,6 +109,7 @@ bool Mapfile::LoadMap(const std::string& filename)
 		if (curLine.find("layer") != std::string::npos)
 		{
 			layersDone = false;
+			curLayer++;
 		}
 		else
 			layersDone = true;

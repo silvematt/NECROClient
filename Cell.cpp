@@ -181,3 +181,10 @@ void Cell::SetLightingInfluence(Light* l, float dropoff, float occlusion)
 					 lColor.g + ((l->color.g / dropoff) * l->intensity), 
 					 lColor.b + ((l->color.b / dropoff) * l->intensity));
 }
+
+void Cell::AddEntitiesAsVisible()
+{
+	for (auto& ent : entities)
+		if (ent)
+			engine.GetGame().GetMainCamera()->AddToVisibleEntities(ent);
+}

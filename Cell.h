@@ -78,6 +78,7 @@ public:
 	Entity*			GetEntityPtr(uint32_t atID);
 	Entity*			GetEntityPtrAt(size_t indx);
 
+	void			AddEntitiesAsVisible(); // adds all the entities in this cell to the visibleEntities list of the current camera, to sort and draw them at the end of the frame
 	void			DrawEntities();
 
 	bool			BlocksLight();
