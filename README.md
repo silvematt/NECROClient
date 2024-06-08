@@ -2,7 +2,8 @@
 
 Isometric Game Engine written in C++ and SDL2
 
-<img width="1441" alt="thum1" src="https://github.com/silvematt/NECROEngine/assets/20478938/45e6fc09-7010-4411-b065-8a4b0f3b874e">
+<img width="1441" alt="thum1" src="https://github.com/silvematt/NECROEngine/assets/20478938/fa632904-6105-4b7a-8d44-ad700113e6fb">
+
 
 # Features
 * __GPU-based Rendering__ done on RenderTargets (Game, Debug, UI, ...), to allow rendering on different textures and join them to compose the final image.
