@@ -1,6 +1,12 @@
 name = tdefMain;
 tilesetsNum = 4;
 src = 64_32_desert.png;
+67, -1,
+68, -1,
+83, -1,
+84, -1,
+166, -2,
+211, -2,
 END
 src = 64_64_desert.png;
 END

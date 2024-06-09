@@ -94,7 +94,20 @@ bool TilesetDef::LoadFromFile(const std::string& filename)
 				}
 				else // Otherwise, it's tile-specific data
 				{
+					// # curID, #zPos, #collEnabled, #collOffsetX, #collOffsetY
+					// Read curID
+					int startPos = 0;
+					int endPos = curLine.find(',', startPos + 1);  // read until the ','
 
+					int curID = Utility::TryParseInt(curLine.substr(startPos, endPos - startPos));
+
+					startPos = endPos + 1;
+					endPos = curLine.find(',', startPos + 1);
+					float zOffset = Utility::TryParseInt(curLine.substr(startPos, endPos - startPos));
+
+					//SDL_Log("%d -> %f\n", curID, zOffset);
+
+					tilesData.insert({ curID, TileData(zOffset)});
 				}
 
 				std::getline(stream, curLine); // get next line

@@ -7,7 +7,7 @@
 #define TILESET_DEFS_FOLDER "Data/maps/tiledefs/"
 #define TILESET_DEFS_EXTENSION ".ntdef"
 
-#include <string>
+#include <unordered_map>
 #include <vector>
 
 //----------------------------------------------------------------------------------------------
@@ -16,6 +16,17 @@
 //----------------------------------------------------------------------------------------------
 class TilesetDef
 {
+public:
+	struct TileData
+	{
+		float zOffset;
+
+		TileData(float zOff) :
+			zOffset(zOff)
+		{
+		}
+	};
+
 private:
 	bool loaded = false;
 
@@ -25,7 +36,8 @@ private:
 	std::vector<Image*> resources;						// The imgs ptrs to the actual image loaded in the assets manager
 	std::vector<std::pair<int, int>> resourceEndMap;	// Maps the Resource ID and the last tile ID of that resource (the actual .png image), so we can know translate by tileID what resource contains that tile
 	std::vector<std::pair<int, int>> tiles;				// All tiles of this TilesetDef, #row, #col of the corresponding tileset image (index of vector) - es tiles(145).first | tiles(145).second returns the X,Y offsets to the tile with ID 145 
-	// TODO, per-tile data definition, like collision
+	std::unordered_map<int, TileData> tilesData;		// Per - tile data definition, like collision
+
 
 public:
 	bool		LoadFromFile(const std::string& filename);
@@ -34,6 +46,7 @@ public:
 	Image*				GetResource(int indx);
 	std::pair<int, int>	GetResourceEndMap(int indx);
 	std::pair<int, int> GetTile(int indx);
+	TileData*			GetTileData(int ID);
 
 	int			GetResourceIndexFromID(int ID);
 };
@@ -91,6 +104,17 @@ inline int TilesetDef::GetResourceIndexFromID(int ID)
 	}
 
 	return 0;
+}
+
+inline TilesetDef::TileData* TilesetDef::GetTileData(int ID)
+{
+	auto it = tilesData.find(ID);
+	if (it != tilesData.end())
+	{
+		return &it->second;
+	}
+
+	return nullptr;
 }
 
 #endif
