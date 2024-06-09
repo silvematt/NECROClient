@@ -85,9 +85,11 @@ void Player::HandleMovements()
 			deltaY += 1;
 
 		if (input.GetKeyHeld(SDL_SCANCODE_KP_MINUS))
-			zPos -= 10;
+			zPos -= 1;
 		if (input.GetKeyHeld(SDL_SCANCODE_KP_PLUS))
-			zPos += 10;
+			zPos += 1;
+
+		//SDL_Log("%f", zPos);
 
 		isMoving = (deltaX != 0.0f || deltaY != 0.0f) ? true : false;
 		isAiming = input.GetMouseHeld(static_cast<SDL_Scancode>(SDL_BUTTON_RIGHT));
