@@ -1,12 +1,14 @@
 name = tdefMain;
 tilesetsNum = 4;
 src = 64_32_desert.png;
-67, -1,
-68, -1,
-83, -1,
-84, -1,
-166, -2,
-211, -2,
+# Per-Tile data: ID, ZOffset, CollEnabled, CollOffsetX, ColOffsetY, CollWidth, CollHeight
+67,  -1, 0, 0, 0, 0, 0,  	#portal1
+68,  -1, 0, 0, 0, 0, 0,	 	#portal2
+83,  -1, 0, 0, 0, 0, 0,	 	#portal3
+84,  -1, 0, 0, 0, 0, 0,  	#portal4
+166, -2, 1, 0, 0, 64, 32, 	#bridge_1
+211, -2, 1, 0, 0, 64, 32, 	#bridge_2
+51,	  0, 1, 0, 0, 64, 32,	#water_1
 END
 src = 64_64_desert.png;
 END

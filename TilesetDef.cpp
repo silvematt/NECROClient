@@ -94,7 +94,10 @@ bool TilesetDef::LoadFromFile(const std::string& filename)
 				}
 				else // Otherwise, it's tile-specific data
 				{
-					// # curID, #zPos, #collEnabled, #collOffsetX, #collOffsetY
+					if(curLine.at(0) == '#') // skip comment
+						std::getline(stream, curLine);
+
+					// # curID, #zPos, #collEnabled, #collOffsetX, #collOffsetY, #collWidth, #collHeight
 					// Read curID
 					int startPos = 0;
 					int endPos = curLine.find(',', startPos + 1);  // read until the ','
@@ -105,9 +108,29 @@ bool TilesetDef::LoadFromFile(const std::string& filename)
 					endPos = curLine.find(',', startPos + 1);
 					float zOffset = Utility::TryParseInt(curLine.substr(startPos, endPos - startPos));
 
+					startPos = endPos + 1;
+					endPos = curLine.find(',', startPos + 1);
+					bool cEnabled = Utility::TryParseInt(curLine.substr(startPos, endPos - startPos));
+
+					startPos = endPos + 1;
+					endPos = curLine.find(',', startPos + 1);
+					int collOffX = Utility::TryParseInt(curLine.substr(startPos, endPos - startPos));
+
+					startPos = endPos + 1;
+					endPos = curLine.find(',', startPos + 1);
+					int collOffY = Utility::TryParseInt(curLine.substr(startPos, endPos - startPos));
+
+					startPos = endPos + 1;
+					endPos = curLine.find(',', startPos + 1);
+					int collWidth = Utility::TryParseInt(curLine.substr(startPos, endPos - startPos));
+
+					startPos = endPos + 1;
+					endPos = curLine.find(',', startPos + 1);
+					int collHeight = Utility::TryParseInt(curLine.substr(startPos, endPos - startPos));
+
 					//SDL_Log("%d -> %f\n", curID, zOffset);
 
-					tilesData.insert({ curID, TileData(zOffset)});
+					tilesData.insert({ curID, TileData(zOffset, cEnabled, collOffX, collOffY, collWidth, collHeight)});
 				}
 
 				std::getline(stream, curLine); // get next line

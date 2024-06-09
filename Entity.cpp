@@ -230,6 +230,6 @@ void Entity::Draw()
 	SDL_SetTextureAlphaMod(img->GetSrc(), previousAlpha);
 	SDL_SetTextureColorMod(img->GetSrc(), previousR, previousG, previousB);
 	
-	//if (coll.enabled) // && TODO: debug collider
-	//	coll.DebugDraw();
+	//if (HasCollider()) // && TODO: debug collider
+	//	coll->DebugDraw();
 }

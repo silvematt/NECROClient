@@ -77,7 +77,6 @@ bool Mapfile::LoadMap(const std::string& filename)
 		for (int i = 0; i < height; i++)
 		{
 			std::getline(stream, curLine); // get row
-
 			// StartPos to read matrix values
 			int startPos = 0; 
 			for (int j = 0; j < width; j++)
@@ -102,6 +101,12 @@ bool Mapfile::LoadMap(const std::string& filename)
 					if (data)
 					{
 						e->zPos = data->zOffset;
+
+						if (data->colliderEnabled)
+						{
+							e->CreateCollider();
+							e->GetCollider()->Init(1, e.get(), data->collOffsetX, data->collOffsetY, data->collWidth, data->collHeight);
+						}
 					}
 
 					w->AddEntity(std::move(e));

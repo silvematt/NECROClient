@@ -20,9 +20,19 @@ public:
 	struct TileData
 	{
 		float zOffset;
+		bool colliderEnabled;
+		int collOffsetX;
+		int collOffsetY;
+		int collWidth;
+		int collHeight;
 
-		TileData(float zOff) :
-			zOffset(zOff)
+		TileData(float zOff, bool cEnabled, int cOffX, int cOffY, int cWidth, int cHeight) :
+			zOffset(zOff),
+			colliderEnabled(cEnabled),
+			collOffsetX(cOffX),
+			collOffsetY(cOffY),
+			collWidth(cWidth),
+			collHeight(cHeight)
 		{
 		}
 	};
