@@ -9,6 +9,8 @@ src = 64_32_desert.png;
 166, -2, 1, 0, 0, 64, 32, 	#bridge_1
 211, -2, 1, 0, 0, 64, 32, 	#bridge_2
 51,	  0, 1, 0, 0, 64, 32,	#water_1
+241,  0, 1, 0, 0, 64, 32,	#tree_7
+104,  0, 1, 0, 0, 64, 32,	#log_with_anvil
 END
 src = 64_64_desert.png;
 END

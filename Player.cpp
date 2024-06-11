@@ -84,12 +84,13 @@ void Player::HandleMovements()
 		if (input.GetKeyHeld(SDL_SCANCODE_A))
 			deltaY += 1;
 
-		if (input.GetKeyHeld(SDL_SCANCODE_KP_MINUS))
-			zPos -= 1;
-		if (input.GetKeyHeld(SDL_SCANCODE_KP_PLUS))
-			zPos += 1;
+		// Go 1 layer up or down
+		if (input.GetKeyDown(SDL_SCANCODE_KP_MINUS))
+			zPos -= 100;
+		if (input.GetKeyDown(SDL_SCANCODE_KP_PLUS))
+			zPos += 100;
 
-		//SDL_Log("%f", zPos);
+		 //SDL_Log("%f", zPos);
 
 		isMoving = (deltaX != 0.0f || deltaY != 0.0f) ? true : false;
 		isAiming = input.GetMouseHeld(static_cast<SDL_Scancode>(SDL_BUTTON_RIGHT));
@@ -125,9 +126,13 @@ void Player::HandleMovements()
 
 	for (auto const& e : closeEntities)
 	{
-		if (e->HasCollider())
-			if (coll->TestIntersection(e->GetCollider()))
-				pos.x -= moveAmountX;
+		if(e->GetLayer() == GetLayerFromZPos()) // Check if the collision is happening on the same layer
+			if (e->HasCollider())
+				if (coll->TestIntersection(e->GetCollider()))
+				{
+					pos.x -= moveAmountX;
+					break;
+				}
 	}
 
 	pos.y += moveAmountY;
@@ -135,9 +140,13 @@ void Player::HandleMovements()
 
 	for (auto const& e : closeEntities)
 	{
-		if(e->HasCollider())
-			if (coll->TestIntersection(e->GetCollider()))
-				pos.y -= moveAmountY;
+		if (e->GetLayer() == GetLayerFromZPos()) // Check if the collision is happening on the same layer
+			if(e->HasCollider())
+				if (coll->TestIntersection(e->GetCollider()))
+				{
+					pos.y -= moveAmountY;
+					break;
+				}
 	}
 
 	coll->Update();

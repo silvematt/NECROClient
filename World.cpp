@@ -232,7 +232,11 @@ void World::DrawUI()
 
 	// Draw current mode
 	std::string textCurrentMode = "Mode: " + GameModeMap[engine.GetGame().GetCurMode()];
-	renderer.DrawTextDirectly(engine.GetAssetsManager().GetFont("defaultFont"), textCurrentMode.c_str(), SCREEN_WIDTH - (18 * textCurrentMode.size()), 10, colorRed);
+	renderer.DrawTextDirectly(engine.GetAssetsManager().GetFont("defaultFont"), textCurrentMode.c_str(), SCREEN_WIDTH - 300, 10, colorRed);
+
+	// Draw player Z layer
+	std::string playerZLayer = "Player Z Layer: " + std::to_string(engine.GetGame().GetCurPlayer()->GetLayerFromZPos());
+	renderer.DrawTextDirectly(engine.GetAssetsManager().GetFont("defaultFont"), playerZLayer.c_str(), SCREEN_WIDTH - 300, 50, colorRed);
 
 }
 

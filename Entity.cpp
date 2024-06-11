@@ -130,7 +130,7 @@ void Entity::Update()
 	isoPos.y += img->GetYOffset();
 
 	// TODO: Naive solution? we can do topological sort instead of a single depth value if we encounter issues with this one for our goals, but it seems it can work
-	depth = owner->GetCellX() + owner->GetCellY() + (100 * layer) + zPos; // zPos is used to position dynamic entities, like the player.
+	depth = owner->GetCellX() + owner->GetCellY() + (LAYER_Z_COEFFICIENT * layer) + zPos; // zPos is used to position dynamic entities, like the player, or to offset static sprites.
 
 	// If this entity has a collider and it is enabled, update it
 	if (coll && coll->enabled)
