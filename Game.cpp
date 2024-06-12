@@ -27,6 +27,8 @@ void NECROGame::Update()
 	currentWorld.Draw();
 
 	mainCamera.RenderVisibleEntities();
+
+	engine.GetConsole().Update();
 }
 
 //--------------------------------------

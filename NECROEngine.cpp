@@ -54,6 +54,13 @@ int NECROEngine::Init()
 		return -6;
 	}
 
+	// Inizialize Console
+	if (console.Init() != 0)
+	{
+		SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Failed to Initialize Console SubSystem.\n");
+		return -7;
+	}
+
 	srand(time(NULL));
 
 	lastUpdate = 0;

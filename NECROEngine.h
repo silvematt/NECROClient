@@ -8,6 +8,7 @@
 #include "Input.h"
 #include "AssetsManager.h"
 #include "Renderer.h"
+#include "Console.h"
 
 #include "Math.h"
 
@@ -27,6 +28,7 @@ private:
 	NECROInput			input;
 	NECRORenderer		renderer;
 	NECROAssetsManager	assetsManager;
+	NECROConsole		console;
 	
 public:
 	NECROGame&				GetGame();
@@ -34,6 +36,7 @@ public:
 	NECROInput&				GetInput();
 	NECRORenderer&			GetRenderer();
 	NECROAssetsManager&		GetAssetsManager();
+	NECROConsole&			GetConsole();
 
 	const double			GetDeltaTime() const;
 	const float				GetFPS() const;
@@ -67,6 +70,11 @@ inline NECRORenderer & NECROEngine::GetRenderer()
 inline NECROAssetsManager& NECROEngine::GetAssetsManager()
 {
 	return assetsManager;
+}
+
+inline NECROConsole& NECROEngine::GetConsole()
+{
+	return console;
 }
 
 inline const double NECROEngine::GetDeltaTime() const

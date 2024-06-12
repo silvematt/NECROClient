@@ -36,6 +36,12 @@
     <Filter Include="Engine\Assets">
       <UniqueIdentifier>{04c22072-1a76-4c8c-a9e1-96d6362f3d86}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\Console">
+      <UniqueIdentifier>{dd104c68-dea7-41a1-a955-9238d2e95ab7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\UI">
+      <UniqueIdentifier>{163f9b70-a47a-413b-87b9-4a102ba839fb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -97,6 +103,12 @@
     </ClCompile>
     <ClCompile Include="Mapfile.cpp">
       <Filter>Engine\Assets</Filter>
+    </ClCompile>
+    <ClCompile Include="Console.cpp">
+      <Filter>Engine\Console</Filter>
+    </ClCompile>
+    <ClCompile Include="InputField.cpp">
+      <Filter>Engine\UI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -168,6 +180,12 @@
     </ClInclude>
     <ClInclude Include="TilesetDef.h">
       <Filter>Engine\Assets</Filter>
+    </ClInclude>
+    <ClInclude Include="Console.h">
+      <Filter>Engine\Console</Filter>
+    </ClInclude>
+    <ClInclude Include="InputField.h">
+      <Filter>Engine\UI</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
