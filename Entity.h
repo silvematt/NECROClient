@@ -19,10 +19,12 @@ class Cell;
 class Entity
 {
 	// Flags that describe entities
+public:
 	enum Flags
 	{
 		FCanOccludePlayer = 1,
-		FBlocksLight = 2
+		FBlocksLight = 2,
+		Dynamic = 4				// Dynamic entities like player and AI have special properties, such as Z positioning which is calculated from the ZPos and not layers
 	};
 
 	friend class Prefab;

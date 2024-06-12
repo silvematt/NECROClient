@@ -22,6 +22,7 @@ void World::InitializeWorld()
 	p->zPos = 100.01f; // Player Z placement is controlled by zPos, while for static entities (map-defined) we use layers
 	p->SetLayer(0);
 	p->Init();
+	p->SetFlag(Entity::Flags::Dynamic);
 	Player::ENT_ID = p->GetID();
 	engine.GetGame().SetCurPlayer(p.get());
 	AddEntity(std::move(p));

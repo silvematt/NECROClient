@@ -53,6 +53,7 @@ Vector2 Camera::ScreenToWorld(const Vector2& point)
 void Camera::Update()
 {
 	visibleEntities.clear();
+	visibleStaticEntities.clear();
 
 	if (engine.GetInput().GetKeyDown(SDL_SCANCODE_C))
 		freeCamera = !freeCamera;
@@ -142,6 +143,11 @@ void Camera::AddToVisibleEntities(Entity* e)
 	visibleEntities.push_back(e);
 }
 
+void Camera::AddToVisibleStaticEntities(Entity* e)
+{
+	visibleStaticEntities.push_back(e);
+}
+
 // TODO make this a template in Utility class
 void QuickSort(std::vector<Entity*>& entities, int left, int right)
 {
@@ -172,6 +178,9 @@ void Camera::RenderVisibleEntities()
 {
 	engine.GetRenderer().SetRenderTarget(NECRORenderer::MAIN_TARGET);
 
+	// Render the static entities
+	RenderVisibleStaticEntities();
+
 	// Sort and draw the visibleEntities list
 	if (!visibleEntities.empty())
 	{
@@ -182,4 +191,13 @@ void Camera::RenderVisibleEntities()
 			if (ent)
 				ent->Draw();
 	}
+}
+
+void Camera::RenderVisibleStaticEntities()
+{
+	// We should be already on the main rendering target here
+
+	for (auto& ent : visibleStaticEntities)
+		if (ent)
+			ent->Draw();
 }

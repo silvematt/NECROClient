@@ -35,8 +35,9 @@ private:
 
 	bool freeCamera = false;
 
-	// TODO make a list of visible but "static" entities, to allow things like layer0 to be drawn without any sorting
-	std::vector<Entity*> visibleEntities; // Entities that are in the camera-space, that will need to be drawn after sorting
+	
+	std::vector<Entity*> visibleStaticEntities;	// Entities, such as the terrain on layer0, that do not need any sorting to be drawn.
+	std::vector<Entity*> visibleEntities;		// Entities that are in the camera-space, that will need to be drawn after sorting
 
 private:
 	void		FreeMove();
@@ -51,7 +52,10 @@ public:
 	float		GetZoom();
 
 	void		AddToVisibleEntities(Entity* e);
+	void		AddToVisibleStaticEntities(Entity* e);
+
 	void		RenderVisibleEntities();
+	void		RenderVisibleStaticEntities();
 
 	Vector2		ScreenToWorld(const Vector2& point);	// ScreenToWorld while accounting for zoom
 };

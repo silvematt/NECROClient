@@ -184,7 +184,16 @@ void Cell::SetLightingInfluence(Light* l, float dropoff, float occlusion)
 
 void Cell::AddEntitiesAsVisible()
 {
+	Camera* curCam = engine.GetGame().GetMainCamera();
 	for (auto& ent : entities)
+	{
 		if (ent)
-			engine.GetGame().GetMainCamera()->AddToVisibleEntities(ent);
+		{
+			// Everything on the layer 0 does not need sorting unless it's dynamic
+			if (ent->GetLayer() == 0 && !ent->TestFlag(Entity::Flags::Dynamic))
+				curCam->AddToVisibleStaticEntities(ent);
+			else
+				curCam->AddToVisibleEntities(ent);
+		}
+	}
 }
