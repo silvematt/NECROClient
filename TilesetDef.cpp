@@ -128,9 +128,21 @@ bool TilesetDef::LoadFromFile(const std::string& filename)
 					endPos = curLine.find(',', startPos + 1);
 					int collHeight = Utility::TryParseInt(curLine.substr(startPos, endPos - startPos));
 
+					startPos = endPos + 1;
+					endPos = curLine.find(',', startPos + 1);
+					int occlEnabled = Utility::TryParseInt(curLine.substr(startPos, endPos - startPos));
+
+					startPos = endPos + 1;
+					endPos = curLine.find(',', startPos + 1);
+					int occlOffsetX = Utility::TryParseInt(curLine.substr(startPos, endPos - startPos));
+
+					startPos = endPos + 1;
+					endPos = curLine.find(',', startPos + 1);
+					int occlOffsetY = Utility::TryParseInt(curLine.substr(startPos, endPos - startPos));
+
 					//SDL_Log("%d -> %f\n", curID, zOffset);
 
-					tilesData.insert({ curID, TileData(zOffset, cEnabled, collOffX, collOffY, collWidth, collHeight)});
+					tilesData.insert({ curID, TileData(zOffset, cEnabled, collOffX, collOffY, collWidth, collHeight, occlEnabled, occlOffsetX, occlOffsetY)});
 				}
 
 				std::getline(stream, curLine); // get next line

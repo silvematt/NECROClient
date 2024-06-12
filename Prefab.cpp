@@ -249,8 +249,7 @@ std::unique_ptr<Entity> Prefab::InstantiatePrefab(const std::string& prefabName,
 		if(p->occlCheck)
 			e->SetFlag(Entity::Flags::FCanOccludePlayer);
 
-		e->occlModifierX = p->occlModX;
-		e->occlModifierY = p->occlModY;
+		e->SetOcclusionModifierValues(p->occlModX, p->occlModY);
 
 		// Light block
 		if (p->blocksLight)

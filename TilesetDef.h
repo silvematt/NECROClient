@@ -25,14 +25,20 @@ public:
 		int collOffsetY;
 		int collWidth;
 		int collHeight;
+		bool occlusionEnabled;
+		int occlOffX;
+		int occlOffY;
 
-		TileData(float zOff, bool cEnabled, int cOffX, int cOffY, int cWidth, int cHeight) :
+		TileData(float zOff, bool cEnabled, int cOffX, int cOffY, int cWidth, int cHeight, bool oEnabled, int oXOff, int oYOff) :
 			zOffset(zOff),
 			colliderEnabled(cEnabled),
 			collOffsetX(cOffX),
 			collOffsetY(cOffY),
 			collWidth(cWidth),
-			collHeight(cHeight)
+			collHeight(cHeight),
+			occlusionEnabled(oEnabled),
+			occlOffX(oXOff),
+			occlOffY(oYOff)
 		{
 		}
 	};

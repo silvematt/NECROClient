@@ -114,6 +114,7 @@ public:
 	void			UpdateLighting();
 	bool			BlocksLight();
 	float			GetLightBlockValue();
+	void			SetOcclusionModifierValues(int x, int y);
 
 	virtual void	Update();
 	virtual void	Draw();
@@ -261,6 +262,12 @@ inline void Entity::SetLayer(uint32_t newLayer)
 inline uint32_t Entity::GetLayer()
 {
 	return layer;
+}
+
+inline void Entity::SetOcclusionModifierValues(int x, int y)
+{
+	occlModifierX = x;
+	occlModifierY = y;
 }
 
 #endif

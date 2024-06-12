@@ -107,6 +107,12 @@ bool Mapfile::LoadMap(const std::string& filename)
 							e->CreateCollider();
 							e->GetCollider()->Init(1, e.get(), data->collOffsetX, data->collOffsetY, data->collWidth, data->collHeight);
 						}
+
+						if (data->occlusionEnabled)
+						{
+							e->SetFlag(Entity::Flags::FCanOccludePlayer);
+							e->SetOcclusionModifierValues(data->occlOffX, data->occlOffY);
+						}
 					}
 
 					w->AddEntity(std::move(e));
