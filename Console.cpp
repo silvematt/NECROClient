@@ -22,6 +22,14 @@ void NECROConsole::Draw()
 {
 	engine.GetRenderer().SetRenderTarget(NECRORenderer::OVERLAY_TARGET);
 	inputField.Draw();
+
+	int count = 1;
+	for (int i = history.size()-1; i >= 0; i--)
+	{
+		engine.GetRenderer().DrawTextDirectly(engine.GetAssetsManager().GetFont("defaultFont"), history[i].c_str(), 25, (SCREEN_HEIGHT - 120) - 40 * count, colorWhite);
+
+		count++;
+	}
 }
 
 void NECROConsole::Toggle()
@@ -33,6 +41,7 @@ void NECROConsole::Toggle()
 	// Send command if(!active)
 	if (!active)
 	{
-
+		if(inputField.str.size() > 0)
+			history.push_back(inputField.str);
 	}
 }

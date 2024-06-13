@@ -21,10 +21,31 @@ void InputField::Draw()
 	// Draw correct background
 	r.DrawImageDirectly(isFocused ? focusedImage->GetSrc() : img->GetSrc(), &rect, &dstRect);
 
-	if (str.size() > 0)
+	// Draw the only visible portion of the text inside the textfield
+	int strSize = str.size();
+
+	if (strSize > 0)
 	{
+		// Offset to draw the string within the bounds of the text field
+		int w = 0, h = 0;
+		TTF_SizeText(font, str.c_str(), &w, &h);
+
+		// MaxWidth is the width of the inputfield in pixels
+		int maxWidth = rect.w; 
+
+		// A substring will be adjusted until it fits the maximum width
+		std::string visibleStr = str;
+		int visibleWidth = w;
+
+		// Until the visible width is greater than the maxwidth, remove a character and recalculate
+		while (visibleWidth > maxWidth)
+		{
+			visibleStr = visibleStr.substr(1); // Remove the first character
+			TTF_SizeText(font, visibleStr.c_str(), &visibleWidth, &h);
+		}
+
 		// Draw text inside the field img
-		r.DrawTextDirectly(font, str.c_str(), dstRect.x + xOffset, dstRect.y, color);
+		r.DrawTextDirectly(font, visibleStr.c_str(), dstRect.x + xOffset, dstRect.y, color);
 	}
 }
 
