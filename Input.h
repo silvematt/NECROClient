@@ -3,6 +3,7 @@
 
 #include "SDL.h"
 #include "Vector2.h"
+#include "InputField.h"
 
 class NECROInput
 {
@@ -22,6 +23,8 @@ private:
 	Uint8*			prevKeys;
 	int				numKeys;
 
+	InputField*		curInputField;
+
 public:
 	~NECROInput();
 
@@ -35,6 +38,7 @@ public:
 	int				GetKeyDown(SDL_Scancode key) const;
 	int				Init();
 	void			Handle();
+	void			SetCurInputField(InputField* i);
 
 };
 
@@ -53,5 +57,14 @@ inline int NECROInput::GetMouseScroll() const
 	return mouseScroll;
 }
 
+inline void NECROInput::SetCurInputField(InputField* i)
+{
+	curInputField = i;
+
+	if (curInputField)
+		SDL_StartTextInput();
+	else
+		SDL_StopTextInput();
+}
 
 #endif

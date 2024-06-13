@@ -72,6 +72,7 @@ void Player::HandleMovements()
 	deltaX = 0.0f; 
 	deltaY = 0.0f;
 
+	SetControlsEnabled(!engine.GetConsole().IsOpen());
 	if (controlsEnabled)
 	{
 		// Get input
@@ -94,6 +95,14 @@ void Player::HandleMovements()
 
 		isMoving = (deltaX != 0.0f || deltaY != 0.0f) ? true : false;
 		isAiming = input.GetMouseHeld(static_cast<SDL_Scancode>(SDL_BUTTON_RIGHT));
+	}
+	else
+	{
+		deltaX = 0;
+		deltaY = 0;
+
+		isMoving = false;
+		isAiming = false;
 	}
 
 	// Calculate direction

@@ -59,6 +59,8 @@ public:
 
 	float			GetCurMoveSpeed() const;
 	int				GetLayerFromZPos() const;
+
+	void			SetControlsEnabled(bool e);
 };
 
 inline float Player::GetCurMoveSpeed() const
@@ -69,6 +71,11 @@ inline float Player::GetCurMoveSpeed() const
 inline int Player::GetLayerFromZPos() const
 {
 	return std::floor(zPos / LAYER_Z_COEFFICIENT);
+}
+
+inline void Player::SetControlsEnabled(bool e)
+{
+	controlsEnabled = e;
 }
 
 #endif

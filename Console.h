@@ -29,6 +29,13 @@ public:
 	void		Draw();
 
 	void		Toggle();
+	
+	bool		IsOpen() const;
 };
+
+inline bool NECROConsole::IsOpen() const
+{
+	return active;
+}
 
 #endif

@@ -58,6 +58,39 @@ void NECROInput::Handle()
 				mouseMotionY = e.motion.yrel;
 				SDL_SetRelativeMouseMode(SDL_FALSE);
 				break;
+
+			case SDL_TEXTINPUT:
+				if (curInputField)
+				{
+					// Check length and append text
+					if(curInputField->GetTextLimit() == 0 ||
+						curInputField->str.size() < curInputField->GetTextLimit())
+					curInputField->str += e.text.text;
+				}
+				break;
+
+			case SDL_KEYDOWN:
+				if (curInputField)
+				{
+					// Backspace
+					if (e.key.keysym.sym == SDLK_BACKSPACE && curInputField->str.length() > 0)
+					{
+						curInputField->str.pop_back();
+					}
+					// CTRL + c
+					else if (e.key.keysym.sym == SDLK_c && SDL_GetModState() & KMOD_CTRL)
+					{
+						SDL_SetClipboardText(curInputField->str.c_str());
+					}
+					// CTRL + v
+					else if (e.key.keysym.sym == SDLK_v && SDL_GetModState() & KMOD_CTRL)
+					{
+						char* tempText = SDL_GetClipboardText();
+						curInputField->str = tempText;
+						SDL_free(tempText);
+					}
+				}
+				break;
 		}
 	}
 

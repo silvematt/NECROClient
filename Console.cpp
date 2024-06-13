@@ -27,4 +27,12 @@ void NECROConsole::Draw()
 void NECROConsole::Toggle()
 {
 	active = !active;
+
+	inputField.SetFocused(active);
+
+	// Send command if(!active)
+	if (!active)
+	{
+
+	}
 }
