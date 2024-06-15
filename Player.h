@@ -61,6 +61,8 @@ public:
 	int				GetLayerFromZPos() const;
 
 	void			SetControlsEnabled(bool e);
+
+	void			TeleportToGrid(int x, int y);
 };
 
 inline float Player::GetCurMoveSpeed() const

@@ -137,6 +137,7 @@
     <ClCompile Include="AssetsManager.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Cell.cpp" />
+    <ClCompile Include="Cmd.cpp" />
     <ClCompile Include="Collider.cpp" />
     <ClCompile Include="Console.cpp" />
     <ClCompile Include="Entity.cpp" />
@@ -161,6 +162,7 @@
     <ClInclude Include="AssetsManager.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Cell.h" />
+    <ClInclude Include="Cmd.h" />
     <ClInclude Include="Collider.h" />
     <ClInclude Include="Console.h" />
     <ClInclude Include="Entity.h" />

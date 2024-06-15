@@ -55,7 +55,7 @@ void Camera::Update()
 	visibleEntities.clear();
 	visibleStaticEntities.clear();
 
-	if (engine.GetInput().GetKeyDown(SDL_SCANCODE_C))
+	if (engine.GetInput().GetKeyDown(SDL_SCANCODE_C) && !engine.GetConsole().IsOpen())
 		freeCamera = !freeCamera;
 
 	if (freeCamera)

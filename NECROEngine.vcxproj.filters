@@ -110,6 +110,9 @@
     <ClCompile Include="InputField.cpp">
       <Filter>Engine\UI</Filter>
     </ClCompile>
+    <ClCompile Include="Cmd.cpp">
+      <Filter>Engine\Console</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="NECROEngine.h">
@@ -186,6 +189,9 @@
     </ClInclude>
     <ClInclude Include="InputField.h">
       <Filter>Engine\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Cmd.h">
+      <Filter>Engine\Console</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

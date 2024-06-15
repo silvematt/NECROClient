@@ -349,3 +349,17 @@ void Player::CalculateIsoDirectionWhileAiming()
 	else
 		isoDirection = IsoDirection::SOUTH_WEST;
 }
+
+//-------------------------------------------------
+// Teleports immediatly to location
+//-------------------------------------------------
+void Player::TeleportToGrid(int x, int y)
+{
+	if (owner->GetWorld()->IsInWorldBounds(x, y))
+	{
+		pos.x = CELL_WIDTH * x;
+		pos.y = CELL_HEIGHT * y;
+
+		TransferToCellImmediately(owner->GetWorld()->GetCellAt(x, y));
+	}
+}
