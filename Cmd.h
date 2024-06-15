@@ -10,18 +10,24 @@
 class Cmd
 {
 public:
-	int (Cmd::* routine)(std::vector<std::string>);
+	int (Cmd::* routine)(const std::vector<std::string>&);
 
 public:
-	Cmd(int (Cmd::* r)(std::vector<std::string>)) :
+	Cmd(int (Cmd::* r)(const std::vector<std::string>&)) :
 		routine(r)
 	{
 	}
 
-	int		Execute(std::vector<std::string> args);
+	int		Execute(const std::vector<std::string>& args);
 
-	int		Cmd_TeleportToGrid(std::vector<std::string> args);
-	int		Cmd_NoClip(std::vector<std::string> args);
+	int		Cmd_Help(const std::vector<std::string>& args);
+	int		Cmd_TeleportToGrid(const std::vector<std::string>& args);
+	int		Cmd_NoClip(const std::vector<std::string>& args);
+
+	// Debug
+	int		Cmd_ToggleCollisionDebug(const std::vector<std::string>& args);
+	int		Cmd_ToggleOcclusionDebug(const std::vector<std::string>& args);
+
 };
 
 #endif

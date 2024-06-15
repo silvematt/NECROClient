@@ -2,8 +2,11 @@
 
 #include "Entity.h"
 #include "Utility.h"
+#include "Player.h"
 
 uint32_t Entity::ENT_NEXT_ID = 0;
+bool Entity::DEBUG_COLLIDER_ENABLED = false;
+bool Entity::DEBUG_OCCLUSION_ENABLED = false;
 
 Entity::~Entity()
 {
@@ -207,7 +210,9 @@ void Entity::Draw()
 		occlusionRect.x += (occlModifierX / 2);
 		occlusionRect.y += (occlModifierY / 2);
 
-		//engine.GetRenderer().DrawRect(&occlusionRect, colorYellow); // TODO: Add a debug rendering option to toggle occlusion rect draw
+		if(DEBUG_OCCLUSION_ENABLED && (TestFlag(FCanOccludePlayer) || ID == Player::ENT_ID))
+			engine.GetRenderer().DrawRect(&occlusionRect, colorYellow);
+
 		engine.GetRenderer().DrawImageDirectly(img->GetSrc(), NULL, &dstRect);
 	}
 	else
@@ -222,7 +227,9 @@ void Entity::Draw()
 		occlusionRect.x += (occlModifierX / 2);
 		occlusionRect.y += (occlModifierY / 2);
 
-		//engine.GetRenderer().DrawRect(&occlusionRect, colorYellow); // TODO: Add a debug rendering option to toggle occlusion rect draw
+		if (DEBUG_OCCLUSION_ENABLED && (TestFlag(FCanOccludePlayer) || ID == Player::ENT_ID))
+			engine.GetRenderer().DrawRect(&occlusionRect, colorYellow);
+
 		engine.GetRenderer().DrawImageDirectly(img->GetSrc(), &srcRect, &dstRect);
 	}
 
@@ -230,6 +237,6 @@ void Entity::Draw()
 	SDL_SetTextureAlphaMod(img->GetSrc(), previousAlpha);
 	SDL_SetTextureColorMod(img->GetSrc(), previousR, previousG, previousB);
 	
-	//if (HasCollider()) // && TODO: debug collider
-	//	coll->DebugDraw();
+	if (HasCollider() && DEBUG_COLLIDER_ENABLED)
+		coll->DebugDraw();
 }

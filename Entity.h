@@ -32,6 +32,9 @@ public:
 
 private:
 	static uint32_t ENT_NEXT_ID; // EntityID static track
+public:
+	static bool DEBUG_COLLIDER_ENABLED;
+	static bool DEBUG_OCCLUSION_ENABLED;
 
 protected:
 	uint32_t ID;				// EntityID
