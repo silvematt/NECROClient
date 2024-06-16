@@ -90,6 +90,8 @@ void Entity::TransferToCellImmediately(Cell* c)
 	c->AddEntityPtr(this);
 
 	nextOwner = nullptr;
+
+	OnCellChanges();
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -239,4 +241,12 @@ void Entity::Draw()
 	
 	if (HasCollider() && DEBUG_COLLIDER_ENABLED)
 		coll->DebugDraw();
+}
+
+//---------------------------------------------------------------------------------------------
+// Called after TransferToCellImmediately is executed, meant to be overriden by derived classes
+//---------------------------------------------------------------------------------------------
+inline void Entity::OnCellChanges()
+{
+
 }

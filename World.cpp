@@ -236,8 +236,12 @@ void World::DrawUI()
 	renderer.DrawTextDirectly(engine.GetAssetsManager().GetFont("defaultFont"), textCurrentMode.c_str(), SCREEN_WIDTH - 300, 10, colorRed);
 
 	// Draw player Z layer
-	std::string playerZLayer = "Player Z Layer: " + std::to_string(engine.GetGame().GetCurPlayer()->GetLayerFromZPos());
-	renderer.DrawTextDirectly(engine.GetAssetsManager().GetFont("defaultFont"), playerZLayer.c_str(), SCREEN_WIDTH - 300, 50, colorRed);
+	Player* p = engine.GetGame().GetCurPlayer();
+	if (p)
+	{
+		std::string playerZLayer = "Player Z Layer: " + std::to_string(p->GetLayerFromZPos());
+		renderer.DrawTextDirectly(engine.GetAssetsManager().GetFont("defaultFont"), playerZLayer.c_str(), SCREEN_WIDTH - 300, 50, colorRed);
+	}
 
 }
 

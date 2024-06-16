@@ -80,6 +80,11 @@ void Cell::AddEntityPtr(Entity* e)
 {
 	e->SetOwner(this); // TODO: make sure adding the entityptr should set ownership, in the future one entity may occupy more than one cell
 	entities.push_back(e);
+
+	// If the entity modifies the cell Z modifier, apply it to the cell now
+	float eMod = e->GetZCellModifier();
+	if (eMod > 0 && eMod > zModifier)
+		SetZModifier(eMod);
 }
 
 //--------------------------------------

@@ -34,11 +34,7 @@ bool TilesetDef::LoadFromFile(const std::string& filename)
     curValStr = curValStr.substr(0, curValStr.find(";"));
     name = curValStr;
 
-	// nTilesets images
-	std::getline(stream, curLine);
-	curValStr = curLine.substr(curLine.find("=") + 2); // key = value;
-	curValStr = curValStr.substr(0, curValStr.find(";"));
-	nTilesets = Utility::TryParseInt(curValStr);
+	nTilesets = 0; // filled as we read
 
 	// Read actual images
 	tiles.push_back(std::make_pair(0, 0)); // index 0 means no image, so add empty space
@@ -61,6 +57,7 @@ bool TilesetDef::LoadFromFile(const std::string& filename)
 			{
 				if (curLine == "END")
 				{
+					nTilesets++;
 					curTilesetIndx++;
 					break;
 				}
@@ -140,9 +137,13 @@ bool TilesetDef::LoadFromFile(const std::string& filename)
 					endPos = curLine.find(',', startPos + 1);
 					int occlOffsetY = Utility::TryParseInt(curLine.substr(startPos, endPos - startPos));
 
+					startPos = endPos + 1;
+					endPos = curLine.find(',', startPos + 1);
+					float zMod = Utility::TryParseFloat(curLine.substr(startPos, endPos - startPos));
+
 					//SDL_Log("%d -> %f\n", curID, zOffset);
 
-					tilesData.insert({ curID, TileData(zOffset, cEnabled, collOffX, collOffY, collWidth, collHeight, occlEnabled, occlOffsetX, occlOffsetY)});
+					tilesData.insert({ curID, TileData(zOffset, cEnabled, collOffX, collOffY, collWidth, collHeight, occlEnabled, occlOffsetX, occlOffsetY, zMod)});
 				}
 
 				std::getline(stream, curLine); // get next line

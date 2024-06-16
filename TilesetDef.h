@@ -28,8 +28,9 @@ public:
 		bool occlusionEnabled;
 		int occlOffX;
 		int occlOffY;
+		float zCellModifier;
 
-		TileData(float zOff, bool cEnabled, int cOffX, int cOffY, int cWidth, int cHeight, bool oEnabled, int oXOff, int oYOff) :
+		TileData(float zOff, bool cEnabled, int cOffX, int cOffY, int cWidth, int cHeight, bool oEnabled, int oXOff, int oYOff, float zMod) :
 			zOffset(zOff),
 			colliderEnabled(cEnabled),
 			collOffsetX(cOffX),
@@ -38,7 +39,8 @@ public:
 			collHeight(cHeight),
 			occlusionEnabled(oEnabled),
 			occlOffX(oXOff),
-			occlOffY(oYOff)
+			occlOffY(oYOff),
+			zCellModifier(zMod)
 		{
 		}
 	};

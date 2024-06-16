@@ -61,6 +61,9 @@ protected:
 	std::unique_ptr<Light> emittingLight;
 	std::unique_ptr<Animator> anim;
 	std::vector<std::unique_ptr<Interactable>> interactables;
+
+	// How much this entity affects the zModifier of the cell it sits in
+	float zModifierValue = 0.0;
 	
 public:
 	virtual ~Entity();
@@ -121,6 +124,11 @@ public:
 
 	virtual void	Update();
 	virtual void	Draw();
+
+	float			GetZCellModifier() const;
+	void			SetZCellModifier(float v);
+
+	virtual void	OnCellChanges();
 };
 
 inline const uint32_t Entity::GetID() const
@@ -271,6 +279,16 @@ inline void Entity::SetOcclusionModifierValues(int x, int y)
 {
 	occlModifierX = x;
 	occlModifierY = y;
+}
+
+inline float Entity::GetZCellModifier() const
+{
+	return zModifierValue;
+}
+
+inline void Entity::SetZCellModifier(float v)
+{
+	zModifierValue = v;
 }
 
 #endif

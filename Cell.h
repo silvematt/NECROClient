@@ -50,6 +50,11 @@ private:
 	SDL_Color lColor;
 	float lIntensity;
 
+	// ZModifier is used to modify the Z position of dynamic entities.
+	// When an entity enters in a cell with a ZModifier != 0, his Z position (and therefore layer) becomes the one of the Z modifier
+	// Used to allow entities to travel layers
+	float zModifier = 0.0f;
+
 public:
 	Cell();
 
@@ -83,6 +88,9 @@ public:
 
 	bool			BlocksLight();
 	float			GetLightBlockPercent();
+
+	float			GetZModifier() const;
+	void			SetZModifier(float v);
 };
 
 
@@ -136,6 +144,16 @@ inline void Cell::SetLightingIntensity(float i)
 {
 	i = Utility::Clampf(i, 0.0f, 1.0f);
 	lIntensity = i;
+}
+
+inline float Cell::GetZModifier() const
+{
+	return zModifier;
+}
+
+inline void Cell::SetZModifier(float v)
+{
+	zModifier = v;
 }
 
 #endif

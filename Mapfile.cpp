@@ -113,6 +113,8 @@ bool Mapfile::LoadMap(const std::string& filename)
 							e->SetFlag(Entity::Flags::FCanOccludePlayer);
 							e->SetOcclusionModifierValues(data->occlOffX, data->occlOffY);
 						}
+
+						e->SetZCellModifier(data->zCellModifier);
 					}
 
 					w->AddEntity(std::move(e));

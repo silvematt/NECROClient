@@ -16,6 +16,8 @@ const int PLAYER_HEIGHT = 128;
 const int HALF_PLAYER_WIDTH = 64;
 const int HALF_PLAYER_HEIGHT = 64;
 
+const float PLAYER_CONST_Z_POS = 0.01f; // a constant added to the player's zPos when modified
+
 //-------------------------------------------------
 // Player class, derived by Entity
 //-------------------------------------------------
@@ -63,6 +65,8 @@ public:
 	void			SetControlsEnabled(bool e);
 
 	void			TeleportToGrid(int x, int y);
+
+	void			OnCellChanges() override;
 };
 
 inline float Player::GetCurMoveSpeed() const

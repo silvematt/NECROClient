@@ -363,3 +363,11 @@ void Player::TeleportToGrid(int x, int y)
 		TransferToCellImmediately(owner->GetWorld()->GetCellAt(x, y));
 	}
 }
+
+void Player::OnCellChanges()
+{
+	// Sets the Z pos of the player equal to the current cell if there's a ZModifier, used to go up stairs and come down from them
+	float zMod = owner->GetZModifier();
+	if (zMod > 0.0)
+		zPos = zMod + PLAYER_CONST_Z_POS;
+}
