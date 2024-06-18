@@ -44,7 +44,7 @@ void Collider::DebugDraw()
 	engine.GetRenderer().SetScale(zoomLevel, zoomLevel); // TODO: this should not be here (probably in SetZoom with the main RenderTarget scale), we need to set the scale of the renderer one time and not for each debug draw
 	
 	Camera* c = engine.GetGame().GetMainCamera();
-	engine.GetRenderer().DrawIsoBox(&r, colorPink, c->pos.x, c->pos.y, c->GetZoom());
+	engine.GetRenderer().DrawIsoBox(&r, colorPink, c->pos.x - HALF_CELL_WIDTH, c->pos.y - HALF_CELL_WIDTH, c->GetZoom()); // subtracting HALF_CELL_WIDTH corrects offset
 
 	// Restore previous target
 	engine.GetRenderer().SetRenderTarget(previousTarget);

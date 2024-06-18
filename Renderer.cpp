@@ -146,23 +146,18 @@ void NECRORenderer::DrawIsoBox(SDL_Rect* rect, SDL_Color color, float cameraOffs
 		float x = static_cast<float>(points[i].x);
 		float y = static_cast<float>(points[i].y);
 
-		// Apply zoom level before converting to isometric
-
 		NMath::CartToIso(x / CELL_WIDTH, y / CELL_HEIGHT, x, y);
-
-		// Adjust for drawing
-		x -= HALF_CELL_WIDTH;
-		y -= HALF_CELL_WIDTH;
 
 		// Account for camera offset
 		x += cameraOffsetX;
 		y += cameraOffsetY;
 
-		x = std::round(x);
-		y = std::round(y);
-
+		// Apply zoom level
 		x *= cameraZoom;
 		y *= cameraZoom;
+
+		x = std::floor(x);
+		y = std::floor(y);
 
 		points[i] = { static_cast<int>(x), static_cast<int>(y) };
 	}
