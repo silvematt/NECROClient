@@ -62,7 +62,7 @@ public:
 
 	void					DrawImageDirectly(SDL_Texture* toDraw, const SDL_Rect* srcRect, const SDL_Rect* dstRect);
 	void					DrawTextDirectly(TTF_Font* font, const char* str, int screenX, int screenY, const SDL_Color& color);
-	void					DrawIsoBox(SDL_Rect* r, SDL_Color c, float offsetX, float offsetY);
+	void					DrawIsoBox(SDL_Rect* r, SDL_Color c, float cameraOffsetX, float cameraOffsetY, float cameraZoom);
 
 	void					DrawRect(SDL_Rect* r, SDL_Color c);
 

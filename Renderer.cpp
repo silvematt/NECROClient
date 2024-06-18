@@ -122,8 +122,15 @@ void NECRORenderer::DrawTextDirectly(TTF_Font* font, const char* str, int screen
 //----------------------------------------------------------------------------------
 // From the Rect, convert the points in isometric and draw them as a iso-box
 //----------------------------------------------------------------------------------
-void NECRORenderer::DrawIsoBox(SDL_Rect* rect, SDL_Color color, float offsetX, float offsetY) // offset are camera offset
+void NECRORenderer::DrawIsoBox(SDL_Rect* rect, SDL_Color color, float cameraOffsetX, float cameraOffsetY, float cameraZoom) // offset are camera offset
 {
+	// To correctly use SDL_RenderDrawLines, manually scale the coordinates based on the zoom level
+	float previousScaleX = 0, previousScaleY = 0;
+	SDL_RenderGetScale(innerRenderer, &previousScaleX, &previousScaleY);
+
+	// Set Scale to 1
+	SetScale(1.0, 1.0);
+
 	std::array<SDL_Point, 5> points;
 
 	// Define the 4 corners of the rectangle
@@ -133,11 +140,13 @@ void NECRORenderer::DrawIsoBox(SDL_Rect* rect, SDL_Color color, float offsetX, f
 	points[3] = { rect->x, rect->y + rect->h };
 	points[4] = points[0];  // Closing the loop
 
-	// Convert to isometric and translate with camera
-	for (size_t i = 0; i < points.size(); ++i) 
+	// Convert to isometric and translate with camera, while accounting for zoom level
+	for (size_t i = 0; i < points.size(); ++i)
 	{
 		float x = static_cast<float>(points[i].x);
 		float y = static_cast<float>(points[i].y);
+
+		// Apply zoom level before converting to isometric
 
 		NMath::CartToIso(x / CELL_WIDTH, y / CELL_HEIGHT, x, y);
 
@@ -146,19 +155,25 @@ void NECRORenderer::DrawIsoBox(SDL_Rect* rect, SDL_Color color, float offsetX, f
 		y -= HALF_CELL_WIDTH;
 
 		// Account for camera offset
-		x += offsetX;
-		y += offsetY;
+		x += cameraOffsetX;
+		y += cameraOffsetY;
 
 		x = std::round(x);
 		y = std::round(y);
+
+		x *= cameraZoom;
+		y *= cameraZoom;
 
 		points[i] = { static_cast<int>(x), static_cast<int>(y) };
 	}
 
 	// Set render color and draw the lines
 	SDL_SetRenderDrawColor(innerRenderer, color.r, color.g, color.b, color.a);
-	SDL_RenderDrawLines(innerRenderer, points.data(), points.size());	// For some reason, DrawLines doesn't draw properly if zoom is < 1, draw points works fine.
-	SDL_RenderDrawPoints(innerRenderer, points.data(), points.size());
+	SDL_RenderDrawLines(innerRenderer, points.data(), points.size());
+	//SDL_RenderDrawPoints(innerRenderer, points.data(), points.size());
+
+	// Restore scale
+	SetScale(previousScaleX, previousScaleY);
 }
 
 //------------------------------------------------
