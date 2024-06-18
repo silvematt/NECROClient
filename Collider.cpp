@@ -32,31 +32,6 @@ void Collider::Update()
 	// Center-align the collision rectangle on its entity's position:
 	r.x = posX + (r.w / 2.0f);
 	r.y = posY - (r.h / 2.0f);
-
-	// TODO: IsoPos is only used for debugging, don't calculate it if it's not to be debugged
-	// if (debugEnabled)
-	// {
-	isoPosX = isoPosY = 0;
-
-	// Update ISO coordinates
-	NMath::CartToIso(posX / CELL_WIDTH, posY / CELL_HEIGHT, isoPosX, isoPosY);
-
-	isoPosX -= HALF_CELL_WIDTH;
-
-	// Adjust isoX and isoY to the world offset
-	isoPosX += engine.GetGame().GetMainCamera()->pos.x;
-	isoPosY += engine.GetGame().GetMainCamera()->pos.y;
-
-	if (!debugImg->IsTileset())
-		isoPosY -= debugImg->GetHeight();
-	else
-		isoPosY -= debugImg->GetTilesetHeight();
-
-	// Account for the Y offset of the image
-	isoPosX += debugImg->GetXOffset();
-	isoPosY += debugImg->GetYOffset();
-
-	// }
 }
 
 void Collider::DebugDraw()
@@ -67,10 +42,9 @@ void Collider::DebugDraw()
 	engine.GetRenderer().SetRenderTarget(NECRORenderer::ERenderTargets::DEBUG_TARGET);
 	float zoomLevel = engine.GetGame().GetMainCamera()->GetZoom();
 	engine.GetRenderer().SetScale(zoomLevel, zoomLevel); // TODO: this should not be here (probably in SetZoom with the main RenderTarget scale), we need to set the scale of the renderer one time and not for each debug draw
-
-	SDL_Rect dstRect;
-	dstRect = { (int)isoPosX, (int)isoPosY, r.w, r.h };
-	engine.GetRenderer().DrawImageDirectly(debugImg->GetSrc(), NULL, &dstRect);
+	
+	Camera* c = engine.GetGame().GetMainCamera();
+	engine.GetRenderer().DrawIsoBox(&r, colorPink, c->pos.x, c->pos.y);
 
 	// Restore previous target
 	engine.GetRenderer().SetRenderTarget(previousTarget);

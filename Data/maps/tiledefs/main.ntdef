@@ -12,7 +12,7 @@ src = 64_32_desert.png;
 104,  0, 1, 0, 0, 64, 32, 0, 0, 0, 0.0,		#log_with_anvil
 242,  0, 1, 0, 0, 64, 32, 1, 0, 0, 0.0,		#wall_1
 300,  0, 0, 0, 0, 0, 0, 0, 0, 0, 300.0,		#stair_left, allows to get the entity that goes on on layer 3
-301,  0, 0, 0, 0, 0, 0, 0, 0, 0, 100.0,		#stair_left_DOWN, puts the entity that goes on on layer 1, needs to be put right before the stairs
+301,  0, 1, 0, 0, 64, 16, 0, 0, 0, 100.0,		#stair_left_DOWN, puts the entity that goes on on layer 1, needs to be put right before the stairs
 END
 src = 64_64_desert.png;
 END

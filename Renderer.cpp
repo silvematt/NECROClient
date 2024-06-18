@@ -1,4 +1,8 @@
 #include "Renderer.h"
+#include <array>
+#include <cmath>
+
+#include "Math.h"
 
 // Define color shortcuts
 const SDL_Color colorBlack = { 0, 0, 0, SDL_ALPHA_OPAQUE };
@@ -7,6 +11,7 @@ const SDL_Color colorRed = { 255, 0, 0, SDL_ALPHA_OPAQUE };
 const SDL_Color colorYellow = { 255, 255, 0, SDL_ALPHA_OPAQUE };
 const SDL_Color colorWhite = { 255, 255, 255, SDL_ALPHA_OPAQUE };
 const SDL_Color colorGray = { 128, 128, 128, SDL_ALPHA_OPAQUE };
+const SDL_Color colorPink = { 255, 20, 147, SDL_ALPHA_OPAQUE };
 
 //--------------------------------------
 // Initialize
@@ -112,6 +117,48 @@ void NECRORenderer::DrawTextDirectly(TTF_Font* font, const char* str, int screen
 
 	SDL_DestroyTexture(renderedText);
 	SDL_FreeSurface(textSurf);
+}
+
+//----------------------------------------------------------------------------------
+// From the Rect, convert the points in isometric and draw them as a iso-box
+//----------------------------------------------------------------------------------
+void NECRORenderer::DrawIsoBox(SDL_Rect* rect, SDL_Color color, float offsetX, float offsetY) // offset are camera offset
+{
+	std::array<SDL_Point, 5> points;
+
+	// Define the 4 corners of the rectangle
+	points[0] = { rect->x, rect->y };
+	points[1] = { rect->x + rect->w, rect->y };
+	points[2] = { rect->x + rect->w, rect->y + rect->h };
+	points[3] = { rect->x, rect->y + rect->h };
+	points[4] = points[0];  // Closing the loop
+
+	// Convert to isometric and translate with camera
+	for (size_t i = 0; i < points.size(); ++i) 
+	{
+		float x = static_cast<float>(points[i].x);
+		float y = static_cast<float>(points[i].y);
+
+		NMath::CartToIso(x / CELL_WIDTH, y / CELL_HEIGHT, x, y);
+
+		// Adjust for drawing
+		x -= HALF_CELL_WIDTH;
+		y -= HALF_CELL_WIDTH;
+
+		// Account for camera offset
+		x += offsetX;
+		y += offsetY;
+
+		x = std::round(x);
+		y = std::round(y);
+
+		points[i] = { static_cast<int>(x), static_cast<int>(y) };
+	}
+
+	// Set render color and draw the lines
+	SDL_SetRenderDrawColor(innerRenderer, color.r, color.g, color.b, color.a);
+	SDL_RenderDrawLines(innerRenderer, points.data(), points.size());	// For some reason, DrawLines doesn't draw properly if zoom is < 1, draw points works fine.
+	SDL_RenderDrawPoints(innerRenderer, points.data(), points.size());
 }
 
 //------------------------------------------------

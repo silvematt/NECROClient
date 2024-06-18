@@ -62,6 +62,7 @@ public:
 
 	void					DrawImageDirectly(SDL_Texture* toDraw, const SDL_Rect* srcRect, const SDL_Rect* dstRect);
 	void					DrawTextDirectly(TTF_Font* font, const char* str, int screenX, int screenY, const SDL_Color& color);
+	void					DrawIsoBox(SDL_Rect* r, SDL_Color c, float offsetX, float offsetY);
 
 	void					DrawRect(SDL_Rect* r, SDL_Color c);
 
@@ -75,6 +76,7 @@ extern const SDL_Color colorRed;
 extern const SDL_Color colorYellow;
 extern const SDL_Color colorWhite;
 extern const SDL_Color colorGray;
+extern const SDL_Color colorPink;
 
 inline SDL_Window* const NECRORenderer::GetWindow() const
 {
