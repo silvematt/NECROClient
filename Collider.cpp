@@ -11,8 +11,6 @@ void Collider::Init(bool pEnabled, Entity* own, int x, int y, int w, int h)
 
 	enabled = pEnabled;
 	owner = own;
-
-	debugImg = engine.GetAssetsManager().GetImage("tile_debug_coll.png");
 }
 
 void Collider::SetOffset(float x, float y)

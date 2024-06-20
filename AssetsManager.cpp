@@ -186,6 +186,11 @@ bool NECROAssetsManager::LoadPrefab(const std::string& filename)
 //--------------------------------------------------------------------------
 Image* NECROAssetsManager::GetImage(const std::string& filename)
 {
+	// Check if an entity initialized is without any image by choice
+	// This allows us to skip the search and avoid the LogWarn
+	if(filename == "NULL")
+		return &images.at("null_img.png");
+
 	auto it = images.find(filename);
 	if (it != images.end())
 	{

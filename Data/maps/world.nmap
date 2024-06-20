@@ -215,4 +215,14 @@ layer3:
 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 };
+PrefabList
+{
+	coll_half_center, 1600.0, 224.0, 100.0; #collider at layer 1 for left side of the stair OUTER
+	coll_half_center, 1600.0, 160.0, 100.0; #collider at layer 1 for right side of the stair OUTER
+	coll_half_center, 1600.0, 210.0, 100.0; #collider at layer 1 for bottom left side of the stair, used to prevent the player from going inside the collider of layer 3
+	coll_half_center, 1600.0, 210.0, 300.0; #collider at layer 3 for bottom left side of the stair
+	coll_half_center, 1600.0, 150.0, 300.0; #collider at layer 3 for bottom right side of the stair
+	coll_half_center, 1536.0, 192.0, 300.0; #collider at layer 3 for center left side of the stair
+	coll_half_center, 1536.0, 128.0, 300.0; #collider at layer 3 for center right side of the stair
+};
 ;

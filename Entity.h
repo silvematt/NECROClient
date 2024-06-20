@@ -10,6 +10,8 @@
 #include "Animator.h"
 #include "Interactable.h"
 
+#define LAYER_Z_COEFFICIENT 100 // A layer counts as 100 Z pos unit for entities
+
 class Interactable;
 class Cell;
 
@@ -42,6 +44,8 @@ protected:
 	uint32_t layer = 0;
 	Cell* owner;				// Owner of this entity
 	Cell* nextOwner;			// Used to TransferToCellQueue()
+
+	bool toRender = true;
 
 	uint16_t eFlags = 0;		// this entityflags value
 
@@ -87,6 +91,8 @@ public:
 	bool			TestFlag(Flags flag);
 
 	void			SetTilesetOffset(int x, int y);
+
+	int				GetLayerFromZPos() const;
 
 	// Optional components functions
 	void			CreateLight();
@@ -145,6 +151,11 @@ inline void Entity::SetTilesetOffset(int x, int y)
 {
 	tilesetXOff = x;
 	tilesetYOff = y;
+}
+
+inline int Entity::GetLayerFromZPos() const
+{
+	return std::floor(zPos / LAYER_Z_COEFFICIENT);
 }
 
 inline void Entity::CreateCollider()

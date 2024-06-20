@@ -1,5 +1,6 @@
 prefabName = campfire01;
 prefabImg = campfire01.png;
+toRender = 1; # 0 for invisible objects
 static = 0;
 posOffsetX = 16;
 posOffsetY = 0;

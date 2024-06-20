@@ -1,6 +1,6 @@
-prefabName = tree01;
-prefabImg = tree.png;
-toRender = 1; # 0 for invisible objects
+prefabName = coll_half_center;
+prefabImg = NULL;
+toRender = 0; # 0 for invisible objects
 static = 0;
 posOffsetX = 0;
 posOffsetY = 0;
@@ -9,16 +9,16 @@ hasCollider = 1;
 colliderRectX = 0;
 colliderRectY = 0;
 colliderRectW = 64;
-colliderRectH = 32;
+colliderRectH = 16;
 collOffsetX = 0;
 collOffsetY = 0;
 
-occlCheck = 1;
-occlModX = 50;
-occlModY = 64;
+occlCheck = 0;
+occlModX = 0;
+occlModY = 0;
 
-blocksLight = 1;
-blocksLightValue = 15;
+blocksLight = 0;
+blocksLightValue = 0;
 
 emitsLight = 0
 lightPropagationType = 0; // flat
@@ -35,7 +35,7 @@ lightMinIntensityDivider = 1.25f;
 lightAnimSpeed = 3.5f;
 
 hasAnimator = 0;
-animFile = tree01.nanim;
+animFile = NULL;
 
 interactable = 0;
 ;

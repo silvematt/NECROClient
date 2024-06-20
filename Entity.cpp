@@ -23,6 +23,7 @@ Entity::Entity()
 	tilesetXOff = tilesetYOff = 0;
 	gridPosX = gridPosY = 0;
 	occlusionRect = { 0,0,0,0 };
+	toRender = true;
 }
 
 Entity::Entity(Vector2 pInitialPos, Image* pImg)
@@ -34,6 +35,7 @@ Entity::Entity(Vector2 pInitialPos, Image* pImg)
 	gridPosX = pos.x / CELL_WIDTH;
 	gridPosY = pos.y / CELL_HEIGHT;
 	zPos = 0;
+	toRender = true;
 
 	SetImg(pImg);
 }
@@ -185,59 +187,62 @@ void Entity::UpdateLighting()
 //------------------------------------------------------------
 void Entity::Draw()
 {
-	UpdateLighting();
-
-	// Save texture's alpha
-	Uint8 previousAlpha = 0;
-	SDL_GetTextureAlphaMod(img->GetSrc(), &previousAlpha);
-	
-	// Save texture's color
-	Uint8 previousR, previousG, previousB;
-	SDL_GetTextureColorMod(img->GetSrc(), &previousR, &previousG, &previousB);
-	
-	// Update alpha
-	if(occludes)
-		SDL_SetTextureAlphaMod(img->GetSrc(), OCCLUDED_SPRITE_ALPHA_VALUE);
-
-	// Update Color with color data
-	SDL_SetTextureColorMod(img->GetSrc(), lightingColor.r, lightingColor.g, lightingColor.b);
-
-	if (!img->IsTileset())
+	if (toRender)
 	{
-		SDL_Rect dstRect = { static_cast<int>(isoPos.x), static_cast<int>(isoPos.y), img->GetWidth(), img->GetHeight() };
-		occlusionRect = dstRect;
+		UpdateLighting();
 
-		occlusionRect.w -= occlModifierX;
-		occlusionRect.h -= occlModifierY;
-		occlusionRect.x += (occlModifierX / 2);
-		occlusionRect.y += (occlModifierY / 2);
+		// Save texture's alpha
+		Uint8 previousAlpha = 0;
+		SDL_GetTextureAlphaMod(img->GetSrc(), &previousAlpha);
 
-		if(DEBUG_OCCLUSION_ENABLED && (TestFlag(FCanOccludePlayer) || ID == Player::ENT_ID))
-			engine.GetRenderer().DrawRect(&occlusionRect, colorYellow);
+		// Save texture's color
+		Uint8 previousR, previousG, previousB;
+		SDL_GetTextureColorMod(img->GetSrc(), &previousR, &previousG, &previousB);
 
-		engine.GetRenderer().DrawImageDirectly(img->GetSrc(), NULL, &dstRect);
+		// Update alpha
+		if (occludes)
+			SDL_SetTextureAlphaMod(img->GetSrc(), OCCLUDED_SPRITE_ALPHA_VALUE);
+
+		// Update Color with color data
+		SDL_SetTextureColorMod(img->GetSrc(), lightingColor.r, lightingColor.g, lightingColor.b);
+
+		if (!img->IsTileset())
+		{
+			SDL_Rect dstRect = { static_cast<int>(isoPos.x), static_cast<int>(isoPos.y), img->GetWidth(), img->GetHeight() };
+			occlusionRect = dstRect;
+
+			occlusionRect.w -= occlModifierX;
+			occlusionRect.h -= occlModifierY;
+			occlusionRect.x += (occlModifierX / 2);
+			occlusionRect.y += (occlModifierY / 2);
+
+			if (DEBUG_OCCLUSION_ENABLED && (TestFlag(FCanOccludePlayer) || ID == Player::ENT_ID))
+				engine.GetRenderer().DrawRect(&occlusionRect, colorYellow);
+
+			engine.GetRenderer().DrawImageDirectly(img->GetSrc(), NULL, &dstRect);
+		}
+		else
+		{
+			Image::Tileset tset = img->GetTileset();
+			SDL_Rect srcRect = { tilesetXOff * tset.tileWidth, tilesetYOff * tset.tileHeight, tset.tileWidth, tset.tileHeight };
+			SDL_Rect dstRect = { static_cast<int>(isoPos.x), static_cast<int>(isoPos.y), tset.tileWidth, tset.tileHeight };
+			occlusionRect = dstRect;
+
+			occlusionRect.w -= occlModifierX;
+			occlusionRect.h -= occlModifierY;
+			occlusionRect.x += (occlModifierX / 2);
+			occlusionRect.y += (occlModifierY / 2);
+
+			if (DEBUG_OCCLUSION_ENABLED && (TestFlag(FCanOccludePlayer) || ID == Player::ENT_ID))
+				engine.GetRenderer().DrawRect(&occlusionRect, colorYellow);
+
+			engine.GetRenderer().DrawImageDirectly(img->GetSrc(), &srcRect, &dstRect);
+		}
+
+		// Restore alpha mod and color mod
+		SDL_SetTextureAlphaMod(img->GetSrc(), previousAlpha);
+		SDL_SetTextureColorMod(img->GetSrc(), previousR, previousG, previousB);
 	}
-	else
-	{
-		Image::Tileset tset = img->GetTileset();
-		SDL_Rect srcRect = { tilesetXOff * tset.tileWidth, tilesetYOff * tset.tileHeight, tset.tileWidth, tset.tileHeight };
-		SDL_Rect dstRect = { static_cast<int>(isoPos.x), static_cast<int>(isoPos.y), tset.tileWidth, tset.tileHeight };
-		occlusionRect = dstRect;
-
-		occlusionRect.w -= occlModifierX;
-		occlusionRect.h -= occlModifierY;
-		occlusionRect.x += (occlModifierX / 2);
-		occlusionRect.y += (occlModifierY / 2);
-
-		if (DEBUG_OCCLUSION_ENABLED && (TestFlag(FCanOccludePlayer) || ID == Player::ENT_ID))
-			engine.GetRenderer().DrawRect(&occlusionRect, colorYellow);
-
-		engine.GetRenderer().DrawImageDirectly(img->GetSrc(), &srcRect, &dstRect);
-	}
-
-	// Restore alpha mod and color mod
-	SDL_SetTextureAlphaMod(img->GetSrc(), previousAlpha);
-	SDL_SetTextureColorMod(img->GetSrc(), previousR, previousG, previousB);
 	
 	if (HasCollider() && DEBUG_COLLIDER_ENABLED)
 		coll->DebugDraw();

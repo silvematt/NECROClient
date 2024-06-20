@@ -59,6 +59,12 @@ public:
 
 		return f;
 	}
+
+	inline static void RemoveSpacesAndTabsFromString(std::string& str)
+	{
+		str.erase(std::remove(str.begin(), str.end(), ' '), str.end());
+		str.erase(std::remove(str.begin(), str.end(), '\t'), str.end());
+	}
 };
 
 #endif

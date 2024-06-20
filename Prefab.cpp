@@ -64,6 +64,9 @@ bool Prefab::LoadFromFile(const std::string& filename)
 	// Prefab Img
 	GetStringFromFile(&pImgFile, &stream, &curLine, &curValStr);
 
+	// toRender
+	GetBoolFromFile(&toRender, &stream, &curLine, &curValStr);
+
 	// isStatic
 	GetBoolFromFile(&isStatic, &stream, &curLine, &curValStr);
 
@@ -235,6 +238,8 @@ std::unique_ptr<Entity> Prefab::InstantiatePrefab(const std::string& prefabName,
 	{
 		// Create the entity
 		std::unique_ptr<Entity> e(new Entity(Vector2(static_cast<float>(pos.x + p->posOffset.x), static_cast<float>(pos.y + p->posOffset.y)), engine.GetAssetsManager().GetImage(p->pImgFile)));
+
+		e->toRender = p->toRender;
 
 		// Check if the prefab has a collider
 		if (p->hasCollider)

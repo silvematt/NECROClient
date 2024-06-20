@@ -126,7 +126,7 @@ bool Mapfile::LoadMap(const std::string& filename)
 
 		std::getline(stream, curLine); // };
 
-		std::getline(stream, curLine); // either a new layer, or end of file
+		std::getline(stream, curLine); // either a new layer, start of PrefabsList
 
 		if (curLine.find("layer") != std::string::npos)
 		{
@@ -135,6 +135,50 @@ bool Mapfile::LoadMap(const std::string& filename)
 		}
 		else
 			layersDone = true;
+	}
+
+	// Load PrefabsList
+	bool prefabsDone = false;
+
+	// curLine is 'PrefabList'
+	std::getline(stream, curLine); // {
+	
+	// Start of list
+
+	while (!prefabsDone)
+	{
+		std::getline(stream, curLine);
+
+		// Check if it's the end
+		if (curLine == "};")
+			prefabsDone = true;
+		else
+		{
+			int startPos = 0;
+			int endPos = curLine.find(',', startPos + 1);  // read until the ','
+			std::string prefabName = (curLine.substr(startPos, endPos - startPos));
+			Utility::RemoveSpacesAndTabsFromString(prefabName);
+			
+			startPos = endPos + 1;
+			endPos = curLine.find(',', startPos + 1);
+			float xPos = Utility::TryParseFloat(curLine.substr(startPos, endPos - startPos));
+
+			startPos = endPos + 1;
+			endPos = curLine.find(',', startPos + 1);
+			float yPos = Utility::TryParseFloat(curLine.substr(startPos, endPos - startPos));
+
+			startPos = endPos + 1;
+			endPos = curLine.find(',', startPos + 1);
+			float zPos = Utility::TryParseFloat(curLine.substr(startPos, endPos - startPos));
+
+			SDL_Log("Loading Prefab from List: '%s' | PARAMS: (%f, %f, %f)", prefabName.c_str(), xPos, yPos, zPos);
+
+			std::unique_ptr<Entity> prefab = Prefab::InstantiatePrefab(prefabName, Vector2(xPos, yPos));
+			prefab->zPos = zPos;
+			prefab->SetLayer(prefab->GetLayerFromZPos());
+
+			w->AddEntity(std::move(prefab));
+		}
 	}
 
 	return true;

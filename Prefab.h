@@ -21,6 +21,7 @@ class Prefab
 private:
 	std::string pName;
 	std::string pImgFile;
+	bool toRender;
 	bool isStatic;
 	Vector2 posOffset; // position offset when instantiated in a cell
 

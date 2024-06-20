@@ -23,7 +23,6 @@ public:
 
 private:
 	Entity* owner;
-	Image* debugImg;
 
 	Vector2 collOffset;			// the offset of the collision box 'r' added to r.x and r.y (which represent the position of the entity owning this collider)
 	SDL_Rect r;

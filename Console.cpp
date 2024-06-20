@@ -13,7 +13,7 @@ int NECROConsole::Init()
 	inputField.Init(SDL_Rect{ 0,0,309,52}, SDL_Rect{ 25, SCREEN_HEIGHT - 120, 380,35 }, "", engine.GetAssetsManager().GetImage("default_input_field.png"), engine.GetAssetsManager().GetImage("default_active_input_field.png"), 0);
 
 	cmds.insert({ "help", Cmd(&Cmd::Cmd_Help) });
-	cmds.insert({ "teleport", Cmd(&Cmd::Cmd_TeleportToGrid)});
+	cmds.insert({ "tel", Cmd(&Cmd::Cmd_TeleportToGrid)});
 	cmds.insert({ "noclip", Cmd(&Cmd::Cmd_NoClip) });
 	cmds.insert({ "dcoll", Cmd(&Cmd::Cmd_ToggleCollisionDebug) });
 	cmds.insert({ "doccl", Cmd(&Cmd::Cmd_ToggleOcclusionDebug) });
@@ -99,7 +99,7 @@ void NECROConsole::Update()
 //-------------------------------------------------------
 void NECROConsole::Draw()
 {
-	engine.GetRenderer().SetRenderTarget(NECRORenderer::OVERLAY_TARGET);
+	engine.GetRenderer().SetRenderTarget(NECRORenderer::DEBUG_TARGET);
 	inputField.Draw();
 
 	int count = 1;

@@ -6,8 +6,6 @@
 
 #include "RenderTarget.h"
 
-#define LAYER_Z_COEFFICIENT 100 // A layer counts as 100 Z pos unit
-
 const int SCREEN_WIDTH = 1920;
 const int SCREEN_HEIGHT = 1080;
 
