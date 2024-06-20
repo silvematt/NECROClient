@@ -5,8 +5,9 @@
 #include "Player.h"
 
 uint32_t Entity::ENT_NEXT_ID = 0;
-bool Entity::DEBUG_COLLIDER_ENABLED = false;
-bool Entity::DEBUG_OCCLUSION_ENABLED = false;
+bool	Entity::DEBUG_COLLIDER_ENABLED = false;
+int		Entity::DEBUG_COLLIDER_LAYER = -1;
+bool	Entity::DEBUG_OCCLUSION_ENABLED = false;
 
 Entity::~Entity()
 {
@@ -244,7 +245,7 @@ void Entity::Draw()
 		SDL_SetTextureColorMod(img->GetSrc(), previousR, previousG, previousB);
 	}
 	
-	if (HasCollider() && DEBUG_COLLIDER_ENABLED)
+	if (HasCollider() && DEBUG_COLLIDER_ENABLED && (DEBUG_COLLIDER_LAYER == -1 || DEBUG_COLLIDER_LAYER == GetLayer()))
 		coll->DebugDraw();
 }
 

@@ -36,6 +36,7 @@ private:
 	static uint32_t ENT_NEXT_ID; // EntityID static track
 public:
 	static bool DEBUG_COLLIDER_ENABLED;
+	static int	DEBUG_COLLIDER_LAYER; // -1 to debug all layers, otherwise debug only layer value
 	static bool DEBUG_OCCLUSION_ENABLED;
 
 protected:

@@ -79,7 +79,15 @@ int Cmd::Cmd_ToggleCollisionDebug(const std::vector<std::string>& args)
 {
 	NECROConsole& c = engine.GetConsole();
 	
-	Entity::DEBUG_COLLIDER_ENABLED = !Entity::DEBUG_COLLIDER_ENABLED;
+	// If layer is provided, always enable
+	if (args.size() >= 2)
+	{
+		int layerVal = Utility::TryParseInt(args[1]);
+		Entity::DEBUG_COLLIDER_LAYER = layerVal;
+		Entity::DEBUG_COLLIDER_ENABLED = true;
+	}
+	else // otherwise toggle
+		Entity::DEBUG_COLLIDER_ENABLED = !Entity::DEBUG_COLLIDER_ENABLED;
 
 	if (Entity::DEBUG_COLLIDER_ENABLED)
 		c.Log("Debug Collision: enabled.");
