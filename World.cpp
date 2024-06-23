@@ -3,6 +3,7 @@
 #include "NECROEngine.h"
 #include "Entity.h"
 #include "Player.h"
+#include "AI.h"
 
 Camera* curCamera;
 
@@ -28,6 +29,16 @@ void World::InitializeWorld()
 	AddEntity(std::move(p));
 
 	map.LoadMap("world.nmap");
+
+	// TEST: Add AI for testing
+	std::unique_ptr<AI> ai(new AI());
+	ai->SetImg(engine.GetAssetsManager().GetImage("skeleton_war_idle.png"));
+	ai->pos = Vector2(static_cast<float>(29 * CELL_WIDTH), static_cast<float>(8 * CELL_HEIGHT));
+	ai->zPos = 100.01f;
+	ai->SetLayer(0);
+	ai->Init();
+	ai->SetFlag(Entity::Flags::Dynamic);
+	AddEntity(std::move(ai));
 
 	for(int x = 0; x < WORLD_WIDTH; x++)
 		for (int y = 0; y < WORLD_HEIGHT; y++)

@@ -132,6 +132,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AI.cpp" />
+    <ClCompile Include="AIBehavior.cpp" />
     <ClCompile Include="Animator.cpp" />
     <ClCompile Include="AnimState.cpp" />
     <ClCompile Include="AssetsManager.cpp" />
@@ -157,6 +159,8 @@
     <ClCompile Include="World.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AI.h" />
+    <ClInclude Include="AIBehavior.h" />
     <ClInclude Include="Animator.h" />
     <ClInclude Include="AnimState.h" />
     <ClInclude Include="AssetsManager.h" />

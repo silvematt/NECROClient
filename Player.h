@@ -57,7 +57,7 @@ public:
 
 public:
 	void			Init();
-	virtual void	Update() override;
+	void			Update() override;
 
 	float			GetCurMoveSpeed() const;
 

@@ -245,7 +245,7 @@ void Entity::Draw()
 		SDL_SetTextureColorMod(img->GetSrc(), previousR, previousG, previousB);
 	}
 	
-	if (HasCollider() && DEBUG_COLLIDER_ENABLED && (DEBUG_COLLIDER_LAYER == -1 || DEBUG_COLLIDER_LAYER == GetLayer()))
+	if (HasCollider() && DEBUG_COLLIDER_ENABLED && (DEBUG_COLLIDER_LAYER == -1 || DEBUG_COLLIDER_LAYER == GetLayer() || ID == Player::ENT_ID))
 		coll->DebugDraw();
 }
 

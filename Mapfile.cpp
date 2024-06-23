@@ -171,7 +171,7 @@ bool Mapfile::LoadMap(const std::string& filename)
 			endPos = curLine.find(',', startPos + 1);
 			float zPos = Utility::TryParseFloat(curLine.substr(startPos, endPos - startPos));
 
-			SDL_Log("Loading Prefab from List: '%s' | PARAMS: (%f, %f, %f)", prefabName.c_str(), xPos, yPos, zPos);
+			SDL_Log("Instantiating Prefab from List: '%s' | PARAMS: (%f, %f, %f)", prefabName.c_str(), xPos, yPos, zPos);
 
 			std::unique_ptr<Entity> prefab = Prefab::InstantiatePrefab(prefabName, Vector2(xPos, yPos));
 			prefab->zPos = zPos;
