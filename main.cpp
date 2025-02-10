@@ -13,6 +13,8 @@ int main()
 
     if (engine.Init() == 0)
     {
+        engine.Start();
+
         engine.Update();
     }
 

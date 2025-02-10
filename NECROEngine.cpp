@@ -99,10 +99,10 @@ void NECROEngine::Stop()
 	isRunning = false;
 }
 
-//--------------------------------------
-// Engine Update
-//--------------------------------------
-void NECROEngine::Update()
+//--------------------------------------------------------------------------
+// Start happens after the engine is initialized and before the engine loop
+//--------------------------------------------------------------------------
+void NECROEngine::Start()
 {
 	SDL_Log("Engine is running.");
 
@@ -112,6 +112,14 @@ void NECROEngine::Update()
 	game.Init();
 
 	lastUpdate = SDL_GetTicks();
+}
+
+
+//--------------------------------------
+// Engine Update
+//--------------------------------------
+void NECROEngine::Update()
+{
 	// Engine Loop
 	while (isRunning)
 	{

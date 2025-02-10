@@ -149,6 +149,11 @@ bool Mapfile::LoadMap(const std::string& filename)
 	{
 		std::getline(stream, curLine);
 
+		// Allow empty spaces between prefab definitions or comments
+		while (Utility::IsWhitespaceString(curLine) ||
+				Utility::IsCommentLine(curLine))
+			std::getline(stream, curLine);
+
 		// Check if it's the end
 		if (curLine == "};")
 			prefabsDone = true;
@@ -174,10 +179,14 @@ bool Mapfile::LoadMap(const std::string& filename)
 			SDL_Log("Instantiating Prefab from List: '%s' | PARAMS: (%f, %f, %f)", prefabName.c_str(), xPos, yPos, zPos);
 
 			std::unique_ptr<Entity> prefab = Prefab::InstantiatePrefab(prefabName, Vector2(xPos, yPos));
-			prefab->zPos = zPos;
-			prefab->SetLayer(prefab->GetLayerFromZPos());
 
-			w->AddEntity(std::move(prefab));
+			if (prefab != NULL)
+			{
+				prefab->zPos = zPos;
+				prefab->SetLayer(prefab->GetLayerFromZPos());
+
+				w->AddEntity(std::move(prefab));
+			}
 		}
 	}
 

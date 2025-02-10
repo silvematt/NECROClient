@@ -65,6 +65,34 @@ public:
 		str.erase(std::remove(str.begin(), str.end(), ' '), str.end());
 		str.erase(std::remove(str.begin(), str.end(), '\t'), str.end());
 	}
+
+	inline static bool IsWhitespaceString(const std::string& str)
+	{
+		for (char c : str)
+		{
+			if (!std::isspace(c))
+				return false;
+		}
+
+		return true;
+	}
+
+	inline static bool IsCommentLine(const std::string& str)
+	{
+		bool firstCharacterFound = false;
+		for (char c : str)
+		{
+			if (!std::isspace(c))
+			{
+				if (c == '#')
+					return true;
+				else
+					return false;
+			}
+		}
+
+		return false;
+	}
 };
 
 #endif

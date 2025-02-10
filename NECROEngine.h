@@ -42,6 +42,7 @@ public:
 	const float				GetFPS() const;
 
 	int						Init();
+	void					Start();
 	void					Update();
 	void					Stop();
 	int						Shutdown();
