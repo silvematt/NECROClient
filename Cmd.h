@@ -23,6 +23,7 @@ public:
 	int		Cmd_Help(const std::vector<std::string>& args);
 	int		Cmd_TeleportToGrid(const std::vector<std::string>& args);
 	int		Cmd_NoClip(const std::vector<std::string>& args);
+	int		Cmd_QuitApplication(const std::vector<std::string>& args);
 
 	// Debug
 	int		Cmd_ToggleCollisionDebug(const std::vector<std::string>& args);

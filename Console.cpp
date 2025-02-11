@@ -5,6 +5,8 @@
 #include <algorithm>
 #include <sstream>
 
+const char* CONSOLE_CMDS_LOG_FILENAME = "lastconsolecmdshistory.log";
+
 //-------------------------------------------------------
 // Initializes the console
 //-------------------------------------------------------
@@ -17,9 +19,62 @@ int NECROConsole::Init()
 	cmds.insert({ "noclip", Cmd(&Cmd::Cmd_NoClip) });
 	cmds.insert({ "dcoll", Cmd(&Cmd::Cmd_ToggleCollisionDebug) });
 	cmds.insert({ "doccl", Cmd(&Cmd::Cmd_ToggleOcclusionDebug) });
+	cmds.insert({ "qqq", Cmd(&Cmd::Cmd_QuitApplication) });
 
+	// Load history if present
+	cmdsLogFile.open(CONSOLE_CMDS_LOG_FILENAME, std::ios::in);
+
+	// If we cannot open it, it's not there. It's not a error (may be first time the game is ran)
+	if (!cmdsLogFile.is_open())
+	{
+		SDL_Log("CONSOLE: Could not open LogFile History: '%s'", CONSOLE_CMDS_LOG_FILENAME);
+	}
+	else
+	{
+		// Fill history
+		std::string line;
+		while (std::getline(cmdsLogFile, line))
+		{
+			if (!line.empty())
+				history.push_back(std::move(line));
+		}
+	}
+
+	cmdsLogFile.close();
 	return 0;
 }
+
+//-------------------------------------------------------
+// Called when the engine is being shut down
+//-------------------------------------------------------
+int NECROConsole::Shutdown()
+{
+	// On shutdown, write the last saved commands to lastconsolecmdshistory.log
+	if(history.size() >= CONSOLE_CMD_HISTORY_MAX_LENGTH)
+		cmdsLogFile.open(CONSOLE_CMDS_LOG_FILENAME, std::ios::out | std::ios::trunc);
+	else
+		cmdsLogFile.open(CONSOLE_CMDS_LOG_FILENAME, std::ios::out | std::ios::app);
+
+	if (!cmdsLogFile.is_open())
+	{
+		SDL_LogError(SDL_LOG_CATEGORY_ERROR, "CONSOLE Error: Error occurred while trying to open LogFile History: '%s'", CONSOLE_CMDS_LOG_FILENAME);
+		return 1;
+	}
+
+	// Write the commands to the file
+	for (auto& cmd : history)
+	{
+		// Skip 'qqq'
+		if (cmd == "qqq")
+			continue;
+
+		cmdsLogFile << cmd.c_str() << std::endl;
+	}
+
+	cmdsLogFile.close();
+	return 0;
+}
+
 
 //-------------------------------------------------------
 // Toggles the console, handles send command as well
@@ -29,7 +84,7 @@ void NECROConsole::Toggle()
 	// If the console is active, see if we have to send cmd or close the console
 	if (active)
 	{
-		if (inputField.str.size() > 0)
+		if (inputField.str.size() > 0 && !Utility::IsWhitespaceString(inputField.str))
 		{
 			// If the command is executed, close the console after sending it
 			int val = SendCmd(inputField.str);
@@ -123,6 +178,10 @@ void NECROConsole::Draw()
 //-------------------------------------------------------
 void NECROConsole::Log(const std::string& str)
 {
+	// Check if logs vector is full, if it is, remove the first element before inserting another
+	if (logs.size() >= CONSOLE_LOGS_MAX_LENGTH)
+		logs.erase(logs.begin());
+
 	logs.push_back(str);
 }
 
@@ -134,6 +193,10 @@ void NECROConsole::Log(const std::string& str)
 //-------------------------------------------------------
 int NECROConsole::SendCmd(const std::string& cmd)
 {
+	// Check if history vector is full, if it is, remove the first element before inserting another
+	if (history.size() >= CONSOLE_CMD_HISTORY_MAX_LENGTH)
+		history.erase(history.begin());
+	
 	// Add command to history
 	history.push_back(cmd);
 	

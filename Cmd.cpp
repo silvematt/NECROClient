@@ -27,6 +27,7 @@ int Cmd::Cmd_Help(const std::vector<std::string>& args)
 	c.Log("'noclip' (): toggles collision detection for the player.");
 	c.Log("'dcoll' (): toggles collision debug for all entities.");
 	c.Log("'doccl' (): toggles occlusion debug for entities that can occlude the player.");
+	c.Log("'qqq' (): quits the game.");
 
 	return 1; // return 1 to not close the console after this function
 }
@@ -110,6 +111,16 @@ int Cmd::Cmd_ToggleOcclusionDebug(const std::vector<std::string>& args)
 		c.Log("Debug Occlusion: enabled.");
 	else
 		c.Log("Debug Occlusion: disabled.");
+
+	return 0;
+}
+
+//----------------------------------------------------------------------------------------------
+// Quits the game
+//----------------------------------------------------------------------------------------------
+int Cmd::Cmd_QuitApplication(const std::vector<std::string>& args)
+{
+	engine.Stop();
 
 	return 0;
 }

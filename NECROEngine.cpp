@@ -80,6 +80,7 @@ int NECROEngine::Shutdown()
 
 	// Shutdown subsystem
 	renderer.Shutdown();
+	console.Shutdown();
 
 	// Shutdown SDL
 	SDL_Quit();

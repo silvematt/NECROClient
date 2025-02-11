@@ -29,6 +29,8 @@ private:
 	NECRORenderer		renderer;
 	NECROAssetsManager	assetsManager;
 	NECROConsole		console;
+
+	int						Shutdown();
 	
 public:
 	NECROGame&				GetGame();
@@ -45,7 +47,6 @@ public:
 	void					Start();
 	void					Update();
 	void					Stop();
-	int						Shutdown();
 };
 
 
