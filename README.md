@@ -1,4 +1,4 @@
-# NECROEngine
+# NECROClient
 
 Isometric Game Engine written in C++ and SDL2
 
