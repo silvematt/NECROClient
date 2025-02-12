@@ -1,5 +1,5 @@
-#ifndef NECROClient_H
-#define NECROClient_H
+#ifndef NECROCLIENT_H
+#define NECROCLIENT_H
 
 #include "SDL.h"
 
