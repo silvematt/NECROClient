@@ -1,6 +1,6 @@
 #include "Animator.h"
 #include "AssetsManager.h"
-#include "NECROEngine.h"
+#include "NECROClient.h"
 
 #include <fstream>
 

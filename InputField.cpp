@@ -1,5 +1,5 @@
 #include "InputField.h"
-#include "NECROEngine.h"
+#include "NECROClient.h"
 
 void InputField::Init(SDL_Rect sRct, SDL_Rect dRct, const std::string& s, Image* im, Image* actIm, int tLimit)
 {

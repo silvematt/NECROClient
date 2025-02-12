@@ -1,6 +1,6 @@
 #include "TilesetDef.h"
 #include "Utility.h"
-#include "NECROEngine.h"
+#include "NECROClient.h"
 #include "Image.h"
 
 #include "SDL.h"

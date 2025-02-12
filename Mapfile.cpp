@@ -1,5 +1,5 @@
 #include "Mapfile.h"
-#include "NECROEngine.h"
+#include "NECROClient.h"
 #include "Utility.h"
 #include "TilesetDef.h"
 

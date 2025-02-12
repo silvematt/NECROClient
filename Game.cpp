@@ -1,5 +1,5 @@
 #include "Game.h"
-#include "NECROEngine.h"
+#include "NECROClient.h"
 
 std::string GameModeMap[] =
 {

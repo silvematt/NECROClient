@@ -1,5 +1,5 @@
 #include "Input.h"
-#include "NECROEngine.h"
+#include "NECROClient.h"
 
 NECROInput::~NECROInput() 
 {

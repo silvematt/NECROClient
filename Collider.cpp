@@ -1,6 +1,6 @@
 #include "Collider.h"
 
-#include "NECROEngine.h"
+#include "NECROClient.h"
 
 void Collider::Init(bool pEnabled, Entity* own, int x, int y, int w, int h)
 {

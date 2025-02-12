@@ -1,4 +1,4 @@
-#include "NECROEngine.h"
+#include "NECROClient.h"
 
 #include "Entity.h"
 #include "Utility.h"

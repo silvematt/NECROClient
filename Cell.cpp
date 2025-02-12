@@ -1,6 +1,6 @@
 #include "Cell.h"
 
-#include "NECROEngine.h"
+#include "NECROClient.h"
 #include "Utility.h"
 #include "Math.h"
 

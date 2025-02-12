@@ -1,5 +1,5 @@
-#ifndef NECROENGINE_H
-#define NECROENGINE_H
+#ifndef NECROClient_H
+#define NECROClient_H
 
 #include "SDL.h"
 
@@ -12,7 +12,7 @@
 
 #include "Math.h"
 
-class NECROEngine
+class NECROClient
 {
 private:
 	// Status
@@ -51,40 +51,40 @@ public:
 
 
 // Global access for the Engine 
-extern NECROEngine engine;
+extern NECROClient engine;
 
 // Inline functions
-inline NECROGame& NECROEngine::GetGame()
+inline NECROGame& NECROClient::GetGame()
 {
 	return game;
 }
 
-inline NECROInput& NECROEngine::GetInput()
+inline NECROInput& NECROClient::GetInput()
 {
 	return input;
 }
 
-inline NECRORenderer & NECROEngine::GetRenderer() 
+inline NECRORenderer & NECROClient::GetRenderer() 
 {
 	return renderer;
 }
 
-inline NECROAssetsManager& NECROEngine::GetAssetsManager()
+inline NECROAssetsManager& NECROClient::GetAssetsManager()
 {
 	return assetsManager;
 }
 
-inline NECROConsole& NECROEngine::GetConsole()
+inline NECROConsole& NECROClient::GetConsole()
 {
 	return console;
 }
 
-inline const double NECROEngine::GetDeltaTime() const
+inline const double NECROClient::GetDeltaTime() const
 {
 	return deltaTime;
 }
 
-inline const float NECROEngine::GetFPS() const
+inline const float NECROClient::GetFPS() const
 {
 	return fps;
 }

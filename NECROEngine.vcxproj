@@ -24,6 +24,7 @@
     <ProjectGuid>{b2e3d69b-7fea-4fd9-9381-1e55febace15}</ProjectGuid>
     <RootNamespace>NECROEngine</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>NECROClient</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -149,7 +150,7 @@
     <ClCompile Include="Interactable.cpp" />
     <ClCompile Include="Light.cpp" />
     <ClCompile Include="Mapfile.cpp" />
-    <ClCompile Include="NECROEngine.cpp" />
+    <ClCompile Include="NECROClient.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Prefab.cpp" />
@@ -178,7 +179,7 @@
     <ClInclude Include="Light.h" />
     <ClInclude Include="Mapfile.h" />
     <ClInclude Include="Math.h" />
-    <ClInclude Include="NECROEngine.h" />
+    <ClInclude Include="NECROClient.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Prefab.h" />
     <ClInclude Include="Renderer.h" />

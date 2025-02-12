@@ -1,6 +1,6 @@
 #include "Player.h"
 
-#include "NECROEngine.h"
+#include "NECROClient.h"
 #include "Game.h"
 
 // Initialize static member

@@ -1,6 +1,6 @@
 #include "World.h"
 
-#include "NECROEngine.h"
+#include "NECROClient.h"
 #include "Entity.h"
 #include "Player.h"
 #include "AI.h"

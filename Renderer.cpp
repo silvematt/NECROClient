@@ -21,7 +21,7 @@ int NECRORenderer::Init()
 	// Create Window
 	Uint32 winFlags = 0;
 	//Uint32 winFlags = SDL_WINDOW_FULLSCREEN;
-	window = SDL_CreateWindow("NECROEngine", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, winFlags);
+	window = SDL_CreateWindow("NECROClient", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, winFlags);
 
 	if (!window)
 		return -1;

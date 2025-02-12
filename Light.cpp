@@ -1,6 +1,6 @@
 #include "Light.h"
 
-#include "NECROEngine.h"
+#include "NECROClient.h"
 
 //-----------------------------------------------------------------
 // Initializes max and min intensity

@@ -1,5 +1,5 @@
 #include "Console.h"
-#include "NECROEngine.h"
+#include "NECROClient.h"
 #include "Cmd.h"
 
 #include <algorithm>

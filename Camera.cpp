@@ -1,6 +1,6 @@
 #include "Camera.h"
 
-#include "NECROEngine.h"
+#include "NECROClient.h"
 #include "Player.h"
 
 // ----------------------------------------------------------------------------------------------------

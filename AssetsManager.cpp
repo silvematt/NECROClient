@@ -1,5 +1,5 @@
 #include "AssetsManager.h"
-#include "NECROEngine.h"
+#include "NECROClient.h"
 
 const char* IMGS_FOLDER		 = "Data/imgs/";
 const char* FONTS_FOLDER	 = "Data/fonts/";

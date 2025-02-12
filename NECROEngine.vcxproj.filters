@@ -50,7 +50,7 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="NECROEngine.cpp">
+    <ClCompile Include="NECROClient.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
     <ClCompile Include="Game.cpp">
@@ -124,7 +124,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="NECROEngine.h">
+    <ClInclude Include="NECROClient.h">
       <Filter>Engine</Filter>
     </ClInclude>
     <ClInclude Include="Game.h">

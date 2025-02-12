@@ -1,14 +1,14 @@
 #include <iostream>
 
-#include "NECROEngine.h"
+#include "NECROClient.h"
 #include "World.h"
 
-NECROEngine engine;
+NECROClient engine;
 
 //--------------------------------------
 // Initializes the engine and subsystems
 //--------------------------------------
-int NECROEngine::Init()
+int NECROClient::Init()
 {
 	SDL_Log("Initializing engine...\n");
 
@@ -74,7 +74,7 @@ int NECROEngine::Init()
 //--------------------------------------
 // Shuts down the engine and subsystems
 //--------------------------------------
-int NECROEngine::Shutdown()
+int NECROClient::Shutdown()
 {
 	SDL_Log("Shutting down the engine...");
 
@@ -93,7 +93,7 @@ int NECROEngine::Shutdown()
 //--------------------------------------
 // Stops the engine at the next Update
 //--------------------------------------
-void NECROEngine::Stop()
+void NECROClient::Stop()
 {
 	SDL_Log("Stopping the engine...");
 
@@ -103,7 +103,7 @@ void NECROEngine::Stop()
 //--------------------------------------------------------------------------
 // Start happens after the engine is initialized and before the engine loop
 //--------------------------------------------------------------------------
-void NECROEngine::Start()
+void NECROClient::Start()
 {
 	SDL_Log("Engine is running.");
 
@@ -119,7 +119,7 @@ void NECROEngine::Start()
 //--------------------------------------
 // Engine Update
 //--------------------------------------
-void NECROEngine::Update()
+void NECROClient::Update()
 {
 	// Engine Loop
 	while (isRunning)
