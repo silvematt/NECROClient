@@ -12,6 +12,8 @@
 
 #include "Math.h"
 
+#include "NetworkManager.h"
+
 class NECROClient
 {
 private:
@@ -29,6 +31,7 @@ private:
 	NECRORenderer		renderer;
 	NECROAssetsManager	assetsManager;
 	NECROConsole		console;
+	NECRONetManager		netManager;
 
 	int						Shutdown();
 	
@@ -39,6 +42,7 @@ public:
 	NECRORenderer&			GetRenderer();
 	NECROAssetsManager&		GetAssetsManager();
 	NECROConsole&			GetConsole();
+	NECRONetManager&		GetNetManager();
 
 	const double			GetDeltaTime() const;
 	const float				GetFPS() const;
@@ -77,6 +81,11 @@ inline NECROAssetsManager& NECROClient::GetAssetsManager()
 inline NECROConsole& NECROClient::GetConsole()
 {
 	return console;
+}
+
+inline NECRONetManager& NECROClient::GetNetManager()
+{
+	return netManager;
 }
 
 inline const double NECROClient::GetDeltaTime() const

@@ -201,7 +201,7 @@ void World::ComputeOnSelectedCell()
 
 					// If player is valid
 					if(p)
-						if (std::max(abs(p->gridPosX - e->gridPosX), abs(p->gridPosY - e->gridPosY)) <= i->gridDistanceInteraction || // check distance
+						if (NECRO_MAX(abs(p->gridPosX - e->gridPosX), abs(p->gridPosY - e->gridPosY)) <= i->gridDistanceInteraction || // check distance
 							i->gridDistanceInteraction == 0) // 0 means interact from any distance
 						{
 							canInteract = true;

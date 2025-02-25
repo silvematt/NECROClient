@@ -45,6 +45,18 @@
     <Filter Include="Engine\Entity\AI">
       <UniqueIdentifier>{d3efbbe3-4a6c-4910-aac6-98c4a07e7c3c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\Online">
+      <UniqueIdentifier>{c449f8bb-3775-4007-bc43-d000df741b28}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Online\Sockets">
+      <UniqueIdentifier>{633e449b-b1d9-4664-be8e-6e1b9c8f36e3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Online\Packets">
+      <UniqueIdentifier>{b49b14c6-5ba0-49e9-8df7-aeda3e2b2364}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Logger">
+      <UniqueIdentifier>{e0881093-923e-41d5-bbc8-04881c8fc22c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -121,6 +133,21 @@
     </ClCompile>
     <ClCompile Include="AIBehavior.cpp">
       <Filter>Engine\Entity\AI</Filter>
+    </ClCompile>
+    <ClCompile Include="TCPSocket.cpp">
+      <Filter>Engine\Online\Sockets</Filter>
+    </ClCompile>
+    <ClCompile Include="Packet.cpp">
+      <Filter>Engine\Online\Packets</Filter>
+    </ClCompile>
+    <ClCompile Include="Logger.cpp">
+      <Filter>Engine\Logger</Filter>
+    </ClCompile>
+    <ClCompile Include="FileLogger.cpp">
+      <Filter>Engine\Logger</Filter>
+    </ClCompile>
+    <ClCompile Include="ConsoleLogger.cpp">
+      <Filter>Engine\Logger</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -207,6 +234,33 @@
     </ClInclude>
     <ClInclude Include="AIBehavior.h">
       <Filter>Engine\Entity\AI</Filter>
+    </ClInclude>
+    <ClInclude Include="TCPSocket.h">
+      <Filter>Engine\Online\Sockets</Filter>
+    </ClInclude>
+    <ClInclude Include="SocketAddress.h">
+      <Filter>Engine\Online\Sockets</Filter>
+    </ClInclude>
+    <ClInclude Include="SocketUtility.h">
+      <Filter>Engine\Online\Sockets</Filter>
+    </ClInclude>
+    <ClInclude Include="NetworkMessage.h">
+      <Filter>Engine\Online\Packets</Filter>
+    </ClInclude>
+    <ClInclude Include="Packet.h">
+      <Filter>Engine\Online\Packets</Filter>
+    </ClInclude>
+    <ClInclude Include="Logger.h">
+      <Filter>Engine\Logger</Filter>
+    </ClInclude>
+    <ClInclude Include="FileLogger.h">
+      <Filter>Engine\Logger</Filter>
+    </ClInclude>
+    <ClInclude Include="ConsoleLogger.h">
+      <Filter>Engine\Logger</Filter>
+    </ClInclude>
+    <ClInclude Include="NetworkManager.h">
+      <Filter>Engine\Online</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

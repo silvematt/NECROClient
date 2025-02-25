@@ -12,7 +12,7 @@ const char* ANIMATORS_FOLDER = "Data/prefabs/animators/";
 int NECROAssetsManager::Init()
 {
 	// Load the fallback image, required for the AssetsManager to work properly
-	if (LoadImage("null_img.png", 0, 0))
+	if (LoadImageAsset("null_img.png", 0, 0))
 	{
 		LoadAllFonts(); // TODO: Fonts can be loaded only if needed as well as images, animators and prefabs, and we can have a default fallback font like the null_img.png
 		return 0;
@@ -68,7 +68,7 @@ void NECROAssetsManager::LoadAllAnimators()
 //-------------------------------------------------
 // Directly loads an Image 
 //-------------------------------------------------
-bool NECROAssetsManager::LoadImage(const std::string& filename, int xOffset, int yOffset, const std::string& shortname)
+bool NECROAssetsManager::LoadImageAsset(const std::string& filename, int xOffset, int yOffset, const std::string& shortname)
 {
 	std::string fullPath = IMGS_FOLDER;
 	fullPath += filename;
@@ -188,7 +188,7 @@ Image* NECROAssetsManager::GetImage(const std::string& filename)
 {
 	// Check if an entity initialized is without any image by choice
 	// This allows us to skip the search and avoid the LogWarn
-	if(filename == "NULL")
+	if (filename == "NULL")
 		return &images.at("null_img.png");
 
 	auto it = images.find(filename);

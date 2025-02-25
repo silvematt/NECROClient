@@ -8,6 +8,8 @@
 #include "Entity.h"
 #include "AnimState.h"
 
+class Entity;
+
 class Animator
 {
 private:

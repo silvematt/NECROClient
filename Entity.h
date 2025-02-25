@@ -14,6 +14,7 @@
 
 class Interactable;
 class Cell;
+class Animator;
 
 //-----------------------------------------------------------------------------
 // An Enity is the base unit of something that exists inside of a Cell.

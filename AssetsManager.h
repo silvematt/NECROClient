@@ -32,7 +32,7 @@ private:
 
 	SDL_Texture*		LoadSDLTexture(const char* file);
 
-	bool				LoadImage(const std::string& file, int xOffset, int yOffset, const std::string& shortname = std::string());	// Shortname will be the key of the ump if NOT empty
+	bool				LoadImageAsset(const std::string& file, int xOffset, int yOffset, const std::string& shortname = std::string());	// Shortname will be the key of the ump if NOT empty
 	bool				LoadTilesetImage(const std::string& filename, int xOffset, int yOffset, int tWidth, int tHeight, int tNumX, int tNumY, const std::string& shortname = std::string());
 	bool				LoadImageWithDefinition(const std::string& file, const std::string& shortname = std::string());	// Shortname will be the key of the ump if NOT empty
 	
