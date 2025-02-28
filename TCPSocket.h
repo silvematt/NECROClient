@@ -3,6 +3,7 @@
 
 #ifdef _WIN32
 #include "WinSock2.h"
+#include <WS2tcpip.h>
 typedef SOCKET sock_t;
 #else
 typedef int sock_t;

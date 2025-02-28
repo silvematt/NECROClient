@@ -41,6 +41,32 @@ public:
 		return false;
 	}
 
+	static bool ErrorIsIsInProgres()
+	{
+#ifdef _WIN32
+		if (GetLastError() == WSAEINPROGRESS)
+			return true;
+#else
+		if (GetLastError() == EINPROGRESS)
+			return true;
+#endif
+
+		return false;
+	}
+
+	static bool ErrorIsIsConnectionRefused()
+	{
+#ifdef _WIN32
+		if (GetLastError() == WSAECONNREFUSED)
+			return true;
+#else
+		if (GetLastError() == ECONNREFUSED)
+			return true;
+#endif
+
+		return false;
+	}
+
 	//---------------------------------------------------------
 	// Initializes Winsock if on windows, otherwise do nothing.
 	//---------------------------------------------------------

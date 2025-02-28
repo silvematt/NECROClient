@@ -156,6 +156,7 @@
     <ClCompile Include="Mapfile.cpp" />
     <ClCompile Include="NECROClient.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="NetworkManager.cpp" />
     <ClCompile Include="Packet.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Prefab.cpp" />

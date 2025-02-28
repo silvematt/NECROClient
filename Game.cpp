@@ -20,6 +20,8 @@ void NECROGame::Init()
 //--------------------------------------
 void NECROGame::Update()
 {
+	engine.GetNetManager().NetworkUpdate();
+
 	HandleInput();
 
 	mainCamera.Update();

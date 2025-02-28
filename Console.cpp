@@ -20,6 +20,7 @@ int NECROConsole::Init()
 	cmds.insert({ "dcoll", Cmd(&Cmd::Cmd_ToggleCollisionDebug) });
 	cmds.insert({ "doccl", Cmd(&Cmd::Cmd_ToggleOcclusionDebug) });
 	cmds.insert({ "qqq", Cmd(&Cmd::Cmd_QuitApplication) });
+	cmds.insert({ "authconnect", Cmd(&Cmd::Cmd_ConnectToAuthServer) });
 
 	// Load history if present
 	cmdsLogFile.open(CONSOLE_CMDS_LOG_FILENAME, std::ios::in);

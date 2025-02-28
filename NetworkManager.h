@@ -8,23 +8,25 @@ class NECRONetManager
 {
 private:
 	std::unique_ptr<TCPSocket> authSocket;
+	bool authSocketConnected = false;
+	bool isConnecting = false;
+
+	std::vector<pollfd> poll_fds;
 
 public:
 
-	int Init()
-	{
-		SocketUtility::Initialize();
+	int Init();
+	void CreateAuthSocket();
 
-		authSocket = std::make_unique<TCPSocket>(SocketAddressesFamily::INET);
+	int ConnectToAuthServer();
+	
+	int CheckIfAuthConnected();
+	int CheckForIncomingData();
+	int NetworkUpdate();
 
-		uint16_t outPort = 61531;
-		SocketAddress localAddr(AF_INET, INADDR_ANY, outPort);
-		int flag = 1;
+	void OnDisconnect();
 
-		authSocket->SetSocketOption(IPPROTO_TCP, TCP_NODELAY, (char*)&flag, sizeof(int));
-
-		return 0;
-	}
+	void OnConnectedToAuthServer();
 };
 
 

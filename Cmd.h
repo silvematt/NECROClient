@@ -25,6 +25,8 @@ public:
 	int		Cmd_NoClip(const std::vector<std::string>& args);
 	int		Cmd_QuitApplication(const std::vector<std::string>& args);
 
+	int		Cmd_ConnectToAuthServer(const std::vector<std::string>& args);
+
 	// Debug
 	int		Cmd_ToggleCollisionDebug(const std::vector<std::string>& args);
 	int		Cmd_ToggleOcclusionDebug(const std::vector<std::string>& args);

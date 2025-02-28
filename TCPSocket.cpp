@@ -98,8 +98,11 @@ int TCPSocket::Connect(const SocketAddress& addr)
 
 	if (err != 0)
 	{
-		LOG_ERROR(std::string("Error during TCPSocket::Connect() [") + std::to_string(SocketUtility::GetLastError()) + "]");
-		return SocketUtility::GetLastError();
+		if (!SocketUtility::ErrorIsWouldBlock() && !SocketUtility::ErrorIsIsInProgres())
+		{
+			LOG_ERROR(std::string("Error during TCPSocket::Connect() [") + std::to_string(SocketUtility::GetLastError()) + "]");
+			return SocketUtility::GetLastError();
+		}
 	}
 
 	return SOCKET_UTILITY_NO_ERROR;

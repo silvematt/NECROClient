@@ -28,6 +28,7 @@ int Cmd::Cmd_Help(const std::vector<std::string>& args)
 	c.Log("'dcoll' (): toggles collision debug for all entities.");
 	c.Log("'doccl' (): toggles occlusion debug for entities that can occlude the player.");
 	c.Log("'qqq' (): quits the game.");
+	c.Log("'authconnect' (): connects to the auth server.");
 
 	return 1; // return 1 to not close the console after this function
 }
@@ -121,6 +122,14 @@ int Cmd::Cmd_ToggleOcclusionDebug(const std::vector<std::string>& args)
 int Cmd::Cmd_QuitApplication(const std::vector<std::string>& args)
 {
 	engine.Stop();
+
+	return 0;
+}
+
+
+int Cmd::Cmd_ConnectToAuthServer(const std::vector<std::string>& args)
+{
+	engine.GetNetManager().ConnectToAuthServer();
 
 	return 0;
 }

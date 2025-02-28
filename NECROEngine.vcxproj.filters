@@ -149,6 +149,9 @@
     <ClCompile Include="ConsoleLogger.cpp">
       <Filter>Engine\Logger</Filter>
     </ClCompile>
+    <ClCompile Include="NetworkManager.cpp">
+      <Filter>Engine\Online</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="NECROClient.h">
