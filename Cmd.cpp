@@ -129,6 +129,17 @@ int Cmd::Cmd_QuitApplication(const std::vector<std::string>& args)
 
 int Cmd::Cmd_ConnectToAuthServer(const std::vector<std::string>& args)
 {
+	NECROConsole& c = engine.GetConsole();
+
+	if (args.size() < 2)
+	{
+		c.Log("CMD_ConnectToAuthServer: requires 1 arguments [username].");
+		return 1;
+	}
+
+	c.Log("Attempting to connect as : '" + args[1] + "'...");
+
+	engine.GetNetManager().SetNetDataUsername(args[1]);
 	engine.GetNetManager().ConnectToAuthServer();
 
 	return 0;

@@ -30,6 +30,13 @@ public:
         data.resize(reservedSize);
     }
 
+    // Wraps a packet in a NetworkMessage
+    NetworkMessage(Packet p)
+    {
+        data.resize(p.Size());
+        Write(p.GetContent(), p.Size());
+    }
+
     void Clear()
     {
         data.clear();

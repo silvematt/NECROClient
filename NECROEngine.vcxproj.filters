@@ -57,6 +57,9 @@
     <Filter Include="Engine\Logger">
       <UniqueIdentifier>{e0881093-923e-41d5-bbc8-04881c8fc22c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\Online\Authentication">
+      <UniqueIdentifier>{6f51e00e-f2ec-4dce-b65d-ac7a1cf2f13e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -151,6 +154,9 @@
     </ClCompile>
     <ClCompile Include="NetworkManager.cpp">
       <Filter>Engine\Online</Filter>
+    </ClCompile>
+    <ClCompile Include="AuthSession.cpp">
+      <Filter>Engine\Online\Authentication</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -264,6 +270,12 @@
     </ClInclude>
     <ClInclude Include="NetworkManager.h">
       <Filter>Engine\Online</Filter>
+    </ClInclude>
+    <ClInclude Include="AuthSession.h">
+      <Filter>Engine\Online\Authentication</Filter>
+    </ClInclude>
+    <ClInclude Include="AuthCodes.h">
+      <Filter>Engine\Online\Authentication</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

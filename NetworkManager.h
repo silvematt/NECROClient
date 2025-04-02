@@ -1,20 +1,28 @@
 #ifndef NECRO_NETWORK_MANAGER
 #define NECRO_NETWORK_MANAGER
 
-#include "TCPSocket.h"
+#include "AuthSession.h"
 #include "SocketUtility.h"
+
+struct NetData
+{
+	std::string username;
+	std::string ipAddress;
+};
 
 class NECRONetManager
 {
 private:
-	std::unique_ptr<TCPSocket> authSocket;
+	NetData data;
+
+	std::unique_ptr<AuthSession> authSocket;
 	bool authSocketConnected = false;
 	bool isConnecting = false;
 
 	std::vector<pollfd> poll_fds;
 
-public:
 
+public:
 	int Init();
 	void CreateAuthSocket();
 
@@ -27,6 +35,18 @@ public:
 	void OnDisconnect();
 
 	void OnConnectedToAuthServer();
+
+
+	// NetData Setters
+	void SetNetDataUsername(const std::string& u)
+	{
+		data.username = u;
+	}
+
+	void SetNetDataIpAddress(const std::string& i)
+	{
+		data.ipAddress = i;
+	}
 };
 
 

@@ -1,5 +1,6 @@
 #include "NetworkManager.h"
 #include "NECROClient.h"
+#include "AuthCodes.h"
 
 int NECRONetManager::Init()
 {
@@ -14,7 +15,7 @@ void NECRONetManager::CreateAuthSocket()
 {
 	isConnecting = false;
 
-	authSocket = std::make_unique<TCPSocket>(SocketAddressesFamily::INET);
+	authSocket = std::make_unique<AuthSession>(SocketAddressesFamily::INET);
 
 	int flag = 1;
 	authSocket->SetSocketOption(IPPROTO_TCP, TCP_NODELAY, (char*)&flag, sizeof(int));
@@ -31,6 +32,8 @@ int NECRONetManager::ConnectToAuthServer()
 	inet_pton(AF_INET, "127.0.0.1", &addr);
 
 	SocketAddress authAddr(AF_INET, addr.s_addr, outPort);
+
+	authSocket->SetRemoteAddressAndPort(authAddr, outPort);
 
 	authSocketConnected = false;
 	isConnecting = true;
@@ -190,11 +193,42 @@ int NECRONetManager::CheckIfAuthConnected()
 
 void NECRONetManager::OnConnectedToAuthServer()
 {
+	NECROConsole& c = engine.GetConsole();
+
 	isConnecting = false;
 	authSocketConnected = true;
 
+	// Get local IP address
+	sockaddr_in local_addr{};
+	socklen_t addr_len = sizeof(local_addr);
+	if (getsockname(authSocket->GetSocketFD(), (sockaddr*)&local_addr, &addr_len) == 0)
+	{
+		char local_ip[INET_ADDRSTRLEN];
+		inet_ntop(AF_INET, &local_addr.sin_addr, local_ip, INET_ADDRSTRLEN);
+		
+		std::string ipStr(local_ip);
+		c.Log("My Local IP: " + ipStr);
+		SetNetDataIpAddress(ipStr);
+	}
+
 	// Send greet packet
-	//authSocket->QueuePacket();
+	Packet greetPacket;
+	uint8_t usernameLenght = static_cast<uint8_t>(data.username.size());;
+
+	greetPacket << uint8_t(AuthPacketIDs::PCKTID_AUTH_LOGIN_GATHER_INFO);
+	greetPacket << uint8_t(AuthResults::AUTH_SUCCESS);
+	greetPacket << uint16_t(sizeof(PacketAuthLoginGatherInfo) - PACKET_AUTH_LOGIN_GATHER_INFO_INITIAL_SIZE + usernameLenght - 1); // this means that after having read the first PACKET_AUTH_LOGIN_GATHER_INFO_INITIAL_SIZE bytes, the server will have to wait for sizeof(PacketAuthLoginGatherInfo) - PACKET_AUTH_LOGIN_GATHER_INFO_INITIAL_SIZE + usernameLenght-1 bytes in order to correctly read this packet
+
+	greetPacket << CLIENT_VERSION_MAJOR;
+	greetPacket << CLIENT_VERSION_MINOR;
+	greetPacket << CLIENT_VERSION_REVISION;
+
+	greetPacket << usernameLenght;
+	greetPacket << data.username.data();
+
+	NetworkMessage message(greetPacket);
+	authSocket->QueuePacket(message);
+	authSocket->Send();
 }
 
 int NECRONetManager::CheckForIncomingData()

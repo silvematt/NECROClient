@@ -71,6 +71,13 @@ public:
 
 	int							SetBlockingEnabled(bool blocking);
 	int							SetSocketOption(int lvl, int optName, const char* optVal, int optLen);
+
+
+	void SetRemoteAddressAndPort(const SocketAddress& s, const uint16_t& p)
+	{
+		remoteAddress = s;
+		remotePort = p;
+	}
 };
 
 #endif
