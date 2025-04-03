@@ -17,11 +17,12 @@ enum AuthPacketIDs
 //--------------------------------------------------------------------------------------------
 enum AuthResults
 {
-	AUTH_SUCCESS = 0x00,
-	AUTH_FAILED_UNKNOWN_ACCOUNT = 0x01,
-	AUTH_FAILED_ACCOUNT_BANNED = 0x02,
-	AUTH_FAILED_WRONG_PASSWORD = 0x03,
-	AUTH_FAILED_WRONG_CLIENT_VERSION = 0x04
+	AUTH_SUCCESS						= 0x00,
+	AUTH_FAILED_UNKNOWN_ACCOUNT			= 0x01,
+	AUTH_FAILED_ACCOUNT_BANNED			= 0x02,
+	AUTH_FAILED_WRONG_PASSWORD			= 0x03,
+	AUTH_FAILED_WRONG_CLIENT_VERSION	= 0x04,
+	AUTH_FAILED_USERNAME_IN_USE			= 0x05		// before we implement database and we'll just have username uniqueness per session
 };
 
 

@@ -6,13 +6,6 @@
 
 #pragma pack(push, 1)
 
-struct AuthHandler
-{
-    AuthStatus status;
-    size_t packetSize;
-    bool (AuthSession::* handler)();
-};
-
 struct PacketAuthLoginGatherInfo
 {
     uint8_t		id;
@@ -31,6 +24,17 @@ static_assert(sizeof(PacketAuthLoginGatherInfo) == (1 + 1 + 2 + 1 + 1 + 1 + 1 + 
 #define MAX_ACCEPTED_GATHER_INFO_SIZE (sizeof(PacketAuthLoginGatherInfo) + MAX_USERNAME_LENGTH) // 16 is username length
 #define PACKET_AUTH_LOGIN_GATHER_INFO_INITIAL_SIZE 4 // this represent the fixed portion of this packet, which needs to be read to at least identify the packet
 
+
+struct PacketAuthLoginGatherInfoResponse
+{
+	uint8_t		id;
+	uint8_t		error;
+	uint16_t	size;
+};
+static_assert(sizeof(PacketAuthLoginGatherInfoResponse) == (1 + 1 + 2), "PacketAuthLoginGatherInfoResponse size assert failed!");
+#define MAX_ACCEPTED_GATHER_INFO_RESPONSE_SIZE (sizeof(PacketAuthLoginGatherInfoResponse)) // 16 is username length
+#define PACKET_AUTH_LOGIN_GATHER_INFO_RESPONSE_INITIAL_SIZE 4 // this represent the fixed portion of this packet, which needs to be read to at least identify the packet
+
 #pragma pack(pop)
 
 
@@ -39,6 +43,7 @@ std::unordered_map<uint8_t, AuthHandler> AuthSession::InitHandlers()
 	std::unordered_map<uint8_t, AuthHandler> handlers;
 
 	// fill
+	handlers[PCKTID_AUTH_LOGIN_GATHER_INFO] = { AuthStatus::STATUS_GATHER_INFO, PACKET_AUTH_LOGIN_GATHER_INFO_RESPONSE_INITIAL_SIZE , &HandlePacketAuthLoginGatherInfoResponse };
 
 	return handlers;
 }
@@ -85,5 +90,75 @@ void AuthSession::OnConnectedCallback()
 
 void AuthSession::ReadCallback()
 {
-	LOG_OK("AuthSession ReadCallback");
+    LOG_OK("AuthSession ReadCallback");
+
+    NetworkMessage& packet = inBuffer;
+
+    while (packet.GetActiveSize())
+    {
+        uint8_t cmd = packet.GetReadPointer()[0]; // read first byte
+
+        auto it = Handlers.find(cmd);
+        if (it == Handlers.end())
+        {
+            // Discard packet, nothing we should handle
+            packet.Clear();
+            break;
+        }
+
+        // Check if the current cmd matches our state
+        if (status != it->second.status)
+        {
+            Shutdown();
+            Close();
+            return;
+        }
+
+        // Check if the passed packet sizes matches the handler's one, otherwise we're not ready to process this yet
+        uint16_t size = uint16_t(it->second.packetSize);
+        if (packet.GetActiveSize() < size)
+            break;
+
+        // If it's a variable-sized packet, we need to ensure size
+        
+
+        // At this point, ensure the read size matches the whole packet size
+        if (packet.GetActiveSize() < size)
+            break;  // probably a short receive
+
+        // Call the Handler's function and ensure it returns true
+        if (!(*this.*it->second.handler)())
+        {
+            Close();
+            return;
+        }
+
+        packet.ReadCompleted(size); // Flag the read as completed, the while will look for remaining packets
+    }
+}
+
+bool AuthSession::HandlePacketAuthLoginGatherInfoResponse()
+{
+    NECROConsole& c = engine.GetConsole();
+    PacketAuthLoginGatherInfoResponse* pckData = reinterpret_cast<PacketAuthLoginGatherInfoResponse*>(inBuffer.GetBasePointer());
+
+    if (pckData->error == AuthResults::AUTH_SUCCESS)
+    {
+        // Continue authentication
+        c.Log("Authentication succeeded...");
+    }
+    else if (pckData->error == AuthResults::AUTH_FAILED_USERNAME_IN_USE)
+    {
+        LOG_ERROR("Authentication failed, username is already in use.");
+        c.Log("Authentication failed. Username is already in use.");
+        return false;
+    }
+    else
+    {
+        LOG_ERROR("Authentication failed, server hasn't returned AuthResults::AUTH_SUCCESS.");
+        c.Log("Authentication failed.");
+        return false;
+    }
+
+	return true;
 }

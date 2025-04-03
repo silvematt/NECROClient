@@ -42,6 +42,9 @@ public:
 
     void OnConnectedCallback() override;
     void ReadCallback() override;
+
+    // Handlers functions
+    bool HandlePacketAuthLoginGatherInfoResponse();
 };
 
 #endif

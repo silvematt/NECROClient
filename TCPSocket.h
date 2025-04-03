@@ -31,7 +31,7 @@ enum SocketAddressesFamily
 //-------------------------------------------------------
 class TCPSocket
 {
-private:
+protected:
 	friend class SocketAddress;
 	sock_t m_socket;
 
