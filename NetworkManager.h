@@ -47,6 +47,11 @@ public:
 	{
 		data.ipAddress = i;
 	}
+
+	NetData& GetData()
+	{
+		return data;
+	}
 };
 
 

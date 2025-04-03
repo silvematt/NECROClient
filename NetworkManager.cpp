@@ -193,42 +193,10 @@ int NECRONetManager::CheckIfAuthConnected()
 
 void NECRONetManager::OnConnectedToAuthServer()
 {
-	NECROConsole& c = engine.GetConsole();
-
 	isConnecting = false;
 	authSocketConnected = true;
 
-	// Get local IP address
-	sockaddr_in local_addr{};
-	socklen_t addr_len = sizeof(local_addr);
-	if (getsockname(authSocket->GetSocketFD(), (sockaddr*)&local_addr, &addr_len) == 0)
-	{
-		char local_ip[INET_ADDRSTRLEN];
-		inet_ntop(AF_INET, &local_addr.sin_addr, local_ip, INET_ADDRSTRLEN);
-		
-		std::string ipStr(local_ip);
-		c.Log("My Local IP: " + ipStr);
-		SetNetDataIpAddress(ipStr);
-	}
-
-	// Send greet packet
-	Packet greetPacket;
-	uint8_t usernameLenght = static_cast<uint8_t>(data.username.size());;
-
-	greetPacket << uint8_t(AuthPacketIDs::PCKTID_AUTH_LOGIN_GATHER_INFO);
-	greetPacket << uint8_t(AuthResults::AUTH_SUCCESS);
-	greetPacket << uint16_t(sizeof(PacketAuthLoginGatherInfo) - PACKET_AUTH_LOGIN_GATHER_INFO_INITIAL_SIZE + usernameLenght - 1); // this means that after having read the first PACKET_AUTH_LOGIN_GATHER_INFO_INITIAL_SIZE bytes, the server will have to wait for sizeof(PacketAuthLoginGatherInfo) - PACKET_AUTH_LOGIN_GATHER_INFO_INITIAL_SIZE + usernameLenght-1 bytes in order to correctly read this packet
-
-	greetPacket << CLIENT_VERSION_MAJOR;
-	greetPacket << CLIENT_VERSION_MINOR;
-	greetPacket << CLIENT_VERSION_REVISION;
-
-	greetPacket << usernameLenght;
-	greetPacket << data.username.data();
-
-	NetworkMessage message(greetPacket);
-	authSocket->QueuePacket(message);
-	authSocket->Send();
+	authSocket->OnConnectedCallback(); // here the client will send the greet packet
 }
 
 int NECRONetManager::CheckForIncomingData()
