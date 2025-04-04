@@ -4,6 +4,8 @@
 #include "TCPSocket.h"
 #include <unordered_map>
 
+#define TEMP_AUTH_SESSION_KEY_LENGTH 40 // for developing, we're avoiding cyptography, we'll just have a session key client and server can synch to
+
 // Status of the current socket
 enum AuthStatus
 {
@@ -33,9 +35,7 @@ class AuthSession : public TCPSocket
 {
 public:
     AuthSession(SocketAddressesFamily fam) : TCPSocket(fam), status(STATUS_GATHER_INFO) {}
-
     AuthSession(sock_t socket) : TCPSocket(socket), status(STATUS_GATHER_INFO) {}
-
     AuthStatus status;
 
     static std::unordered_map<uint8_t, AuthHandler> InitHandlers();
@@ -45,6 +45,7 @@ public:
 
     // Handlers functions
     bool HandlePacketAuthLoginGatherInfoResponse();
+    bool HandlePacketAuthLoginProofResponse();
 };
 
 #endif

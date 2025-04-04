@@ -25,5 +25,10 @@ enum AuthResults
 	AUTH_FAILED_USERNAME_IN_USE			= 0x05		// before we implement database and we'll just have username uniqueness per session
 };
 
+enum LoginProofResults
+{
+	LOGIN_SUCCESS = 0x00,
+	LOGIN_FAILED = 0X01
+};
 
 #endif

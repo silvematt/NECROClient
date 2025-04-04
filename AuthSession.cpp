@@ -5,6 +5,9 @@
 
 #include "AuthCodes.h"
 
+#include <sstream>
+#include <iomanip>
+
 #pragma pack(push, 1)
 
 // -------------------------------------------------------------------------------------------------------
@@ -36,11 +39,33 @@ struct CPacketAuthLoginGatherInfo
 {
 	uint8_t		id;
 	uint8_t		error;
-	uint16_t	size;
 };
-static_assert(sizeof(CPacketAuthLoginGatherInfo) == (1 + 1 + 2), "CPacketAuthLoginGatherInfo size assert failed!");
-#define C_MAX_ACCEPTED_GATHER_INFO_RESPONSE_SIZE (sizeof(CPacketAuthLoginGatherInfo))
-#define C_PACKET_AUTH_LOGIN_GATHER_INFO_RESPONSE_INITIAL_SIZE 4 // this represent the fixed portion of this packet, which needs to be read to at least identify the packet
+static_assert(sizeof(CPacketAuthLoginGatherInfo) == (1 + 1), "CPacketAuthLoginGatherInfo size assert failed!");
+
+
+// Login Proof doesn't exist for now, this is just a dull packet
+struct SPacketAuthLoginProof
+{
+    uint8_t		id;
+    uint8_t		error;
+
+    uint8_t     key; // key needs to be 242 in order to succeed login
+};
+static_assert(sizeof(SPacketAuthLoginProof) == (1 + 1 + 1), "SPacketAuthLoginProof size assert failed!");
+
+
+// Login Proof doesn't exist for now, this is just a dull packet
+struct CPacketAuthLoginProof
+{
+    uint8_t		id;
+    uint8_t		error;
+    uint16_t    size;
+
+    uint8_t     sessionKey[TEMP_AUTH_SESSION_KEY_LENGTH];
+};
+static_assert(sizeof(CPacketAuthLoginProof) == (1 + 1 + 2 + TEMP_AUTH_SESSION_KEY_LENGTH), "CPacketAuthLoginProof size assert failed!");
+#define C_PACKET_AUTH_LOGIN_PROOF_INITIAL_SIZE 4 // this represent the fixed portion of this packet, which needs to be read to at least identify the packet
+
 
 #pragma pack(pop)
 
@@ -50,7 +75,8 @@ std::unordered_map<uint8_t, AuthHandler> AuthSession::InitHandlers()
 	std::unordered_map<uint8_t, AuthHandler> handlers;
 
 	// fill
-	handlers[PCKTID_AUTH_LOGIN_GATHER_INFO] = { AuthStatus::STATUS_GATHER_INFO, C_PACKET_AUTH_LOGIN_GATHER_INFO_RESPONSE_INITIAL_SIZE , &HandlePacketAuthLoginGatherInfoResponse };
+	handlers[PCKTID_AUTH_LOGIN_GATHER_INFO] = { AuthStatus::STATUS_GATHER_INFO, sizeof(CPacketAuthLoginGatherInfo) , &HandlePacketAuthLoginGatherInfoResponse};
+    handlers[PCKTID_AUTH_LOGIN_ATTEMPT]     = { AuthStatus::STATUS_LOGIN_ATTEMPT, C_PACKET_AUTH_LOGIN_PROOF_INITIAL_SIZE , &HandlePacketAuthLoginProofResponse };
 
 	return handlers;
 }
@@ -88,7 +114,7 @@ void AuthSession::OnConnectedCallback()
 	greetPacket << CLIENT_VERSION_REVISION;
 
 	greetPacket << usernameLenght;
-	greetPacket << netManager.GetData().username.data();
+	greetPacket << netManager.GetData().username; // string is and should be without null terminator!
 
 	NetworkMessage message(greetPacket);
 	QueuePacket(message);
@@ -108,6 +134,8 @@ void AuthSession::ReadCallback()
         auto it = Handlers.find(cmd);
         if (it == Handlers.end())
         {
+            LOG_WARNING("Discarding packet.");
+
             // Discard packet, nothing we should handle
             packet.Clear();
             break;
@@ -116,6 +144,8 @@ void AuthSession::ReadCallback()
         // Check if the current cmd matches our state
         if (status != it->second.status)
         {
+            LOG_WARNING("Status mismatch. Status is: '" + std::to_string(status) + "' but should have been '" + std::to_string(it->second.status) + "'. Closing the connection.");
+
             Shutdown();
             Close();
             return;
@@ -127,6 +157,19 @@ void AuthSession::ReadCallback()
             break;
 
         // If it's a variable-sized packet, we need to ensure size
+        if (cmd == PCKTID_AUTH_LOGIN_ATTEMPT)
+        {
+            CPacketAuthLoginProof* pcktData = reinterpret_cast<CPacketAuthLoginProof*>(packet.GetReadPointer());
+            size += pcktData->size; // we've read the handler's defined packetSize, so this is safe. Attempt to read the remainder of the packet
+
+            // Check for size
+            if (size > sizeof(CPacketAuthLoginProof))
+            {
+                Shutdown();
+                Close();
+                return;
+            }
+        }
         
 
         // At this point, ensure the read size matches the whole packet size
@@ -152,15 +195,31 @@ bool AuthSession::HandlePacketAuthLoginGatherInfoResponse()
     if (pckData->error == AuthResults::AUTH_SUCCESS)
     {
         // Continue authentication
-        c.Log("Authentication succeeded...");
+        c.Log("Gather info succeded...");
+        status = STATUS_LOGIN_ATTEMPT;
 
-        // Here you would send login proof to the serer, after having received hashes in the PacketAuthLoginGatherInfoResponse packet, for now let's just do a dull packet
+        // Here you would send login proof to the server, after having received hashes in the CPacketAuthLoginGatherInfo packet above, for now let's just do a dull packet
+        Packet packet;
+
+        packet << uint8_t(AuthPacketIDs::PCKTID_AUTH_LOGIN_ATTEMPT);
+        packet << uint8_t(LoginProofResults::LOGIN_SUCCESS);
+        packet << uint8_t(242); // write the dumb pass key
+
+        NetworkMessage m(packet);
+        QueuePacket(m);
+        Send();
 
     }
     else if (pckData->error == AuthResults::AUTH_FAILED_USERNAME_IN_USE)
     {
         LOG_ERROR("Authentication failed, username is already in use.");
         c.Log("Authentication failed. Username is already in use.");
+        return false;
+    }
+    else if (pckData->error == AuthResults::AUTH_FAILED_WRONG_CLIENT_VERSION)
+    {
+        LOG_ERROR("Authentication failed, invalid client version.");
+        c.Log("Authentication failed, invalid client version.");
         return false;
     }
     else
@@ -171,4 +230,40 @@ bool AuthSession::HandlePacketAuthLoginGatherInfoResponse()
     }
 
 	return true;
+}
+
+bool AuthSession::HandlePacketAuthLoginProofResponse()
+{
+    NECRONetManager& netManager = engine.GetNetManager();
+
+    NECROConsole& c = engine.GetConsole();
+    CPacketAuthLoginProof* pckData = reinterpret_cast<CPacketAuthLoginProof*>(inBuffer.GetBasePointer());
+
+    if (pckData->error == LoginProofResults::LOGIN_SUCCESS)
+    {
+        // Continue authentication
+        c.Log("Authentication succeeded.");
+        status = STATUS_AUTHED;
+
+        // Save the session key in the netManager data
+        std::copy(std::begin(pckData->sessionKey), std::end(pckData->sessionKey), std::begin(netManager.GetData().sessionKey));
+
+        // Convert sessionKey to hex string in order to print it
+        std::ostringstream sessionStrStream;
+        for (int i = 0; i < 40; ++i)
+        {
+            sessionStrStream << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(netManager.GetData().sessionKey[i]);
+        }
+        std::string sessionStr = sessionStrStream.str();
+
+        LOG_DEBUG("My session key is: " + sessionStr);
+    }
+    else //  (pckData->error == LoginProofResults::LOGIN_FAILED)
+    {
+        LOG_ERROR("Authentication failed. Server returned LoginProofResults::LOGIN_FAILED..");
+        c.Log("Authentication failed.");
+        return false;
+    }
+
+    return true;
 }

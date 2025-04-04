@@ -131,7 +131,7 @@ public:
     {
         size_t length = value.length();
         Append(reinterpret_cast<const uint8_t*>(value.data()), length);
-        Append(static_cast<uint8_t>(0)); // '\0'
+        //Append(static_cast<uint8_t>(0)); // '\0' DO NOT APPEND NULL TERMINATOR!
         return *this;
     }
 
