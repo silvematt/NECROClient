@@ -60,6 +60,9 @@
     <Filter Include="Engine\Online\Authentication">
       <UniqueIdentifier>{6f51e00e-f2ec-4dce-b65d-ac7a1cf2f13e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\OpenSSL">
+      <UniqueIdentifier>{8681a0d3-dc55-4f74-861f-4b1f22291f0d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -157,6 +160,9 @@
     </ClCompile>
     <ClCompile Include="AuthSession.cpp">
       <Filter>Engine\Online\Authentication</Filter>
+    </ClCompile>
+    <ClCompile Include="OpenSSLManager.cpp">
+      <Filter>Engine\OpenSSL</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -276,6 +282,9 @@
     </ClInclude>
     <ClInclude Include="AuthCodes.h">
       <Filter>Engine\Online\Authentication</Filter>
+    </ClInclude>
+    <ClInclude Include="OpenSSLManager.h">
+      <Filter>Engine\OpenSSL</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

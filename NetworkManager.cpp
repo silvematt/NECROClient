@@ -1,10 +1,17 @@
 #include "NetworkManager.h"
+#include "OpenSSLManager.h"
 #include "NECROClient.h"
 #include "AuthCodes.h"
 
 int NECRONetManager::Init()
 {
 	SocketUtility::Initialize();
+
+	if (OpenSSLManager::Init() != 0)
+	{
+		LOG_ERROR("Could not initialize OpenSSLManager.");
+		return 1;
+	}
 
 	CreateAuthSocket();
 
@@ -195,6 +202,21 @@ void NECRONetManager::OnConnectedToAuthServer()
 {
 	isConnecting = false;
 	authSocketConnected = true;
+
+	/*
+	* HERE WE WILL PERFORM TLS SETUP AND HANDSHAKE
+	* 
+	// Set TLS for the AuthSocket
+	authSocket->TLSSetup("127.0.0.1");
+
+	engine.GetConsole().Log("Handshaking...");
+	if (!engine.GetConsole().IsOpen())
+	{
+		engine.GetConsole().Toggle();
+	}
+
+	authSocket->TLSPerformHandshake();
+	*/
 
 	authSocket->OnConnectedCallback(); // here the client will send the greet packet
 }

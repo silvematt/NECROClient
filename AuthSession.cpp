@@ -118,7 +118,7 @@ void AuthSession::OnConnectedCallback()
 
 	NetworkMessage message(greetPacket);
 	QueuePacket(message);
-	Send();
+	Send(); // @TOCHANGE this could not work if the socket is not writeable
 }
 
 void AuthSession::ReadCallback()
@@ -207,7 +207,7 @@ bool AuthSession::HandlePacketAuthLoginGatherInfoResponse()
 
         NetworkMessage m(packet);
         QueuePacket(m);
-        Send();
+        Send(); // @TOCHANGE this could not work if the socket is not writeable
 
     }
     else if (pckData->error == AuthResults::AUTH_FAILED_USERNAME_IN_USE)

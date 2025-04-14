@@ -10,10 +10,11 @@
 
 #include "ConsoleLogger.h"
 #include "FileLogger.h"
-
+#include "OpenSSLManager.h"
 
 TCPSocket::TCPSocket(SocketAddressesFamily family)
 {
+	usesTLS = false;
 	closed = false;
 
 	m_socket = socket(family, SOCK_STREAM, IPPROTO_TCP);
@@ -27,6 +28,7 @@ TCPSocket::TCPSocket(SocketAddressesFamily family)
 
 TCPSocket::TCPSocket(sock_t inSocket)
 {
+	usesTLS = false;
 	closed = false;
 
 	m_socket = inSocket;
@@ -120,18 +122,42 @@ int TCPSocket::Send()
 
 	NetworkMessage& out = outQueue.front();
 
-	int bytesSent = send(m_socket, reinterpret_cast<const char*>(out.GetReadPointer()), out.GetActiveSize(), 0);
-
-	if (bytesSent < 0)
+	int bytesSent = 0;
+	size_t sslBytesSent;
+	if (!usesTLS)
 	{
-		if (SocketUtility::ErrorIsWouldBlock())
-			return 0;
+		bytesSent = send(m_socket, reinterpret_cast<const char*>(out.GetReadPointer()), out.GetActiveSize(), 0);
 
-		Shutdown();
+		if (bytesSent < 0)
+		{
+			if (SocketUtility::ErrorIsWouldBlock())
+				return 0;
 
-		LOG_ERROR(std::string("Error during TCPSocket::Send() [") + std::to_string(SocketUtility::GetLastError()) + "]");
-		return SocketUtility::GetLastError();
+			Shutdown();
+
+			LOG_ERROR(std::string("Error during TCPSocket::Send() [") + std::to_string(SocketUtility::GetLastError()) + "]");
+			return SocketUtility::GetLastError();
+		}
 	}
+	else
+	{
+		int ret = SSL_write_ex(ssl, reinterpret_cast<const char*>(out.GetReadPointer()), out.GetActiveSize(), &sslBytesSent);
+
+		if (ret <= 0)
+		{
+			int sslError = SSL_get_error(ssl, ret);
+			if (sslError == SSL_ERROR_WANT_READ || sslError == SSL_ERROR_WANT_WRITE)
+				return 0;
+
+			Shutdown();
+			LOG_ERROR(std::string("Error during TCPSocket::Send() [") +
+				std::to_string(sslError) + "]");
+			return sslError;
+		}
+	}
+
+	if (usesTLS)
+		bytesSent = sslBytesSent;
 
 	// Mark that 'bytesSent' were sent
 	out.ReadCompleted(bytesSent);
@@ -153,17 +179,49 @@ int TCPSocket::Receive()
 	inBuffer.EnlargeBufferIfNeeded();
 
 	// Manually write on the inBuffer
-	int bytesReceived = recv(m_socket, reinterpret_cast<char*>(inBuffer.GetWritePointer()), inBuffer.GetRemainingSpace(), 0);
-
-	if (bytesReceived < 0)
+	int bytesReceived = 0;
+	size_t sslBytesReceived;
+	if (!usesTLS)
 	{
-		if (SocketUtility::ErrorIsWouldBlock())
-			return 0;
+		bytesReceived = recv(m_socket, reinterpret_cast<char*>(inBuffer.GetWritePointer()), inBuffer.GetRemainingSpace(), 0);
 
-		Shutdown();
-		LOG_ERROR(std::string("Error during TCPSocket::Receive() [") + std::to_string(SocketUtility::GetLastError()) + "]");
-		return -1;
+		if (bytesReceived < 0)
+		{
+			if (SocketUtility::ErrorIsWouldBlock())
+				return 0;
+
+			Shutdown();
+			LOG_ERROR(std::string("Error during TCPSocket::Receive() [") + std::to_string(SocketUtility::GetLastError()) + "]");
+			return -1;
+		}
 	}
+	else
+	{
+		int ret = SSL_read_ex(ssl, reinterpret_cast<char*>(inBuffer.GetWritePointer()), inBuffer.GetRemainingSpace(), &sslBytesReceived);
+
+		if (ret <= 0)
+		{
+			int sslError = SSL_get_error(ssl, ret);
+			if (sslError == SSL_ERROR_WANT_READ || sslError == SSL_ERROR_WANT_WRITE)
+				return 0;
+			else if (sslError == SSL_ERROR_ZERO_RETURN)
+			{
+				// Shutdown gracefully
+				LOG_DEBUG("Received SSL_ERROR_ZERO_RETURN. Shutting down socket gracefully.");
+				Shutdown();
+				return 0;
+			}
+			else
+			{
+				Shutdown();
+				LOG_ERROR(std::string("Error during TCPSocket::Receive() [") + std::to_string(SocketUtility::GetLastError()) + "]");
+				return sslError;
+			}
+		}
+	}
+
+	if (usesTLS)
+		bytesReceived = sslBytesReceived;
 
 	// Make sure to update the write pos
 	inBuffer.WriteCompleted(bytesReceived);
@@ -231,6 +289,9 @@ int TCPSocket::Shutdown()
 
 	closed = true;
 
+	// Free OpenSSL data
+	SSL_free(ssl);
+
 #ifdef _WIN32
 	int result = shutdown(m_socket, SD_SEND);
 
@@ -250,6 +311,9 @@ int TCPSocket::Shutdown()
 
 int TCPSocket::Close()
 {
+	// Free OpenSSL data
+	SSL_free(ssl);
+
 #ifdef _WIN32
 
 	int result = closesocket(m_socket);
@@ -258,4 +322,41 @@ int TCPSocket::Close()
 	int result = close(m_socket);
 	return result;
 #endif
+}
+
+// OpenSSL
+void TCPSocket::TLSSetup(const char* hostname)
+{
+	usesTLS = true;
+
+	bio = OpenSSLManager::CreateBioAndWrapSocket(GetSocketFD());
+	ssl = OpenSSLManager::CreateSSLObject(bio);
+
+	OpenSSLManager::SetSNIHostname(ssl, hostname);
+	OpenSSLManager::SetCertVerificationHostname(ssl, hostname);
+}
+
+void TCPSocket::TLSPerformHandshake()
+{
+	int ret;
+
+	// Perform the handshake
+	while ((ret = SSL_connect(ssl)) != 1)
+	{
+		int err = SSL_get_error(ssl, ret);
+
+		// Keep trying
+		if (err == SSL_ERROR_WANT_READ || err == SSL_ERROR_WANT_WRITE)
+			continue;
+
+		// Otherwise, we got an error
+		LOG_ERROR("TLSPerformHandshake failed!");
+		if (err == SSL_ERROR_SSL)
+		{
+			if (SSL_get_verify_result(ssl) != X509_V_OK)
+				LOG_ERROR("Verify error: %s\n", X509_verify_cert_error_string(SSL_get_verify_result(ssl)));
+		}
+	}
+
+	// Handshake performed!
 }

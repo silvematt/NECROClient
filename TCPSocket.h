@@ -13,6 +13,8 @@ typedef int sock_t;
 #include <cstdint>
 #include <queue>
 
+#include <openssl/ssl.h>
+
 #include "SocketAddress.h"
 #include "NetworkMessage.h"
 
@@ -44,6 +46,11 @@ protected:
 
 	bool closed = false;
 
+	// OpenSSL support
+	bool usesTLS = false;
+	SSL* ssl;
+	BIO* bio;
+
 public:
 	TCPSocket(SocketAddressesFamily family);
 	TCPSocket(sock_t inSocket);
@@ -73,12 +80,15 @@ public:
 	int							SetBlockingEnabled(bool blocking);
 	int							SetSocketOption(int lvl, int optName, const char* optVal, int optLen);
 
-
 	void SetRemoteAddressAndPort(const SocketAddress& s, const uint16_t& p)
 	{
 		remoteAddress = s;
 		remotePort = p;
 	}
+
+	// OpenSSL
+	void TLSSetup(const char* hostname);
+	void TLSPerformHandshake();
 };
 
 #endif
