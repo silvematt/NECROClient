@@ -37,7 +37,7 @@ public:
 
 	void OnDisconnect();
 
-	void OnConnectedToAuthServer();
+	int OnConnectedToAuthServer();
 
 
 	// NetData Setters

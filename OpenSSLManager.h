@@ -35,21 +35,28 @@ public:
 		// Create Context
 		ctx = SSL_CTX_new(TLS_client_method());
 
+		if (ctx == NULL)
+		{
+			LOG_ERROR("OpenSSLManager: Could not create a new CTX.");
+			return 1;
+		}
+
 		// Set verify of the certs
+		SSL_CTX_load_verify_locations(ctx, "server.pem", nullptr); // Trust this cert
 		SSL_CTX_set_verify(ctx, SSL_VERIFY_PEER, NULL);
 
 		// Use the default trusted certificate store
 		if (!SSL_CTX_set_default_verify_paths(ctx)) 
 		{
 			LOG_ERROR("OpenSSLManager: Could not set default verify paths.");
-			return 1;
+			return 2;
 		}
 
 		// Restrict to TLS v1.3
 		if (!SSL_CTX_set_min_proto_version(ctx, TLS1_3_VERSION)) 
 		{
 			LOG_ERROR("OpenSSLManager: failed to set min protocol version.");
-			return 2;
+			return 3;
 		}
 
 		LOG_OK("OpenSSLManager: Initialization Completed!");

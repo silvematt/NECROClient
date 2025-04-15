@@ -10,7 +10,7 @@ int NECRONetManager::Init()
 	if (OpenSSLManager::Init() != 0)
 	{
 		LOG_ERROR("Could not initialize OpenSSLManager.");
-		return 1;
+		return -1;
 	}
 
 	CreateAuthSocket();
@@ -97,6 +97,7 @@ int NECRONetManager::NetworkUpdate()
 		int res = CheckIfAuthConnected();
 		if (res == -1)
 		{
+			LOG_DEBUG("Failed to auth");
 			OnDisconnect();
 			return res;
 		}
@@ -190,24 +191,20 @@ int NECRONetManager::CheckIfAuthConnected()
 			// Switch from POLLOUT to POLLIN to get incoming data
 			poll_fds[0].events = POLLIN;
 
-			OnConnectedToAuthServer();
-			return 0;
+			return OnConnectedToAuthServer();
 		}
 	}
 
 	return 0;
 }
 
-void NECRONetManager::OnConnectedToAuthServer()
+int NECRONetManager::OnConnectedToAuthServer()
 {
 	isConnecting = false;
 	authSocketConnected = true;
 
-	/*
-	* HERE WE WILL PERFORM TLS SETUP AND HANDSHAKE
-	* 
 	// Set TLS for the AuthSocket
-	authSocket->TLSSetup("127.0.0.1");
+	authSocket->TLSSetup("localhost");
 
 	engine.GetConsole().Log("Handshaking...");
 	if (!engine.GetConsole().IsOpen())
@@ -215,10 +212,19 @@ void NECRONetManager::OnConnectedToAuthServer()
 		engine.GetConsole().Toggle();
 	}
 
-	authSocket->TLSPerformHandshake();
-	*/
+	// Check if it fails
+	if (authSocket->TLSPerformHandshake() == 0)
+	{
+		LOG_ERROR("Handshake failed!");
+		engine.GetConsole().Log("Handshake failed!");
+		return -1;
+	}
+
+	LOG_OK("TLS Handshake successful!");
 
 	authSocket->OnConnectedCallback(); // here the client will send the greet packet
+
+	return 0;
 }
 
 int NECRONetManager::CheckForIncomingData()

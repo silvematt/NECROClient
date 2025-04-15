@@ -16,6 +16,8 @@ TCPSocket::TCPSocket(SocketAddressesFamily family)
 {
 	usesTLS = false;
 	closed = false;
+	ssl = nullptr;
+	bio = nullptr;
 
 	m_socket = socket(family, SOCK_STREAM, IPPROTO_TCP);
 
@@ -30,6 +32,8 @@ TCPSocket::TCPSocket(sock_t inSocket)
 {
 	usesTLS = false;
 	closed = false;
+	ssl = nullptr;
+	bio = nullptr;
 
 	m_socket = inSocket;
 
@@ -290,7 +294,11 @@ int TCPSocket::Shutdown()
 	closed = true;
 
 	// Free OpenSSL data
-	SSL_free(ssl);
+	if (ssl != nullptr)
+	{
+		SSL_free(ssl);
+		ssl = nullptr;
+	}
 
 #ifdef _WIN32
 	int result = shutdown(m_socket, SD_SEND);
@@ -312,7 +320,11 @@ int TCPSocket::Shutdown()
 int TCPSocket::Close()
 {
 	// Free OpenSSL data
-	SSL_free(ssl);
+	if (ssl != nullptr)
+	{
+		SSL_free(ssl);
+		ssl = nullptr;
+	}
 
 #ifdef _WIN32
 
@@ -336,10 +348,10 @@ void TCPSocket::TLSSetup(const char* hostname)
 	OpenSSLManager::SetCertVerificationHostname(ssl, hostname);
 }
 
-void TCPSocket::TLSPerformHandshake()
+int TCPSocket::TLSPerformHandshake()
 {
 	int ret;
-
+	bool success = true;
 	// Perform the handshake
 	while ((ret = SSL_connect(ssl)) != 1)
 	{
@@ -349,14 +361,35 @@ void TCPSocket::TLSPerformHandshake()
 		if (err == SSL_ERROR_WANT_READ || err == SSL_ERROR_WANT_WRITE)
 			continue;
 
+		if (err == SSL_ERROR_WANT_CONNECT || err == SSL_ERROR_WANT_ACCEPT)
+			continue;
+
+		if (err == SSL_ERROR_ZERO_RETURN)
+		{
+			LOG_INFO("TLS connection closed by peer during handshake.");
+			success = false;
+			break;
+		}
+
+		if (err == SSL_ERROR_SYSCALL)
+		{
+			LOG_ERROR("System call error during TLS handshake. Ret: %d.", ret);
+			success = false;
+			break;
+		}
+
 		// Otherwise, we got an error
 		LOG_ERROR("TLSPerformHandshake failed!");
 		if (err == SSL_ERROR_SSL)
 		{
 			if (SSL_get_verify_result(ssl) != X509_V_OK)
 				LOG_ERROR("Verify error: %s\n", X509_verify_cert_error_string(SSL_get_verify_result(ssl)));
+
+			success = false;
 		}
+		break;
 	}
 
 	// Handshake performed!
+	return (success) ? 1 : 0;
 }

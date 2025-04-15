@@ -88,7 +88,7 @@ public:
 
 	// OpenSSL
 	void TLSSetup(const char* hostname);
-	void TLSPerformHandshake();
+	int TLSPerformHandshake();
 };
 
 #endif
