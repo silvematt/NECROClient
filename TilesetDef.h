@@ -2,6 +2,9 @@
 #define NECROTILEDEF_H
 
 #include "Image.h"
+#include "Logger.h"
+#include "ConsoleLogger.h"
+#include "FileLogger.h"
 
 // TilesetDefs folder and extension
 #define TILESET_DEFS_FOLDER "Data/maps/tiledefs/"
@@ -87,7 +90,7 @@ inline std::pair<int, int> TilesetDef::GetResourceEndMap(int indx)
 	if (indx < tiles.size())
 		return tiles[indx];
 
-	SDL_Log("Warning! Accessing TileDef '%s' resources_end_map was out of bound!", name.c_str());
+	LOG_WARNING("Warning! Accessing TileDef '%s' resources_end_map was out of bound!", name.c_str());
 
 	return std::make_pair<int, int>(0, 0);
 }
@@ -97,7 +100,7 @@ inline std::pair<int, int> TilesetDef::GetTile(int indx)
 	if (indx < tiles.size())
 		return tiles[indx];
 
-	SDL_Log("Warning! Accessing TileDef '%s' resources_end_map was out of bound!", name.c_str());
+	LOG_WARNING("Warning! Accessing TileDef '%s' resources_end_map was out of bound!", name.c_str());
 
 	return std::make_pair<int, int>(0, 0);
 }
@@ -109,7 +112,7 @@ inline int TilesetDef::GetResourceIndexFromID(int ID)
 {
 	if (!loaded)
 	{
-		SDL_Log("Warning! Called GetResourceIndexFromID on TileDef: '%s' but it was not loaded!", name.c_str());
+		LOG_WARNING("Warning! Called GetResourceIndexFromID on TileDef: '%s' but it was not loaded!", name.c_str());
 		return -1;
 	}
 

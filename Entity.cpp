@@ -239,9 +239,9 @@ void Entity::Draw()
 		}
 		else
 		{
-			Image::Tileset tset = img->GetTileset();
-			SDL_Rect srcRect = { tilesetXOff * tset.tileWidth, tilesetYOff * tset.tileHeight, tset.tileWidth, tset.tileHeight };
-			SDL_Rect dstRect = { static_cast<int>(isoPos.x), static_cast<int>(isoPos.y), tset.tileWidth, tset.tileHeight };
+			Image::Tileset* tset = img->GetTileset();
+			SDL_Rect srcRect = { tilesetXOff * tset->tileWidth, tilesetYOff * tset->tileHeight, tset->tileWidth, tset->tileHeight };
+			SDL_Rect dstRect = { static_cast<int>(isoPos.x), static_cast<int>(isoPos.y), tset->tileWidth, tset->tileHeight };
 			occlusionRect = dstRect;
 
 			occlusionRect.w -= occlModifierX;

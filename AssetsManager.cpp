@@ -76,7 +76,7 @@ bool NECROAssetsManager::LoadImageAsset(const std::string& filename, int xOffset
 	Image img(LoadSDLTexture(fullPath.c_str()), xOffset, yOffset);
 	if (img.GetSrc() != NULL)
 	{
-		images.insert({ shortname.empty() ? filename : shortname, img });
+		images.insert({ shortname.empty() ? filename : shortname, std::move(img) });
 		return true;
 	}
 
@@ -94,7 +94,7 @@ bool NECROAssetsManager::LoadTilesetImage(const std::string& filename, int xOffs
 	Image img(LoadSDLTexture(fullPath.c_str()), xOffset, yOffset, tWidth, tHeight, tNumX, tNumY);
 	if (img.GetSrc() != NULL)
 	{
-		images.insert({ shortname.empty() ? filename : shortname, img });
+		images.insert({ shortname.empty() ? filename : shortname, std::move(img) });
 		return true;
 	}
 
@@ -113,7 +113,7 @@ bool NECROAssetsManager::LoadImageWithDefinition(const std::string& filename, co
 	Image img(LoadSDLTexture(fullPath.c_str()), filename);
 	if (img.GetSrc() != NULL)
 	{
-		images.insert({ shortname.empty() ? filename : shortname, img });
+		images.insert({ shortname.empty() ? filename : shortname, std::move(img) });
 		return true;
 	}
 
@@ -134,7 +134,7 @@ bool NECROAssetsManager::LoadFont(const std::string& filename, int ptsize, const
 
 	if (font != nullptr)
 	{
-		fonts.insert({ shortname.empty() ? filename : shortname, font });
+		fonts.insert({ shortname.empty() ? filename : shortname, std::move(font) });
 		return true;
 	}
 	else
@@ -156,7 +156,7 @@ bool NECROAssetsManager::LoadAnimator(const std::string & filename, const std::s
 	Animator a; // animators.insert makes a copy, that's why we can define this here as a local member
 	if (a.LoadFromFile(fullPath))
 	{
-		animators.insert({ shortname.empty() ? filename : shortname, a });
+		animators.insert({ shortname.empty() ? filename : shortname, std::move(a) });
 		return true;
 	}
 
@@ -174,7 +174,7 @@ bool NECROAssetsManager::LoadPrefab(const std::string& filename)
 	Prefab p;
 	if (p.LoadFromFile(fullPath))
 	{
-		prefabs.insert({ p.GetName(), p });
+		prefabs.insert({ p.GetName(), std::move(p) });
 		return true;
 	}
 
@@ -297,7 +297,7 @@ SDL_Texture* NECROAssetsManager::LoadSDLTexture(const char* filename)
 	}
 	else
 	{
-		SDL_LogError(SDL_LOG_CATEGORY_ERROR, "NECROAssetsManager: Failed to LoadImage(%s)\n", filename);
+		LOG_ERROR("NECROAssetsManager: Failed to LoadImage(%s)", filename);
 		return NULL;
 	}
 }

@@ -78,14 +78,19 @@ bool TilesetDef::LoadFromFile(const std::string& filename)
 					resources.push_back(img);
 
 					// Load the tiles
-					Image::Tileset t = img->GetTileset();
-					for(int y = 0; y < t.tileYNum; y++)
-						for (int x = 0; x < t.tileXNum; x++)
-						{
-							tiles.push_back(std::make_pair(x, y));
-							curID++;
-						}
-
+					if (img->IsTileset())
+					{
+						Image::Tileset* t = img->GetTileset();
+						for (int y = 0; y < t->tileYNum; y++)
+							for (int x = 0; x < t->tileXNum; x++)
+							{
+								tiles.push_back(std::make_pair(x, y));
+								curID++;
+							}
+					}
+					else
+						LOG_WARNING("While loading the Tiledef '" + filename + "', a tileset named '" + curValStr.c_str() + "' was to be loaded, but IT IS NOT defined as a tileset in its definition file (or the definition file is missing). Skipping it.\nThis will cause a Resource ID mismatch.");
+					
 					// Keep end-map updated
 					resourceEndMap.push_back(std::make_pair(curTilesetIndx, curID-1));
 				}

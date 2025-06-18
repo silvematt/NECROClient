@@ -3,6 +3,7 @@
 
 #include "SDL.h"
 #include "Utility.h"
+#include <memory>
 
 #include <fstream>
 
@@ -38,7 +39,7 @@ private:
 									// If the 'tree.png' is 64x64, it should be drawn with a y offset of -32 (to draw the bottom of the tree correctly)
 
 	bool isTileset;
-	Tileset tileset;
+	std::shared_ptr<Tileset> tileset;
 public:
 	Image(SDL_Texture* tex, int xOff, int yOff);
 	Image(SDL_Texture* tex, int xOff, int yOff, int tWidth, int tHeight, int tNumX, int tNumY);
@@ -52,7 +53,7 @@ public:
 	int							GetYOffset() const;
 
 	bool						IsTileset() const;
-	Tileset						GetTileset() const;
+	Tileset*					GetTileset() const;
 
 	int							GetTilesetWidth() const; // shortcut
 	int							GetTilesetHeight() const; // shortcut
@@ -74,11 +75,6 @@ inline Image::Image(SDL_Texture* tex, int xOff, int yOff) :
 	rect = { 0, 0, width, height };
 
 	isTileset = false;
-
-	tileset.tileWidth = 0;
-	tileset.tileHeight = 0;
-	tileset.tileXNum = 0;
-	tileset.tileYNum = 0;
 }
 
 //-------------------------------------------------------
@@ -96,10 +92,12 @@ inline Image::Image(SDL_Texture* tex, int xOff, int yOff, int tWidth, int tHeigh
 
 	isTileset = true;
 
-	tileset.tileWidth = tWidth;
-	tileset.tileHeight = tHeight;
-	tileset.tileXNum = tNumX;
-	tileset.tileYNum = tNumY;
+	tileset = std::make_shared<Tileset>();
+
+	tileset->tileWidth = tWidth;
+	tileset->tileHeight = tHeight;
+	tileset->tileXNum = tNumX;
+	tileset->tileYNum = tNumY;
 }
 
 //--------------------------------------------------------
@@ -155,29 +153,32 @@ inline Image::Image(SDL_Texture* tex, const std::string& fileDefinition) : Image
 
 		if (isTileset)
 		{
+			// Make the tileset data now that is needed
+			tileset = std::make_shared<Tileset>();
+
 			// tWidth
 			std::getline(stream, curLine);
 			curValStr = curLine.substr(curLine.find("=") + 2); // key = value;
 			curValStr = curValStr.substr(0, curValStr.find(";"));
-			tileset.tileWidth = Utility::TryParseInt(curValStr);
+			tileset->tileWidth = Utility::TryParseInt(curValStr);
 
 			// tHeight
 			std::getline(stream, curLine);
 			curValStr = curLine.substr(curLine.find("=") + 2); // key = value;
 			curValStr = curValStr.substr(0, curValStr.find(";"));
-			tileset.tileHeight = Utility::TryParseInt(curValStr);
+			tileset->tileHeight = Utility::TryParseInt(curValStr);
 
 			// tileXNum
 			std::getline(stream, curLine);
 			curValStr = curLine.substr(curLine.find("=") + 2); // key = value;
 			curValStr = curValStr.substr(0, curValStr.find(";"));
-			tileset.tileXNum = Utility::TryParseInt(curValStr);
+			tileset->tileXNum = Utility::TryParseInt(curValStr);
 
 			// tileYNum
 			std::getline(stream, curLine);
 			curValStr = curLine.substr(curLine.find("=") + 2); // key = value;
 			curValStr = curValStr.substr(0, curValStr.find(";"));
-			tileset.tileYNum = Utility::TryParseInt(curValStr);
+			tileset->tileYNum = Utility::TryParseInt(curValStr);
 		}
 
 		// ifstream is closed by destructor
@@ -188,10 +189,10 @@ inline Image::Image(SDL_Texture* tex, const std::string& fileDefinition) : Image
 inline SDL_Rect Image::TilesetGetSubframeAt(int x, int y)
 {
 	SDL_Rect r;
-	r.x = x * tileset.tileWidth;
-	r.y = y * tileset.tileHeight;
-	r.w = tileset.tileWidth;
-	r.h = tileset.tileHeight;
+	r.x = x * tileset->tileWidth;
+	r.y = y * tileset->tileHeight;
+	r.w = tileset->tileWidth;
+	r.h = tileset->tileHeight;
 	return r;
 }
 
@@ -230,19 +231,28 @@ inline bool Image::IsTileset() const
 	return isTileset;
 }
 
-inline Image::Tileset Image::GetTileset() const
+inline Image::Tileset* Image::GetTileset() const
 {
-	return tileset;
+	if (IsTileset())
+		return tileset.get();
+	else
+		return nullptr;
 }
 
 inline int Image::GetTilesetHeight() const
 {
-	return tileset.tileHeight;
+	if (IsTileset())
+		return tileset->tileHeight;
+	else
+		return 0;
 }
 
 inline int Image::GetTilesetWidth() const
 {
-	return tileset.tileWidth;
+	if (IsTileset())
+		return tileset->tileWidth;
+	else
+		return 0;
 }
 
 #endif

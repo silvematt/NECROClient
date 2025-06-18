@@ -47,7 +47,7 @@ void Animator::AddState(const std::string& sName, Image* sImg, float sSpeed)
 void Animator::Update()
 {
     if (owner && curStatePlaying && curStatePlaying->GetImg()->IsTileset())
-        owner->tilesetXOff = ((int)floor((SDL_GetTicks() - animTime) / curStatePlaying->GetSpeed()) % curStatePlaying->GetImg()->GetTileset().tileXNum);
+        owner->tilesetXOff = ((int)floor((SDL_GetTicks() - animTime) / curStatePlaying->GetSpeed()) % curStatePlaying->GetImg()->GetTileset()->tileXNum);
 }
 
 //------------------------------------------------------------------
