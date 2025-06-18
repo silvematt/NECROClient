@@ -217,8 +217,23 @@ void Entity::Draw()
 			occlusionRect.x += (occlModifierX / 2);
 			occlusionRect.y += (occlModifierY / 2);
 
+			// Draw the occlusion debug on the Debug Render Target
 			if (DEBUG_OCCLUSION_ENABLED && (TestFlag(FCanOccludePlayer) || ID == Player::ENT_ID))
-				engine.GetRenderer().DrawRect(&occlusionRect, colorYellow);
+			{
+				// Set debug target
+				auto previousTarget = engine.GetRenderer().GetCurrentERenderTargetVal();
+				engine.GetRenderer().SetRenderTarget(NECRORenderer::ERenderTargets::DEBUG_TARGET);
+
+				// Adjust for zoom
+				float zoomLevel = engine.GetGame().GetMainCamera()->GetZoom();
+				engine.GetRenderer().SetScale(zoomLevel, zoomLevel); // TODO: this should not be here (probably in SetZoom with the main RenderTarget scale), we need to set the scale of the renderer one time and not for each debug draw
+
+				// Draw
+				engine.GetRenderer().DrawRect(&occlusionRect, colorRed);
+				
+				// Restore previous target
+				engine.GetRenderer().SetRenderTarget(previousTarget);
+			}
 
 			engine.GetRenderer().DrawImageDirectly(img->GetSrc(), NULL, &dstRect);
 		}
@@ -234,8 +249,23 @@ void Entity::Draw()
 			occlusionRect.x += (occlModifierX / 2);
 			occlusionRect.y += (occlModifierY / 2);
 
+			// Draw the occlusion debug on the Debug Render Target
 			if (DEBUG_OCCLUSION_ENABLED && (TestFlag(FCanOccludePlayer) || ID == Player::ENT_ID))
+			{
+				// Set debug target
+				auto previousTarget = engine.GetRenderer().GetCurrentERenderTargetVal();
+				engine.GetRenderer().SetRenderTarget(NECRORenderer::ERenderTargets::DEBUG_TARGET);
+
+				// Adjust for zoom
+				float zoomLevel = engine.GetGame().GetMainCamera()->GetZoom();
+				engine.GetRenderer().SetScale(zoomLevel, zoomLevel); // TODO: this should not be here (probably in SetZoom with the main RenderTarget scale), we need to set the scale of the renderer one time and not for each debug draw
+
+				// Draw
 				engine.GetRenderer().DrawRect(&occlusionRect, colorYellow);
+
+				// Restore previous target
+				engine.GetRenderer().SetRenderTarget(previousTarget);
+			}
 
 			engine.GetRenderer().DrawImageDirectly(img->GetSrc(), &srcRect, &dstRect);
 		}
