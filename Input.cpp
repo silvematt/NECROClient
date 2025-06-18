@@ -94,6 +94,12 @@ void NECROInput::Handle()
 						SDL_free(tempText);
 					}
 				}
+
+				if (e.key.keysym.sym == SDLK_F12)
+				{
+					engine.GetRenderer().SetExportThisFrame();
+					LOG_INFO("Took a screenshot of render targets and final image, saved in the.exe location");
+				}
 				break;
 		}
 	}

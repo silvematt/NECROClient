@@ -3,6 +3,7 @@
 #include <cmath>
 
 #include "Math.h"
+#include <SDL_image.h>
 
 // Define color shortcuts
 const SDL_Color colorBlack = { 0, 0, 0, SDL_ALPHA_OPAQUE };
@@ -43,6 +44,8 @@ int NECRORenderer::Init()
 
 	SetRenderTarget(ERenderTargets::MAIN_TARGET);
 
+	exportThisFrame = false;
+
 	return 0;
 }
 
@@ -73,11 +76,23 @@ void NECRORenderer::Show()
 //-----------------------------------------------------------------------------
 void NECRORenderer::Update()
 {
+	// If there was a cmd issued to export render targe textures separately, we need to do it now before we start overlapping them
+	if (exportThisFrame)
+		ExportTargetsSeparate();
+
+	// Actual NECRORenderer::Update
 	SetRenderTarget(MAIN_TARGET);
 
 	// Copy the other targets on the (default) mainTarget
 	SDL_RenderCopy(innerRenderer, overlayTarget.GetTargetTexture(), NULL, NULL);
 	SDL_RenderCopy(innerRenderer, debugTarget.GetTargetTexture(), NULL, NULL);
+
+	// Export final image as well
+	if (exportThisFrame)
+	{
+		ExportComposedFinalImage();
+		exportThisFrame = false;
+	}
 }
 
 //----------------------------------------------
@@ -214,4 +229,84 @@ void NECRORenderer::SetRenderTarget(ERenderTargets trg)
 	}
 
 	curERenTarget = trg;
+}
+
+
+//------------------------------------------------
+// Saves texture to disk, using IMG_SavePNG
+//------------------------------------------------
+void NECRORenderer::SaveTexture(const char* file_name, SDL_Renderer* renderer, SDL_Texture* texture)
+{
+	// Backup current render target
+	auto previousTarget = NECRORenderer::GetCurrentERenderTargetVal();
+	
+	SDL_Texture* target = SDL_GetRenderTarget(renderer);
+
+	// Set texture as render target
+	if (SDL_SetRenderTarget(renderer, texture) != 0) 
+	{
+		SDL_Log("Failed to set render target: %s", SDL_GetError());
+		return;
+	}
+
+	int width, height;
+
+	if (texture != NULL)
+	{
+		if (SDL_QueryTexture(texture, NULL, NULL, &width, &height) != 0)
+		{
+			SDL_Log("Failed to query texture: %s", SDL_GetError());
+			SDL_SetRenderTarget(renderer, target);
+			return;
+		}
+	}
+	else // if texture is null, then it's the final composed image
+	{
+		width = SCREEN_WIDTH;
+		height = SCREEN_HEIGHT;
+	}
+
+	SDL_Surface* surface = SDL_CreateRGBSurface(0, width, height, 32, 0xFF000000, 0x00FF0000, 0x0000FF00, 0x000000FF);
+	if (!surface) 
+	{
+		SDL_Log("Failed to create surface: %s", SDL_GetError());
+		SDL_SetRenderTarget(renderer, target);
+		return;
+	}
+
+	if (SDL_RenderReadPixels(renderer, NULL, surface->format->format, surface->pixels, surface->pitch) != 0) 
+	{
+		SDL_Log("Failed to read pixels: %s", SDL_GetError());
+		SDL_FreeSurface(surface);
+		SDL_SetRenderTarget(renderer, target);
+		return;
+	}
+
+	if (IMG_SavePNG(surface, file_name) != 0)
+		SDL_Log("Failed to save PNG: %s", SDL_GetError());
+
+	SDL_FreeSurface(surface);
+
+	// Restore previous render target
+	SetRenderTarget(previousTarget);
+}
+
+
+//-----------------------------------------------------------------------------------------------
+// Exports the render targets as separate images, needs to be done before Renderer.Update()
+// so before the main target starts to get layered with the others
+//-----------------------------------------------------------------------------------------------
+void NECRORenderer::ExportTargetsSeparate()
+{
+	SaveTexture("main.png", innerRenderer, NULL);
+	SaveTexture("overlay.png", innerRenderer, overlayTarget.GetTargetTexture());
+	SaveTexture("debug.png", innerRenderer, debugTarget.GetTargetTexture());
+}
+
+//-----------------------------------------------------------------------------------------------
+// Exports the final composed image, in order to work, this needs to be done AFTER Renderer.Update()
+//-----------------------------------------------------------------------------------------------
+void NECRORenderer::ExportComposedFinalImage()
+{
+	SaveTexture("final.png", innerRenderer, NULL);
 }

@@ -42,6 +42,9 @@ private:
 	RenderTarget*	curTarget;
 	ERenderTargets	curERenTarget; // current enum value
 
+	bool			exportThisFrame = false; // if true, in the next renderer.Update render targets and final image will be exported as .png
+	void			SaveTexture(const char* file_name, SDL_Renderer* renderer, SDL_Texture* texture);
+
 public:
 
 	SDL_Window*		const	GetWindow() const;
@@ -65,6 +68,10 @@ public:
 	void					DrawRect(SDL_Rect* r, SDL_Color c);
 
 	void					SetScale(float scaleX, float scaleY);
+
+	void					SetExportThisFrame() { exportThisFrame = true; };
+	void					ExportTargetsSeparate();
+	void					ExportComposedFinalImage();
 };
 
 // Color shortcuts
