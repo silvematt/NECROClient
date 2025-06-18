@@ -4,14 +4,11 @@
 #include "SDL.h"
 
 #include "Game.h"
-
 #include "Input.h"
 #include "AssetsManager.h"
 #include "Renderer.h"
 #include "Console.h"
-
 #include "Math.h"
-
 #include "NetworkManager.h"
 
 constexpr uint8_t CLIENT_VERSION_MAJOR = 1;

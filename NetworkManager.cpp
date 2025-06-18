@@ -185,8 +185,8 @@ int NECRONetManager::CheckIfAuthConnected()
 		}
 		else
 		{
-			LOG_OK("Connection established successfully!");
-			engine.GetConsole().Log("Connection established successfully!");
+			LOG_OK("Connected to the server!");
+			engine.GetConsole().Log("Connected to the server!");
 
 			// Switch from POLLOUT to POLLIN to get incoming data
 			poll_fds[0].events = POLLIN;

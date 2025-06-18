@@ -13,7 +13,7 @@ int NECROClient::Init()
 	SDL_Log("Initializing engine...\n");
 
 	// Initialize SDL
-	if (SDL_Init(SDL_INIT_EVERYTHING) == -1)
+	if (SDL_Init(SDL_INIT_EVERYTHING) != 0)
 	{
 		SDL_LogError(SDL_LOG_CATEGORY_ERROR, "SDL_Init Error: %s\n", SDL_GetError());
 		return -1;

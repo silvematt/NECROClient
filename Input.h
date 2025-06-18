@@ -33,9 +33,11 @@ public:
 	int				GetMouseScroll() const;
 	int				GetMouseHeld(SDL_Scancode button) const;
 	int				GetMouseDown(SDL_Scancode button) const;
+	int				GetMouseUp(SDL_Scancode button) const;
 	Vector2			GetMouseMotionThisFrame();
 	int				GetKeyHeld(SDL_Scancode key) const;
 	int				GetKeyDown(SDL_Scancode key) const;
+	int				GetKeyUp(SDL_Scancode key) const;
 	int				Init();
 	void			Handle();
 	void			SetCurInputField(InputField* i);
