@@ -19,7 +19,7 @@ void World::InitializeWorld()
 	// Add a player, just for testing (ID = 0)
 	std::unique_ptr<Player> p(new Player());
 	p->SetImg(engine.GetAssetsManager().GetImage("player_war_idle.png"));
-	p->pos = Vector2(static_cast<float>(0 * CELL_WIDTH), static_cast<float>(0 * CELL_HEIGHT));
+	p->pos = Vector2(static_cast<float>(22 * CELL_WIDTH), static_cast<float>(23 * CELL_HEIGHT));
 	p->zPos = 100.01f; // Player Z placement is controlled by zPos, while for static entities (map-defined) we use layers
 	p->SetLayer(0);
 	p->Init();
