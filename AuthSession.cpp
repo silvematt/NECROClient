@@ -118,7 +118,7 @@ void AuthSession::OnConnectedCallback()
 
 	NetworkMessage message(greetPacket);
 	QueuePacket(message);
-	Send(); // @TOCHANGE this could not work if the socket is not writeable
+    //Send(); packets are sent by checking POLLOUT events in the socket, and we check for POLLOUT events only if there are packets written in the outQueue
 }
 
 void AuthSession::ReadCallback()
@@ -207,7 +207,7 @@ bool AuthSession::HandlePacketAuthLoginGatherInfoResponse()
 
         NetworkMessage m(packet);
         QueuePacket(m);
-        Send(); // @TOCHANGE this could not work if the socket is not writeable
+        //Send(); packets are sent by checking POLLOUT events in the socket, and we check for POLLOUT events only if there are packets written in the outQueue
 
     }
     else if (pckData->error == AuthResults::AUTH_FAILED_USERNAME_IN_USE)

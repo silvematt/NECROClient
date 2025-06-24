@@ -64,16 +64,18 @@ int NECRONetManager::ConnectToAuthServer()
 	pfd.events = POLLOUT;
 	pfd.revents = 0;
 	poll_fds.push_back(pfd);
+	authSocket->SetPfd(&poll_fds[poll_fds.size() - 1]);
 
 	return 0;
 }
 
 int NECRONetManager::NetworkUpdate()
 {
+	// Is there anything to check?
 	if (poll_fds.size() <= 0)
 		return 0;
 
-	static int timeout = 0;
+	static int timeout = 0; // waits 0 ms for the poll: try get data now or try next time
 
 	int res = WSAPoll(poll_fds.data(), poll_fds.size(), timeout);
 
@@ -188,7 +190,7 @@ int NECRONetManager::CheckIfAuthConnected()
 			LOG_OK("Connected to the server!");
 			engine.GetConsole().Log("Connected to the server!");
 
-			// Switch from POLLOUT to POLLIN to get incoming data
+			// Switch from POLLOUT to POLLIN to get incoming data, POLLOUT will also be checked but only if there are packets to send in the outQueue
 			poll_fds[0].events = POLLIN;
 
 			return OnConnectedToAuthServer();
@@ -249,15 +251,31 @@ int NECRONetManager::CheckForIncomingData()
 		return -1;
 	}
 
-	else if (poll_fds[0].revents & POLLIN)
+	else
 	{
-		int r = authSocket->Receive();
-
-		// If receive failed
-		if (r == -1)
+		// If the socket is writable AND we're looking for POLLOUT events as well (meaning there's something on the outQueue), send it!
+		if (poll_fds[0].revents & POLLOUT)
 		{
-			LOG_ERROR("Client socket error/disconnection detected.");
-			return -1;
+			int r = authSocket->Send();
+
+			// If receive failed
+			if (r < 0)
+			{
+				LOG_ERROR("Client socket error/disconnection detected.");
+				return -1;
+			}
+		}
+
+		if (poll_fds[0].revents & POLLIN)
+		{
+			int r = authSocket->Receive();
+
+			// If receive failed
+			if (r < 0)
+			{
+				LOG_ERROR("Client socket error/disconnection detected.");
+				return -1;
+			}
 		}
 	}
 

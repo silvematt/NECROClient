@@ -117,6 +117,10 @@ int TCPSocket::Connect(const SocketAddress& addr)
 void TCPSocket::QueuePacket(NetworkMessage& pckt)
 {
 	outQueue.push(pckt);
+
+	// Update pfd events
+	if (pfd)
+		pfd->events = POLLIN | (HasPendingData() ? POLLOUT : 0);
 }
 
 int TCPSocket::Send()
@@ -170,6 +174,10 @@ int TCPSocket::Send()
 		outQueue.pop(); // if whole packet was sent, pop it from the queue, otherwise we had a short send and will come back later
 
 	// SendCallback(); needed?
+
+	// Update pfd events
+	if (pfd)
+		pfd->events = POLLIN | (HasPendingData() ? POLLOUT : 0);
 
 	return bytesSent;
 }
