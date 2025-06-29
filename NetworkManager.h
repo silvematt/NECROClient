@@ -5,12 +5,14 @@
 #include "SocketUtility.h"
 #include <array>
 
+#include "AES.h"
+
 struct NetData
 {
 	std::string username;
 	std::string ipAddress;
 
-	std::array<uint8_t, TEMP_AUTH_SESSION_KEY_LENGTH> sessionKey;
+	std::array<uint8_t, AES_128_KEY_SIZE> sessionKey;
 };
 
 class NECRONetManager

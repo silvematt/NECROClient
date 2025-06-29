@@ -8,6 +8,9 @@
 #include <sstream>
 #include <iomanip>
 
+#include "AES.h"
+
+
 #pragma pack(push, 1)
 
 // -------------------------------------------------------------------------------------------------------
@@ -61,9 +64,9 @@ struct CPacketAuthLoginProof
     uint8_t		error;
     uint16_t    size;
 
-    uint8_t     sessionKey[TEMP_AUTH_SESSION_KEY_LENGTH];
+    uint8_t     sessionKey[AES_128_KEY_SIZE];
 };
-static_assert(sizeof(CPacketAuthLoginProof) == (1 + 1 + 2 + TEMP_AUTH_SESSION_KEY_LENGTH), "CPacketAuthLoginProof size assert failed!");
+static_assert(sizeof(CPacketAuthLoginProof) == (1 + 1 + 2 + AES_128_KEY_SIZE), "CPacketAuthLoginProof size assert failed!");
 #define C_PACKET_AUTH_LOGIN_PROOF_INITIAL_SIZE 4 // this represent the fixed portion of this packet, which needs to be read to at least identify the packet
 
 
@@ -250,7 +253,7 @@ bool AuthSession::HandlePacketAuthLoginProofResponse()
 
         // Convert sessionKey to hex string in order to print it
         std::ostringstream sessionStrStream;
-        for (int i = 0; i < 40; ++i)
+        for (int i = 0; i < AES_128_KEY_SIZE; ++i)
         {
             sessionStrStream << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(netManager.GetData().sessionKey[i]);
         }

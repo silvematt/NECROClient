@@ -171,6 +171,7 @@
     <ClCompile Include="World.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AES.h" />
     <ClInclude Include="AI.h" />
     <ClInclude Include="AIBehavior.h" />
     <ClInclude Include="Animator.h" />

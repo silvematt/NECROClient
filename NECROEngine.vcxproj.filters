@@ -63,6 +63,9 @@
     <Filter Include="Engine\OpenSSL">
       <UniqueIdentifier>{8681a0d3-dc55-4f74-861f-4b1f22291f0d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\Encryption">
+      <UniqueIdentifier>{2635d2e4-851f-4938-ae77-ab8729a23f77}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -285,6 +288,9 @@
     </ClInclude>
     <ClInclude Include="OpenSSLManager.h">
       <Filter>Engine\OpenSSL</Filter>
+    </ClInclude>
+    <ClInclude Include="AES.h">
+      <Filter>Engine\Encryption</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -4,8 +4,6 @@
 #include "TCPSocket.h"
 #include <unordered_map>
 
-#define TEMP_AUTH_SESSION_KEY_LENGTH 40 // for developing, we're avoiding cyptography, we'll just have a session key client and server can synch to
-
 // Status of the current socket
 enum AuthStatus
 {
