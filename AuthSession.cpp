@@ -52,9 +52,9 @@ struct SPacketAuthLoginProof
     uint8_t		id;
     uint8_t		error;
 
-    uint8_t     key; // key needs to be 242 in order to succeed login
+    uint32_t    clientsIVRandomPrefix;
 };
-static_assert(sizeof(SPacketAuthLoginProof) == (1 + 1 + 1), "SPacketAuthLoginProof size assert failed!");
+static_assert(sizeof(SPacketAuthLoginProof) == (1 + 1 + 4), "SPacketAuthLoginProof size assert failed!");
 
 
 // Login Proof doesn't exist for now, this is just a dull packet
@@ -194,6 +194,7 @@ bool AuthSession::HandlePacketAuthLoginGatherInfoResponse()
 {
     NECROConsole& c = engine.GetConsole();
     CPacketAuthLoginGatherInfo* pckData = reinterpret_cast<CPacketAuthLoginGatherInfo*>(inBuffer.GetBasePointer());
+    NECRONetManager& net = engine.GetNetManager();
 
     if (pckData->error == AuthResults::AUTH_SUCCESS)
     {
@@ -201,12 +202,20 @@ bool AuthSession::HandlePacketAuthLoginGatherInfoResponse()
         c.Log("Gather info succeded...");
         status = STATUS_LOGIN_ATTEMPT;
 
-        // Here you would send login proof to the server, after having received hashes in the CPacketAuthLoginGatherInfo packet above, for now let's just do a dull packet
+        // Here you would send login proof to the server, after having received hashes in the CPacketAuthLoginGatherInfo packet above
+        // Send the random IV prefix so the server can make sure it's not the same as the client
         Packet packet;
 
         packet << uint8_t(AuthPacketIDs::PCKTID_AUTH_LOGIN_ATTEMPT);
         packet << uint8_t(LoginProofResults::LOGIN_SUCCESS);
-        packet << uint8_t(242); // write the dumb pass key
+        
+        // Randomize and send the prefix
+        net.GetData().iv.RandomizePrefix();
+        net.GetData().iv.ResetCounter();
+
+        packet << uint32_t(net.GetData().iv.prefix);
+
+        std::cout << "My IV Prefix: " << net.GetData().iv.prefix << std::endl;
 
         NetworkMessage m(packet);
         QueuePacket(m);

@@ -13,6 +13,7 @@ struct NetData
 	std::string ipAddress;
 
 	std::array<uint8_t, AES_128_KEY_SIZE> sessionKey;
+	NECROAES::IV iv;
 };
 
 class NECRONetManager

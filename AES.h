@@ -13,6 +13,49 @@
 
 class NECROAES
 {
+
+public:
+	// GCM IV
+	struct IV
+	{
+		uint32_t prefix;	// 4 bytes random prefix
+		uint64_t counter;	// 8 bytes counter
+
+		bool randomized = false;
+
+		IV()
+		{
+			RandomizePrefix();
+			ResetCounter();
+			randomized = false;
+		}
+
+		void RandomizePrefix()
+		{
+			RAND_bytes(reinterpret_cast<unsigned char*>(&prefix), sizeof(prefix));
+			randomized = true;
+		}
+
+		void ResetCounter()
+		{
+			counter = 0;
+		}
+
+		void IncrementCounter()
+		{
+			counter++;
+		}
+
+		void ToByteArray(std::array<uint8_t, GCM_IV_SIZE>& out)
+		{
+			// Copy prefix (4 bytes)
+			std::memcpy(out.data(), &prefix, sizeof(prefix));
+
+			// Copy counter (8 bytes) after prefix
+			std::memcpy(out.data() + sizeof(prefix), &counter, sizeof(counter));
+		}
+	};
+
 private:
 	EVP_CIPHER_CTX* ctx;
 
