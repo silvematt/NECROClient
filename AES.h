@@ -21,19 +21,15 @@ public:
 		uint32_t prefix;	// 4 bytes random prefix
 		uint64_t counter;	// 8 bytes counter
 
-		bool randomized = false;
-
 		IV()
 		{
 			RandomizePrefix();
 			ResetCounter();
-			randomized = false;
 		}
 
 		void RandomizePrefix()
 		{
 			RAND_bytes(reinterpret_cast<unsigned char*>(&prefix), sizeof(prefix));
-			randomized = true;
 		}
 
 		void ResetCounter()
