@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "Packet.h"
+#include "AES.h"
 
 //-----------------------------------------------------------------------------------------------------------
 // Higher-level view packets, used for Network transmission.
@@ -15,7 +16,9 @@ private:
     // ReadPos in the NetworkMessage can be viewed as "consumed" pos, 
     // if it's > 0 it means we've consumed the data until there, so it's probably a good idea to move the remaining data at beginning of the buffer with CompactData()
 
-    std::vector<uint8_t> data;  // Raw Data
+    std::vector<uint8_t> data;          // Raw Data
+    std::vector<uint8_t> cipherData;    // Data after being encrpyted/decrypted
+    unsigned char tag[GCM_TAG_SIZE];
 
 public:
     // NetworkMessage Constructor
@@ -37,10 +40,21 @@ public:
         Write(p.GetContent(), p.Size());
     }
 
+    //-----------------------------------------------------------------------------------------------------------
+    // Clears data array and write/read pos
+    //-----------------------------------------------------------------------------------------------------------
     void Clear()
     {
         data.clear();
-        wpos = wpos = 0;
+        rpos = wpos = 0;
+    }
+
+    //-----------------------------------------------------------------------------------------------------------
+    // Resets read/write pos without clearing the array, allowing to reuse memory
+    //-----------------------------------------------------------------------------------------------------------
+    void SoftClear()
+    {
+        rpos = wpos = 0;
     }
 
     size_t  Size()  const { return data.size(); }
@@ -54,6 +68,71 @@ public:
     // Useful information
     size_t GetActiveSize() const { return wpos - rpos; }
     size_t GetRemainingSpace() const { return data.size() - wpos; }
+
+    // Encrpytion
+    int AESEncrypt(unsigned char* key, NECROAES::IV& iv, unsigned char* aad, int aadLen)
+    {
+        // Write the iv as bytes
+        std::array<uint8_t, GCM_IV_SIZE> ivBytes;
+        iv.ToByteArray(ivBytes);
+        iv.IncrementCounter(); // increment counter here! So we are sure each encrypt operation increases the counter
+
+        // Transform the data in this message to the encrypted equivalend, format [PCKT_SIZE | IV | TAG | CIPHERTEXT]
+        cipherData.resize(GetActiveSize());  // same as plaintext, since GCM shouldn't expand
+        int ciphertext_len = NECROAES::Encrypt(GetReadPointer(), GetActiveSize(), aad, aadLen, key, ivBytes.data(), GCM_IV_SIZE, cipherData.data(), tag);
+
+        if (ciphertext_len >= 0)
+        {
+            SoftClear();
+
+            uint32_t packetSize = GCM_IV_SIZE + GCM_TAG_SIZE + ciphertext_len;
+            packetSize = htonl(packetSize);
+
+            Write(&packetSize, sizeof(packetSize)); // write the whole packet size as first uint32_t
+            Write(ivBytes.data(), GCM_IV_SIZE);
+            Write(tag, GCM_TAG_SIZE);
+            Write(cipherData.data(), ciphertext_len);
+
+            return ciphertext_len;
+        }
+        else
+            return -1;
+    }
+
+    int AESDecrypt(unsigned char* key, unsigned char* aad, int aadLen)
+    {
+        if (GetActiveSize() < sizeof(uint32_t)) // not enough data to event start decrypting
+            return -1;
+
+        uint32_t packetSize;
+        std::memcpy(&packetSize, GetReadPointer(), sizeof(uint32_t));
+        packetSize = ntohl(packetSize); // Convert from network to host byte order
+
+        if (GetActiveSize() < sizeof(uint32_t) + packetSize)
+            return -1; // not enough data to event start decrypting
+
+        // Read packet [PCKT_SIZE | IV | TAG | CIPHERTEXT]
+        unsigned char* ivPtr = GetReadPointer() + sizeof(packetSize);
+        unsigned char* tagPtr = GetReadPointer() + sizeof(packetSize) + GCM_IV_SIZE;
+        unsigned char* cipherPtr = GetReadPointer() + sizeof(packetSize) + GCM_IV_SIZE + GCM_TAG_SIZE;
+        int cipherTextLen = packetSize - (GCM_IV_SIZE + GCM_TAG_SIZE);
+
+        if (cipherTextLen < 0)
+            return -2; // malformed packet
+
+        // Decrypt
+        cipherData.resize(cipherTextLen);
+        int plainTextLen = NECROAES::Decrypt(cipherPtr, cipherTextLen, aad, aadLen, tagPtr, key, ivPtr, GCM_IV_SIZE, cipherData.data());
+
+        if (plainTextLen < 0)
+            return -3; // decryption failed
+
+        // Replace internal buffer with plaintext
+        SoftClear();
+        Write(cipherData.data(), plainTextLen);
+
+        return plainTextLen;
+    }
 
     //-----------------------------------------------------------------------------------------------------------------
     // When data will be processed by the socket read handler, it will have to call this function to update the rpos
