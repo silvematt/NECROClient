@@ -228,6 +228,12 @@ bool AuthSession::HandlePacketAuthLoginGatherInfoResponse()
         c.Log("Authentication failed. Username is already in use.");
         return false;
     }
+    else if (pckData->error == AuthResults::AUTH_FAILED_UNKNOWN_ACCOUNT)
+    {
+        LOG_ERROR("Authentication failed, username does not exist.");
+        c.Log("Authentication failed, username does not exist.");
+        return false;
+    }
     else if (pckData->error == AuthResults::AUTH_FAILED_WRONG_CLIENT_VERSION)
     {
         LOG_ERROR("Authentication failed, invalid client version.");
