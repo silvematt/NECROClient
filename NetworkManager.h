@@ -10,6 +10,8 @@
 struct NetData
 {
 	std::string username;
+	std::string password;
+
 	std::string ipAddress;
 
 	std::array<uint8_t, AES_128_KEY_SIZE> sessionKey;
@@ -47,6 +49,11 @@ public:
 	void SetNetDataUsername(const std::string& u)
 	{
 		data.username = u;
+	}
+
+	void SetNetDataPassword(const std::string& u)
+	{
+		data.password = u;
 	}
 
 	void SetNetDataIpAddress(const std::string& i)

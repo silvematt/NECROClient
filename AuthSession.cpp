@@ -46,15 +46,21 @@ struct CPacketAuthLoginGatherInfo
 static_assert(sizeof(CPacketAuthLoginGatherInfo) == (1 + 1), "CPacketAuthLoginGatherInfo size assert failed!");
 
 
-// Login Proof doesn't exist for now, this is just a dull packet
 struct SPacketAuthLoginProof
 {
     uint8_t		id;
     uint8_t		error;
+    uint16_t    size;
 
     uint32_t    clientsIVRandomPrefix;
+
+    uint8_t passwordSize;
+    uint8_t password[1];
 };
-static_assert(sizeof(SPacketAuthLoginProof) == (1 + 1 + 4), "SPacketAuthLoginProof size assert failed!");
+static_assert(sizeof(SPacketAuthLoginProof) == (1 + 1 + 2 + 4 + 1 + 1), "SPacketAuthLoginProof size assert failed!");
+#define	MAX_PASSWORD_LENGTH 16-1 // 1 is already in packet password[1] 
+#define S_MAX_ACCEPTED_AUTH_LOGIN_PROOF_SIZE (sizeof(SPacketAuthLoginProof) + MAX_PASSWORD_LENGTH) // 16 is username length
+#define S_PACKET_AUTH_LOGIN_PROOF_INITIAL_SIZE 4 // this represent the fixed portion of this packet, which needs to be read to at least identify the packet
 
 
 // Login Proof doesn't exist for now, this is just a dull packet
@@ -202,18 +208,26 @@ bool AuthSession::HandlePacketAuthLoginGatherInfoResponse()
         c.Log("Gather info succeded...");
         status = STATUS_LOGIN_ATTEMPT;
 
+        uint8_t passwordLength = static_cast<uint8_t>(net.GetData().password.size());;
+
         // Here you would send login proof to the server, after having received hashes in the CPacketAuthLoginGatherInfo packet above
         // Send the random IV prefix so the server can make sure it's not the same as the client
         Packet packet;
 
         packet << uint8_t(AuthPacketIDs::PCKTID_AUTH_LOGIN_ATTEMPT);
         packet << uint8_t(LoginProofResults::LOGIN_SUCCESS);
+        packet << uint16_t(sizeof(SPacketAuthLoginProof) - S_PACKET_AUTH_LOGIN_PROOF_INITIAL_SIZE + passwordLength - 1); // this means that after having read the first S_PACKET_AUTH_LOGIN_PROOF_INITIAL_SIZE bytes, the server will have to wait for sizeof(SPacketAuthLoginProof) - PACKET_AUTH_LOGIN_PROOF_INITIAL_SIZE + passwordLength-1 bytes in order to correctly read this packet
         
         // Randomize and send the prefix
         net.GetData().iv.RandomizePrefix();
         net.GetData().iv.ResetCounter();
 
         packet << uint32_t(net.GetData().iv.prefix);
+
+        packet << passwordLength;
+        packet << net.GetData().password; // string is and should be without null terminator!
+
+        net.GetData().password.clear(); // clear the password from memory after having used it
 
         std::cout << "My IV Prefix: " << net.GetData().iv.prefix << std::endl;
 
@@ -278,7 +292,7 @@ bool AuthSession::HandlePacketAuthLoginProofResponse()
     }
     else //  (pckData->error == LoginProofResults::LOGIN_FAILED)
     {
-        LOG_ERROR("Authentication failed. Server returned LoginProofResults::LOGIN_FAILED..");
+        LOG_ERROR("Authentication failed. Server returned LoginProofResults::LOGIN_FAILED.");
         c.Log("Authentication failed.");
         return false;
     }
