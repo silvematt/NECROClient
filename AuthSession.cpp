@@ -62,8 +62,6 @@ static_assert(sizeof(SPacketAuthLoginProof) == (1 + 1 + 2 + 4 + 1 + 1), "SPacket
 #define S_MAX_ACCEPTED_AUTH_LOGIN_PROOF_SIZE (sizeof(SPacketAuthLoginProof) + MAX_PASSWORD_LENGTH) // 16 is username length
 #define S_PACKET_AUTH_LOGIN_PROOF_INITIAL_SIZE 4 // this represent the fixed portion of this packet, which needs to be read to at least identify the packet
 
-
-// Login Proof doesn't exist for now, this is just a dull packet
 struct CPacketAuthLoginProof
 {
     uint8_t		id;
@@ -71,8 +69,9 @@ struct CPacketAuthLoginProof
     uint16_t    size;
 
     uint8_t     sessionKey[AES_128_KEY_SIZE];
+    uint8_t     greetcode[AES_128_KEY_SIZE];
 };
-static_assert(sizeof(CPacketAuthLoginProof) == (1 + 1 + 2 + AES_128_KEY_SIZE), "CPacketAuthLoginProof size assert failed!");
+static_assert(sizeof(CPacketAuthLoginProof) == (1 + 1 + 2 + AES_128_KEY_SIZE + AES_128_KEY_SIZE), "CPacketAuthLoginProof size assert failed!");
 #define C_PACKET_AUTH_LOGIN_PROOF_INITIAL_SIZE 4 // this represent the fixed portion of this packet, which needs to be read to at least identify the packet
 
 
@@ -288,7 +287,19 @@ bool AuthSession::HandlePacketAuthLoginProofResponse()
         }
         std::string sessionStr = sessionStrStream.str();
 
+        // Save the greetcode in the netmanager data
+        std::copy(std::begin(pckData->greetcode), std::end(pckData->greetcode), std::begin(netManager.GetData().greetcode));
+
+        // Convert greetcode to hex string in order to print it
+        std::ostringstream greetCodeStrStream;
+        for (int i = 0; i < AES_128_KEY_SIZE; ++i)
+        {
+            greetCodeStrStream << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(netManager.GetData().greetcode[i]);
+        }
+        std::string greetStr = greetCodeStrStream.str();
+
         LOG_DEBUG("My session key is: " + sessionStr);
+        LOG_DEBUG("Greetcode is : " + greetStr);
     }
     else //  (pckData->error == LoginProofResults::LOGIN_FAILED)
     {

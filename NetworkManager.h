@@ -15,6 +15,8 @@ struct NetData
 	std::string ipAddress;
 
 	std::array<uint8_t, AES_128_KEY_SIZE> sessionKey;
+	std::array<uint8_t, AES_128_KEY_SIZE> greetcode;
+
 	NECROAES::IV iv;
 };
 
