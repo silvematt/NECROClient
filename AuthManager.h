@@ -1,5 +1,5 @@
-#ifndef NECRO_NETWORK_MANAGER
-#define NECRO_NETWORK_MANAGER
+#ifndef NECRO_AUTH_MANAGER
+#define NECRO_AUTH_MANAGER
 
 #include "AuthSession.h"
 #include "SocketUtility.h"
@@ -7,7 +7,7 @@
 
 #include "AES.h"
 
-struct NetData
+struct AuthData
 {
 	std::string username;
 	std::string password;
@@ -18,12 +18,14 @@ struct NetData
 	std::array<uint8_t, AES_128_KEY_SIZE> greetcode;
 
 	NECROAES::IV iv;
+
+	bool hasAuthenticated = false;
 };
 
-class NECRONetManager
+class NECROAuthManager
 {
 private:
-	NetData data;
+	AuthData data;
 
 	std::unique_ptr<AuthSession> authSocket;
 	bool authSocketConnected = false;
@@ -46,24 +48,25 @@ public:
 
 	int OnConnectedToAuthServer();
 
+	void OnAuthenticationCompleted();
 
-	// NetData Setters
-	void SetNetDataUsername(const std::string& u)
+	// AuthData Setters
+	void SetAuthDataUsername(const std::string& u)
 	{
 		data.username = u;
 	}
 
-	void SetNetDataPassword(const std::string& u)
+	void SetAuthDataPassword(const std::string& u)
 	{
 		data.password = u;
 	}
 
-	void SetNetDataIpAddress(const std::string& i)
+	void SetAuthDataIpAddress(const std::string& i)
 	{
 		data.ipAddress = i;
 	}
 
-	NetData& GetData()
+	AuthData& GetData()
 	{
 		return data;
 	}

@@ -1,9 +1,9 @@
-#include "NetworkManager.h"
+#include "AuthManager.h"
 #include "OpenSSLManager.h"
 #include "NECROClient.h"
 #include "AuthCodes.h"
 
-int NECRONetManager::Init()
+int NECROAuthManager::Init()
 {
 	SocketUtility::Initialize();
 
@@ -18,7 +18,7 @@ int NECRONetManager::Init()
 	return 0;
 }
 
-void NECRONetManager::CreateAuthSocket()
+void NECROAuthManager::CreateAuthSocket()
 {
 	isConnecting = false;
 
@@ -29,7 +29,7 @@ void NECRONetManager::CreateAuthSocket()
 	authSocket->SetBlockingEnabled(false);
 }
 
-int NECRONetManager::ConnectToAuthServer()
+int NECROAuthManager::ConnectToAuthServer()
 {
 	if (isConnecting)
 		return 0;
@@ -69,7 +69,7 @@ int NECRONetManager::ConnectToAuthServer()
 	return 0;
 }
 
-int NECRONetManager::NetworkUpdate()
+int NECROAuthManager::NetworkUpdate()
 {
 	// Is there anything to check?
 	if (poll_fds.size() <= 0)
@@ -117,7 +117,7 @@ int NECRONetManager::NetworkUpdate()
 	return 0;
 }
 
-void NECRONetManager::OnDisconnect()
+void NECROAuthManager::OnDisconnect()
 {
 	// Delete and recreate socket for next try
 	authSocket->Close();
@@ -130,7 +130,7 @@ void NECRONetManager::OnDisconnect()
 	isConnecting = false;
 }
 
-int NECRONetManager::CheckIfAuthConnected()
+int NECROAuthManager::CheckIfAuthConnected()
 {
 	NECROConsole& c = engine.GetConsole();
 
@@ -200,7 +200,7 @@ int NECRONetManager::CheckIfAuthConnected()
 	return 0;
 }
 
-int NECRONetManager::OnConnectedToAuthServer()
+int NECROAuthManager::OnConnectedToAuthServer()
 {
 	isConnecting = false;
 	authSocketConnected = true;
@@ -229,7 +229,7 @@ int NECRONetManager::OnConnectedToAuthServer()
 	return 0;
 }
 
-int NECRONetManager::CheckForIncomingData()
+int NECROAuthManager::CheckForIncomingData()
 {
 	NECROConsole& c = engine.GetConsole();
 
@@ -280,4 +280,12 @@ int NECRONetManager::CheckForIncomingData()
 	}
 
 	return 0;
+}
+
+void NECROAuthManager::OnAuthenticationCompleted()
+{
+	data.hasAuthenticated = true;
+
+	// Connect to game server
+
 }

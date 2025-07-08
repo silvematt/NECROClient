@@ -312,7 +312,7 @@ int TCPSocket::Shutdown()
 	int result = shutdown(m_socket, SD_SEND);
 
 	if (result < 0)
-		LOG_ERROR("Error while shutting down the socket");
+		LOG_ERROR("Error " + std::to_string(result) + " while shutting down the socket");
 
 	return result;
 #else

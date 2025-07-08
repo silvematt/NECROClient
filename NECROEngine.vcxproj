@@ -159,7 +159,7 @@
     <ClCompile Include="Mapfile.cpp" />
     <ClCompile Include="NECROClient.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="NetworkManager.cpp" />
+    <ClCompile Include="AuthManager.cpp" />
     <ClCompile Include="OpenSSLManager.cpp" />
     <ClCompile Include="Packet.cpp" />
     <ClCompile Include="Player.cpp" />
@@ -197,7 +197,7 @@
     <ClInclude Include="Mapfile.h" />
     <ClInclude Include="Math.h" />
     <ClInclude Include="NECROClient.h" />
-    <ClInclude Include="NetworkManager.h" />
+    <ClInclude Include="AuthManager.h" />
     <ClInclude Include="NetworkMessage.h" />
     <ClInclude Include="OpenSSLManager.h" />
     <ClInclude Include="Packet.h" />

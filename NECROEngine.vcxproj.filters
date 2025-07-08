@@ -158,7 +158,7 @@
     <ClCompile Include="ConsoleLogger.cpp">
       <Filter>Engine\Logger</Filter>
     </ClCompile>
-    <ClCompile Include="NetworkManager.cpp">
+    <ClCompile Include="AuthManager.cpp">
       <Filter>Engine\Online</Filter>
     </ClCompile>
     <ClCompile Include="AuthSession.cpp">
@@ -277,7 +277,7 @@
     <ClInclude Include="ConsoleLogger.h">
       <Filter>Engine\Logger</Filter>
     </ClInclude>
-    <ClInclude Include="NetworkManager.h">
+    <ClInclude Include="AuthManager.h">
       <Filter>Engine\Online</Filter>
     </ClInclude>
     <ClInclude Include="AuthSession.h">

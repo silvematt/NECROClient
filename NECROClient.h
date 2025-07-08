@@ -9,7 +9,7 @@
 #include "Renderer.h"
 #include "Console.h"
 #include "Math.h"
-#include "NetworkManager.h"
+#include "AuthManager.h"
 
 constexpr uint8_t CLIENT_VERSION_MAJOR = 1;
 constexpr uint8_t CLIENT_VERSION_MINOR = 0;
@@ -32,7 +32,7 @@ private:
 	NECRORenderer		renderer;
 	NECROAssetsManager	assetsManager;
 	NECROConsole		console;
-	NECRONetManager		netManager;
+	NECROAuthManager		netManager;
 
 	int						Shutdown();
 	
@@ -43,7 +43,7 @@ public:
 	NECRORenderer&			GetRenderer();
 	NECROAssetsManager&		GetAssetsManager();
 	NECROConsole&			GetConsole();
-	NECRONetManager&		GetNetManager();
+	NECROAuthManager&		GetAuthManager();
 
 	const double			GetDeltaTime() const;
 	const float				GetFPS() const;
@@ -84,7 +84,7 @@ inline NECROConsole& NECROClient::GetConsole()
 	return console;
 }
 
-inline NECRONetManager& NECROClient::GetNetManager()
+inline NECROAuthManager& NECROClient::GetAuthManager()
 {
 	return netManager;
 }

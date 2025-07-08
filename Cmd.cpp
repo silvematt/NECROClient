@@ -139,10 +139,10 @@ int Cmd::Cmd_ConnectToAuthServer(const std::vector<std::string>& args)
 
 	c.Log("Attempting to connect as : '" + args[1] + "'...");
 
-	engine.GetNetManager().SetNetDataUsername(args[1]);
-	engine.GetNetManager().SetNetDataPassword(args[2]);
+	engine.GetAuthManager().SetAuthDataUsername(args[1]);
+	engine.GetAuthManager().SetAuthDataPassword(args[2]);
 
-	engine.GetNetManager().ConnectToAuthServer();
+	engine.GetAuthManager().ConnectToAuthServer();
 
 	return 0;
 }

@@ -93,7 +93,7 @@ std::unordered_map<uint8_t, AuthHandler> const Handlers = AuthSession::InitHandl
 
 void AuthSession::OnConnectedCallback()
 {
-	NECRONetManager& netManager = engine.GetNetManager();
+	NECROAuthManager& netManager = engine.GetAuthManager();
 	NECROConsole& c = engine.GetConsole();
 
 	// Get local IP address
@@ -106,7 +106,7 @@ void AuthSession::OnConnectedCallback()
 
 		std::string ipStr(local_ip);
 		c.Log("My Local IP: " + ipStr);
-		netManager.SetNetDataIpAddress(ipStr);
+		netManager.SetAuthDataIpAddress(ipStr);
 	}
 
 	// Send greet packet
@@ -199,7 +199,7 @@ bool AuthSession::HandlePacketAuthLoginGatherInfoResponse()
 {
     NECROConsole& c = engine.GetConsole();
     CPacketAuthLoginGatherInfo* pckData = reinterpret_cast<CPacketAuthLoginGatherInfo*>(inBuffer.GetBasePointer());
-    NECRONetManager& net = engine.GetNetManager();
+    NECROAuthManager& net = engine.GetAuthManager();
 
     if (pckData->error == AuthResults::AUTH_SUCCESS)
     {
@@ -265,7 +265,7 @@ bool AuthSession::HandlePacketAuthLoginGatherInfoResponse()
 
 bool AuthSession::HandlePacketAuthLoginProofResponse()
 {
-    NECRONetManager& netManager = engine.GetNetManager();
+    NECROAuthManager& netManager = engine.GetAuthManager();
 
     NECROConsole& c = engine.GetConsole();
     CPacketAuthLoginProof* pckData = reinterpret_cast<CPacketAuthLoginProof*>(inBuffer.GetBasePointer());
@@ -300,6 +300,14 @@ bool AuthSession::HandlePacketAuthLoginProofResponse()
 
         LOG_DEBUG("My session key is: " + sessionStr);
         LOG_DEBUG("Greetcode is : " + greetStr);
+
+        // Close connection to auth server
+        LOG_DEBUG("Authentication completed! Closing Auth Socket...");
+        Close();
+
+        // We're now ready to connect to the game server
+        // This packet (AuthLoginProofResponse) could also contain the realms list
+        netManager.OnAuthenticationCompleted();
     }
     else //  (pckData->error == LoginProofResults::LOGIN_FAILED)
     {

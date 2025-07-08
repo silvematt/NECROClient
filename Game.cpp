@@ -20,7 +20,7 @@ void NECROGame::Init()
 //--------------------------------------
 void NECROGame::Update()
 {
-	engine.GetNetManager().NetworkUpdate();
+	engine.GetAuthManager().NetworkUpdate();
 
 	HandleInput();
 
